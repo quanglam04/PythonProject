@@ -30,9 +30,9 @@ class TankGame:
             if keys[pygame.K_s]:
                 self.move_tank(-self.tank_speed)
             if keys[pygame.K_a]:
-                self.rotate_tank(-0.5)
-            if keys[pygame.K_d]:
                 self.rotate_tank(0.5)
+            if keys[pygame.K_d]:
+                self.rotate_tank(-0.5)
 
             # cap nhat vi tri xe tang
             self.tank_rect.x = int(self.tank_x)
