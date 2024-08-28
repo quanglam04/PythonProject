@@ -9,4 +9,4 @@ if __name__ == "__main__":
     pygame.display.set_caption("Tank")
 
     game = TankGame(WINDOW_WIDTH, WINDOW_HEIGHT)
-    game.run(window)
+    game.run(window) # abcxyz test
