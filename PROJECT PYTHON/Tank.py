@@ -1,5 +1,6 @@
 import math
 import pygame
+from pygame import mixer
 class TankGame:
     def __init__(self, window_width, window_height):
         self.window_width = window_width
@@ -10,7 +11,7 @@ class TankGame:
         self.tank_image = pygame.image.load("asset/Blue Tank.png")
         self.tank_rect = self.tank_image.get_rect()
         self.tank_width, self.tank_height = self.tank_rect.size
-        self.tank_speed = 0.1
+        self.tank_speed = 1
         self.tank_angle = 0  # xe dang dat nam ngang
 
         # Use floats for more precise positioning
@@ -19,7 +20,18 @@ class TankGame:
 
     def run(self, window):
         self.window = window
+        image = pygame.image.load('asset/battlefield.png')  # Replace with the path to your image
+        scaled_image = pygame.transform.scale(image, (self.window_width, self.window_height))
+        imagerect = scaled_image.get_rect()
+
+        #Init background music
+        mixer.init()
+        mixer.music.load("asset/media.mp3")
+        mixer.music.set_volume(0.7)
+        mixer.music.play()
+
         while self.running:
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -39,9 +51,12 @@ class TankGame:
             self.tank_rect.y = int(self.tank_y)
             self.tank_rect.clamp_ip(self.window.get_rect())
 
-            self.window.fill((0, 0, 0))
+            #self.window.fill((0, 0, 0))
+
             rotated_tank = pygame.transform.rotate(self.tank_image, self.tank_angle)
             new_rect = rotated_tank.get_rect(center=self.tank_rect.center)
+
+            self.window.blit(scaled_image, imagerect)
             self.window.blit(rotated_tank, new_rect)
             pygame.display.flip()
 
