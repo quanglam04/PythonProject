@@ -1,27 +1,28 @@
 import pygame
 import sys
+import button
 
 class StartScreen:
     def __init__(self, width, height):
         self.width = width
         self.height = height
         self.font = pygame.font.SysFont(None, 55)
+        self.start_btn = button.Button(395, 185, pygame.image.load("asset/start_btn.png").convert_alpha(), 1)
+        self.exit_btn = button.Button(412, 360, pygame.image.load("asset/exit_btn.png").convert_alpha(), 1)
 
     def draw(self, screen):
-        screen.fill((0, 0, 0))  # Màu nền đen
-        title_text = self.font.render("Press 'S' to Start or 'Q' to Quit", True, (255, 255, 255))
-        text_rect = title_text.get_rect(center=(self.width // 2, self.height // 2))
-        screen.blit(title_text, text_rect)
+        screen.fill((52, 78, 91))
+        self.start_btn.draw(screen)
+        self.exit_btn.draw(screen)
 
-    def handle_events(self):
+    def handle_events(self, screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_s:
-                    return 'start'
-                elif event.key == pygame.K_q:
-                    pygame.quit()
-                    sys.exit()
+            elif self.start_btn.draw(screen):
+                return 'start'
+            elif self.exit_btn.draw(screen):
+                pygame.quit()
+                sys.exit()
         return 'start_screen'
