@@ -14,11 +14,18 @@ class TankGame:
         self.control = TankControl(self.tank, window_width, window_height) #goi ra class Tankcontrol o tank_control
 
     def run(self, window):
+
+
         self.window = window #truyen vao gia tri cua cua so choi game
+
+
         image = pygame.image.load('asset/battlefield.png') #load background
         scaled_image = pygame.transform.scale(image, (self.window_width, self.window_height)) #scale background
         imagerect = scaled_image.get_rect()# doan nay toi chua ro ham lam vi huy viet
 
+        font1 = pygame.font.SysFont('chalkduster.ttf', 72)
+        img1 = font1.render('Press Q to exit', True, (255, 255, 255))
+        scaled_image.blit(img1, (380, 660))
         # Cai dat am thanh
         mixer.init()
         mixer.music.load("asset/media.mp3")
@@ -29,6 +36,9 @@ class TankGame:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.running = False
 
             # Dieu khien
             self.control.handle_input() #goi den phuong thuc trong class Tankcontrol dung de dieu khien xe nhan input dieu khien tu ban phim

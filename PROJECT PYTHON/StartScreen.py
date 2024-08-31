@@ -18,11 +18,10 @@ class StartScreen:
     def handle_events(self, screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                return 'quit'
             elif self.start_btn.draw(screen):
                 return 'start'
             elif self.exit_btn.draw(screen):
-                pygame.quit()
-                sys.exit()
+                return 'quit'
         return 'start_screen'
+
