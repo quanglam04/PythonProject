@@ -5,27 +5,20 @@ from tank_control import TankControl
 
 class TankGame:
     def __init__(self, window_width, window_height):
-        self.window_width = window_width #doan nay kich co man hinh ae biet roi
+        self.window_width = window_width
         self.window_height = window_height
         self.window = None
-        self.running = True #is_running con chay hay khong !?
+        self.running = True
 
-        self.tank = Tank("asset/Blue Tank.png", window_width, window_height)# day goi ra class Tank o tank.py
-        self.control = TankControl(self.tank, window_width, window_height) #goi ra class Tankcontrol o tank_control
+        self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
+        self.control = TankControl(self.tank, window_width, window_height)
+
+        # Đọc bản đồ
+        self.map_data = read_map('MAP/map1.txt')
 
     def run(self, window):
+        self.window = window
 
-
-        self.window = window #truyen vao gia tri cua cua so choi game
-
-
-        image = pygame.image.load('asset/battlefield.png') #load background
-        scaled_image = pygame.transform.scale(image, (self.window_width, self.window_height)) #scale background
-        imagerect = scaled_image.get_rect()# doan nay toi chua ro ham lam vi huy viet
-
-        font1 = pygame.font.SysFont('chalkduster.ttf', 72)
-        img1 = font1.render('Press Q to exit', True, (255, 255, 255))
-        scaled_image.blit(img1, (380, 660))
         # Cai dat am thanh
         mixer.init()
         mixer.music.load("asset/media.mp3")
@@ -40,23 +33,45 @@ class TankGame:
                     if event.key == pygame.K_q:
                         self.running = False
 
-            # Dieu khien
-            self.control.handle_input() #goi den phuong thuc trong class Tankcontrol dung de dieu khien xe nhan input dieu khien tu ban phim
+            # Điều khiển xe tăng
+            self.control.handle_input()
 
-            #  Cap nhat vi tri voi tank_rect.x hoac .y (o day la vi tri hien tai cua chiec xe ve ngang va rong va ttam)
-            # Nhu da noi o tren ta de tam tank_x va tank_y vi no co the dc sang so float con cai .x .y thi mac dinh la int (doan nay cap nhat hinh anh vi tri cua xe tang xuyen suot qua trinh choi game )
-            self.tank.tank_rect.x = int(self.tank.tank_x) #chuyen doi sang so nguyen vi trong pygame toa do la mot int
-            self.tank.tank_rect.y = int(self.tank.tank_y) #tuong tu
-            #self.tank.tank_rect.clamp_ip(self.window.get_rect()) dung xoa nhe loi day :v toi test mong ae thong cam dung xoa
+            # Cập nhật vị trí của xe tăng
+            self.tank.tank_rect.x = int(self.tank.tank_x)
+            self.tank.tank_rect.y = int(self.tank.tank_y)
 
-            # ham transform trong pygame ho tro vc chuyen doi hinh anh roate la mot ham dc viet ngay trong day co vc giup chuyen doi hinh anh xoay
             rotated_tank = pygame.transform.rotate(self.tank.tank_image, self.tank.tank_angle)
-            #ham get_rect thuc chat de lay dc vi tri trung tam cua diem anh, de phuc vu cho ham blit,
-            new_rect = rotated_tank.get_rect(center=self.tank.tank_rect.center) # lay lai vi tri toa do ttam moi cua xe tang khi da xoay
+            new_rect = rotated_tank.get_rect(center=self.tank.tank_rect.center)
 
-            #ham blit nay thuoc cua window trong pygame giup ta tao ra vi tri cua hinh anh moi voi dieu kien cho biet day du thong tin cua buc anh trong truong hop nay background cung can duoc ve lien tuc
-            self.window.blit(scaled_image, imagerect) #nay lien quan den background !???
-            self.window.blit(rotated_tank, new_rect) #nay scale hinh anh cua xe tang
+            # Vẽ bản đồ thay vì hình nền
+            self.window.fill((255, 255, 255))  # Xóa màn hình với màu trắng
+            draw_map(self.window, self.map_data, TILE_SIZE)
+
+            # Vẽ xe tăng
+            self.window.blit(rotated_tank, new_rect)
             pygame.display.flip()
 
         pygame.quit()
+
+# Cấu hình các hằng số
+TILE_SIZE = 16
+
+def read_map(file_path):
+    with open(file_path, 'r') as file:
+        map_data = [line.strip() for line in file]
+    return map_data
+
+def draw_map(window, map_data, tile_size):
+    for y, row in enumerate(map_data):
+        for x, tile in enumerate(row):
+            if tile == '1':  # Tường
+                color = (0, 0, 0)  # Màu đen
+            elif tile == '0':  # Ô trống
+                color = (255, 255, 255)  # Màu trắng
+            elif tile == '*':  # Xe tăng của người chơi
+                color = (0, 0, 255)  # Màu xanh
+            elif tile == '-':  # Đối thủ
+                color = (255, 0, 0)  # Màu đỏ
+            else:
+                continue
+            pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
