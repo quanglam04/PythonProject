@@ -10,3 +10,6 @@ class Tank:
         self.tank_y = window_height // 2 - self.tank_height // 2# cai dat vi tri xe tang theo chieu doc
         self.tank_angle = 0  # goc quay cua xe tang
         self.tank_speed = 1 #van toc
+    #test
+    def draw(self, screen):
+        screen.blit(self.tank_image, self.tank_rect)
