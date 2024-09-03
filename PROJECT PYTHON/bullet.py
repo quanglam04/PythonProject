@@ -1,16 +1,23 @@
 import pygame
-
+import math
 
 class Bullet:
-    def __init__(self, x, y):
-        self.image = pygame.image.load('C:/Users/84334/Desktop/branchme/PythonProject/PROJECT PYTHON/asset/bullet.png')  # Đường dẫn tới hình ảnh viên đạn
-        self.rect = self.image.get_rect()
-        self.rect.centerx = x
-        self.rect.top = y
-        self.speed = 2  # Tốc độ di chuyển của đạn
+    def __init__(self, x, y, angle, speed = 2):
+        self.image = pygame.image.load("C:/Users/84334/Desktop/branchme/PythonProject/PROJECT PYTHON/asset/bullet.png")
+        self.image = pygame.transform.scale(self.image, (10, 10 ))  # Điều chỉnh kích thước đạn
+        self.rect = self.image.get_rect(center=(x, y))
+        self.angle = angle
+        self.speed = speed
+        
+        # Tính toán vector hướng dựa trên góc
+        self.direction_x = math.cos(math.radians(self.angle)) * self.speed
+        self.direction_y = -math.sin(math.radians(self.angle)) * self.speed
 
     def move(self):
-        self.rect.y -= self.speed  # Điều chỉnh tốc độ di chuyển của đạn
+        # Cập nhật vị trí của đạn dựa trên hướng đã tính toán
+        self.rect.x += self.direction_x
+        self.rect.y += self.direction_y
 
     def draw(self, window):
-        window.blit(self.image, self.rect)
+        rotated_bullet = pygame.transform.rotate(self.image, -self.angle)
+        window.blit(rotated_bullet, self.rect)

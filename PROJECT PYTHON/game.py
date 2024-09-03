@@ -3,6 +3,7 @@ from pygame import mixer
 from tank import Tank
 from tank_control import TankControl
 from bullet import Bullet
+import math
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -37,7 +38,8 @@ class TankGame:
                 # thiet lap nut space ban dan
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        bullet = Bullet(self.tank.tank_rect.centerx, self.tank.tank_rect.top)  # tạo đạn khi nhấn phím SPACE
+                        # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
+                        bullet = Bullet(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)), self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)) , self.tank.tank_angle )
                         self.bullets.append(bullet)
 
             # Dieu khien
