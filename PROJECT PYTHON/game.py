@@ -1,3 +1,5 @@
+import random
+
 import pygame
 from pygame import mixer
 from tank import Tank
@@ -13,8 +15,8 @@ class TankGame:
         self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
         self.control = TankControl(self.tank, window_width, window_height)
 
-        # Đọc bản đồ
-        self.map_data = read_map('MAP/map1.txt')
+        random_index = random.randint(1, 2)
+        self.map_data = read_map(f'MAP/map{random_index}.txt')
 
     def run(self, window):
         self.window = window
