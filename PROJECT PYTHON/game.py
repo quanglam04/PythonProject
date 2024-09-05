@@ -4,6 +4,8 @@ import pygame
 from pygame import mixer
 from tank import Tank
 from tank_control import TankControl
+import math
+from bullet import Bullet
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -14,7 +16,7 @@ class TankGame:
 
         self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
         self.control = TankControl(self.tank, window_width, window_height)
-
+        self.bullets = []
         random_index = random.randint(1, 2)
         self.map_data = read_map(f'MAP/map{random_index}.txt')
 
@@ -34,6 +36,12 @@ class TankGame:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         self.running = False
+                    if event.key == pygame.K_SPACE:
+                        # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
+                        bullet = Bullet(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
+                                        self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
+                                        self.tank.tank_angle)
+                        self.bullets.append(bullet)
 
             # Điều khiển xe tăng
             self.control.handle_input()
@@ -51,6 +59,12 @@ class TankGame:
 
             # Vẽ xe tăng
             self.window.blit(rotated_tank, new_rect)
+            for bullet in self.bullets[:]:
+                bullet.move()
+                if bullet.rect.bottom < 0:
+                    self.bullets.remove(bullet)
+                else:
+                    bullet.draw(self.window)
             pygame.display.flip()
 
         pygame.quit()
