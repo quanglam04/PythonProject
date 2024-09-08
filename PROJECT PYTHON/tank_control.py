@@ -14,7 +14,7 @@ class TankControl:
         if keys[pygame.K_s]:
             TankLogic.move_tank(self.tank, -self.tank.tank_speed, self.window_width, self.window_height)
         if keys[pygame.K_a]:
-            TankLogic.rotate_tank(self.tank, 0.7)
+            TankLogic.rotate_tank(self.tank, 0.25)
         if keys[pygame.K_d]:
-            TankLogic.rotate_tank(self.tank, -0.7)
+            TankLogic.rotate_tank(self.tank, -0.25)
 
