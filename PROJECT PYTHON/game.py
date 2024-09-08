@@ -1,5 +1,4 @@
 import random
-
 import pygame
 from pygame import mixer
 from tank import Tank
@@ -16,7 +15,13 @@ class TankGame:
 
         self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
         self.control = TankControl(self.tank, window_width, window_height)
+
         self.bullets = []
+        self.last_shot_time=0
+        self.bullet_time=500 #1000 mili giay == 1s
+        self.bullet_sound=mixer.Sound("asset/normal bullet.flac")
+        self.bullet_sound.set_volume(0.4)
+
         random_index = random.randint(1, 2)
         self.map_data = read_map(f'MAP/map{random_index}.txt')
 
@@ -26,10 +31,12 @@ class TankGame:
         # Cai dat am thanh
         mixer.init()
         mixer.music.load("asset/media.mp3")
-        mixer.music.set_volume(0.7)
+        mixer.music.set_volume(0.4)
         mixer.music.play()
 
         while self.running:
+            current_time=pygame.time.get_ticks()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -38,10 +45,13 @@ class TankGame:
                         self.running = False
                     if event.key == pygame.K_SPACE:
                         # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
-                        bullet = Bullet(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
-                                        self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
-                                        self.tank.tank_angle)
-                        self.bullets.append(bullet)
+                        if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
+                            bullet = Bullet(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
+                                            self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
+                                            self.tank.tank_angle)
+                            self.bullets.append(bullet)
+                            self.last_shot_time=current_time
+                            self.bullet_sound.play()
 
             # Điều khiển xe tăng
             self.control.handle_input()
@@ -61,7 +71,7 @@ class TankGame:
             self.window.blit(rotated_tank, new_rect)
             for bullet in self.bullets[:]:
                 bullet.move()
-                if bullet.rect.bottom < 0:
+                if bullet.is_expired_bullet():
                     self.bullets.remove(bullet)
                 else:
                     bullet.draw(self.window)
