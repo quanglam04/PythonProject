@@ -6,6 +6,7 @@ from tank import Tank
 from tank_control import TankControl
 import math
 from bullet import Bullet
+from StartScreen import result
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -17,7 +18,9 @@ class TankGame:
         self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
         self.control = TankControl(self.tank, window_width, window_height)
         self.bullets = []
-        random_index = random.randint(1, 2)
+
+        # random_index = random.randint(1, 3)
+        random_index = 3
         self.map_data = read_map(f'MAP/map{random_index}.txt')
 
     def run(self, window):
