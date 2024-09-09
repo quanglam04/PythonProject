@@ -19,8 +19,8 @@ class TankGame:
         self.control = TankControl(self.tank, window_width, window_height)
         self.bullets = []
 
-        # random_index = random.randint(1, 3)
-        random_index = 3
+        random_index = random.randint(1, 7)
+        #random_index = 7
         self.map_data = read_map(f'MAP/map{random_index}.txt')
 
     def run(self, window):
