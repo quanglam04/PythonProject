@@ -2,11 +2,18 @@ import random
 
 import pygame
 from pygame import mixer
+
+import button
+from StartScreen import result
 from tank import Tank
 from tank_control import TankControl
 import math
 from bullet import Bullet
-from StartScreen import result
+
+
+# Cấu hình các hằng số
+TILE_SIZE = 16
+
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -18,10 +25,8 @@ class TankGame:
         self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
         self.control = TankControl(self.tank, window_width, window_height)
         self.bullets = []
-
-        random_index = random.randint(1, 7)
-        #random_index = 7
-        self.map_data = read_map(f'MAP/map{random_index}.txt')
+        index = 1
+        self.map_data = read_map(f'MAP/map{index}.txt')
 
     def run(self, window):
         self.window = window
@@ -71,10 +76,6 @@ class TankGame:
             pygame.display.flip()
 
         pygame.quit()
-
-# Cấu hình các hằng số
-TILE_SIZE = 16
-
 def read_map(file_path):
     with open(file_path, 'r') as file:
         map_data = [line.strip() for line in file]
@@ -94,3 +95,4 @@ def draw_map(window, map_data, tile_size):
             else:
                 continue
             pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
+

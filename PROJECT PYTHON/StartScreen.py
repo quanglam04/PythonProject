@@ -1,8 +1,12 @@
-import pygame
-import sys
-import button
 
+
+import pygame
+import button
 result = {}
+
+
+
+
 class StartScreen:
     def __init__(self, width, height):
         self.width = width
@@ -20,13 +24,33 @@ class StartScreen:
         self.option_2_btn = button.Button(372.5, 150, pygame.image.load("asset/2_player_btn.png").convert_alpha(), 1)
         self.option_3_btn = button.Button(685, 150, pygame.image.load("asset/3_player_btn.png").convert_alpha(), 1)
 
-        self.show_options = False  # Kiểm soát việc hiển thị các tùy chọn
+        self.map_btns = []
+
+        self.map_btns.append(button.Button(50 - 20, 50, pygame.image.load(f"asset/map/map{1}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(250 - 20, 50, pygame.image.load(f"asset/map/map{2}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(450 - 20, 50, pygame.image.load(f"asset/map/map{3}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(650 - 20, 50, pygame.image.load(f"asset/map/map{4}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(850 - 20, 50, pygame.image.load(f"asset/map/map{5}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(50 - 20, 200, pygame.image.load(f"asset/map/map{6}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(250 - 20, 200, pygame.image.load(f"asset/map/map{7}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(450 - 20, 200, pygame.image.load(f"asset/map/map{8}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(650 - 20, 200, pygame.image.load(f"asset/map/map{9}.png").convert_alpha(), 0.5))
+        self.map_btns.append(button.Button(850 - 20, 200, pygame.image.load(f"asset/map/map{10}.png").convert_alpha(), 0.5))
+
+        self.show_options = False  # Kiểm soát việc hiển thị các lựa chọn
+        self.show_maps = False  # Kiểm soát việc hiển thị các map
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
 
-        if self.show_options:
-            # Hiển thị các nút lựa chọn
+        if self.show_maps:
+            # Hiển thị các nút lựa chọn map
+            for i, map_btn in enumerate(self.map_btns):
+                row = i // 2  # Tính hàng của nút (mỗi hàng có 2 nút)
+                col = i % 2   # Tính cột của nút
+                map_btn.draw(screen)
+        elif self.show_options:
+
             self.option_1_btn.draw(screen)
             self.option_2_btn.draw(screen)
             self.option_3_btn.draw(screen)
@@ -39,20 +63,24 @@ class StartScreen:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return 'quit'
-            if not self.show_options:
+            if not self.show_options and not self.show_maps:
                 if self.start_btn.draw(screen):
-                    self.show_options = True  # Ẩn nút Start và Exit, hiện các lựa chọn
+                    self.show_options = True  # Hiển thị các lựa chọn người chơi
                 elif self.exit_btn.draw(screen):
                     return 'quit'
-            else:
-                # Xử lý sự kiện khi các tùy chọn hiển thị
+            elif self.show_options and not self.show_maps:
                 if self.option_1_btn.draw(screen):
                     result['numberOfPlayer'] = 1
-                    return 'start'
+                    self.show_maps = True  # Hiển thị các lựa chọn map
                 elif self.option_2_btn.draw(screen):
                     result['numberOfPlayer'] = 2
-                    return 'start'
+                    self.show_maps = True
                 elif self.option_3_btn.draw(screen):
                     result['numberOfPlayer'] = 3
-                    return 'start'
-        return 'start_screen'
+                    self.show_maps = True
+            elif self.show_maps:
+                for i, map_btn in enumerate(self.map_btns):
+                    if map_btn.draw(screen):
+                        result['selected_map'] = i + 1
+                        return 'start'
+
