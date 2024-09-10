@@ -7,6 +7,6 @@ class Tank:
         self.tank_rect = self.tank_image.get_rect() # cho biet chieu ngang, rong cua xe tang va lay vi tri hien tai cua xe tang
         self.tank_width, self.tank_height = self.tank_rect.size # tank_rect.size cho biet kich co cua buc anh
         self.tank_x = window_width // 2 - self.tank_width // 2 # cai dat vi tri cua xe tang theo chieu ngang
-        self.tank_y = window_height // 2 - self.tank_height // 2# cai dat vi tri xe tang theo chieu doc
+        self.tank_y = window_height // 2 - self.tank_height // 2 # cai dat vi tri xe tang theo chieu doc
         self.tank_angle = 0  # goc quay cua xe tang
         self.tank_speed = 0.5 #van toc

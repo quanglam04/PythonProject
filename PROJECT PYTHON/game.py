@@ -31,8 +31,8 @@ class TankGame:
         self.bullet_sound = mixer.Sound("asset/normal bullet.flac")
         self.bullet_sound.set_volume(0.4)
 
-        random_index = random.randint(1, 2)
-        # random_index = 3
+        #random_index = random.randint(1, 2)
+        random_index = 10
         self.map_data = read_map(f'MAP/map{random_index}.txt')
 
         # Lưu vị trí cuối cùng không va chạm
