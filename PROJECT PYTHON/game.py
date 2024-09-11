@@ -69,12 +69,15 @@ class TankGame:
 
             # Vẽ xe tăng
             self.window.blit(rotated_tank, new_rect)
+
+            # vẽ đạn
             for bullet in self.bullets[:]:
-                bullet.move()
+                bullet.move(self.map_data, TILE_SIZE)  # Cập nhật với map_data và TILE_SIZE
                 if bullet.is_expired_bullet():
                     self.bullets.remove(bullet)
                 else:
                     bullet.draw(self.window)
+
             pygame.display.flip()
 
         pygame.quit()
