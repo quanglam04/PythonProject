@@ -1,6 +1,7 @@
 import pygame
 import math
 
+
 class Bullet:
     def __init__(self, x, y, angle, speed=0.5):
         self.image = pygame.image.load("C:/Users/84334/Desktop/branchme/PythonProject/PROJECT PYTHON/asset/bullet.png")
@@ -22,6 +23,8 @@ class Bullet:
         # Dự đoán vị trí mới của viên đạn (+ hướng di chuyển)
         new_bullet_x = self.bullet_x + self.direction_x
         new_bullet_y = self.bullet_y + self.direction_y
+
+        
 
         # Tính toán vị trí ô trên bản đồ tương ứng với vị trí mới của viên đạn
         map_x = int(new_bullet_x / tile_size)
@@ -52,6 +55,8 @@ class Bullet:
         self.bullet_y += self.direction_y
         self.rect.x = int(self.bullet_x)
         self.rect.y = int(self.bullet_y)
+
+   
 
     def draw(self, window):
         rotated_bullet = pygame.transform.rotate(self.image, -self.angle)

@@ -46,8 +46,8 @@ class TankGame:
                     if event.key == pygame.K_SPACE:
                         # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
                         if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
-                            bullet = Bullet(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
-                                            self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
+                            bullet = Bullet(self.tank.tank_rect.centerx + 30 * math.cos(math.radians(self.tank.tank_angle)),
+                                            self.tank.tank_rect.centery - 30 * math.sin(math.radians(self.tank.tank_angle)),
                                             self.tank.tank_angle)
                             self.bullets.append(bullet)
                             self.last_shot_time=current_time
@@ -71,6 +71,7 @@ class TankGame:
             self.window.blit(rotated_tank, new_rect)
 
             # vẽ đạn
+            tmp = 1
             for bullet in self.bullets[:]:
                 bullet.move(self.map_data, TILE_SIZE)  # Cập nhật với map_data và TILE_SIZE
                 if bullet.is_expired_bullet():
@@ -78,12 +79,24 @@ class TankGame:
                 else:
                     bullet.draw(self.window)
 
+                # Kiểm tra va chạm giữa đạn và tank
+                if check_collision(self.tank, bullet):
+                    print("Va chạm xảy ra! Game over!")
+                    self.running = False  # Dừng game loop khi va chạm
+                    break
+
+            
+
             pygame.display.flip()
 
         pygame.quit()
 
 # Cấu hình các hằng số
 TILE_SIZE = 16
+
+# Hàm kiểm tra va chạm giữa đạn và tank
+def check_collision(tank, bullet):
+    return tank.tank_rect.colliderect(bullet.rect)
 
 def read_map(file_path):
     with open(file_path, 'r') as file:
