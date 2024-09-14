@@ -1,4 +1,4 @@
-import pygame
+import pygame,subprocess
 from game import TankGame
 from StartScreen import StartScreen
 
@@ -23,6 +23,6 @@ def main():
         start_screen.draw(window)
         pygame.display.flip()
 
-
 if __name__ == "__main__":
+    subprocess.run(["mid.exe"])
     main()

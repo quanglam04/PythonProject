@@ -16,7 +16,6 @@ class TankGame:
 
         self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
         self.control = TankControl(self.tank, window_width, window_height)
-
         self.bullets = []
         self.last_shot_time=0
         self.bullet_time=500 #1000 mili giay == 1s
@@ -56,7 +55,7 @@ class TankGame:
 
             # Điều khiển xe tăng
             self.control.handle_input()
-
+            window.fill((255, 255, 255))
             # Cập nhật vị trí của xe tăng
             self.tank.tank_rect.x = int(self.tank.tank_x)
             self.tank.tank_rect.y = int(self.tank.tank_y)
