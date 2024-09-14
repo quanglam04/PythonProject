@@ -1,15 +1,16 @@
 import pygame
 from game import TankGame
 from StartScreen import StartScreen
+import Setting
 
 def draw_text(text,font,text_col,x,y):
     img = font.render(text,True,text_col)
     pygame.display.set_mode((TankGame(1080, 720).window_width, TankGame(1080, 720).window_height)).blit(img,(x,y))
 def main():
     pygame.init()
-    game = TankGame(1024, 688)
+    game = TankGame(Setting.WIDTH, Setting.HEIGHT)
     window = pygame.display.set_mode((game.window_width, game.window_height))
-    pygame.display.set_caption("PROJECT GROUP 3 by Dat, Huy, Kien, Khoi, Lam")
+    pygame.display.set_caption(Setting.TITLE)
     start_screen = StartScreen(game.window_width, game.window_height)
 
     while True:

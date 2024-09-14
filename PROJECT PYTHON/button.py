@@ -10,7 +10,6 @@ class Button():
         self.clicked = False
 
     def draw(self, surface):
-
         action = False
         pos = pygame.mouse.get_pos()
         # kiểm tra xem button có được bấm không

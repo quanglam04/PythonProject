@@ -1,6 +1,7 @@
 import random
 
 import pygame
+import Setting
 from pygame import mixer
 
 import button
@@ -9,6 +10,8 @@ from tank import Tank
 from tank_control import TankControl
 import math
 from bullet import Bullet
+
+item = []
 
 
 # Cấu hình các hằng số
@@ -22,17 +25,19 @@ class TankGame:
         self.window = None
         self.running = True
 
-        self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
+        self.tank = Tank(Setting.TankBlue, window_width, window_height)
+
+
         self.control = TankControl(self.tank, window_width, window_height)
 
         self.bullets = []
         self.last_shot_time = 0
         self.bullet_time = 500  # 1000 mili giay == 1s
-        self.bullet_sound = mixer.Sound("asset/normal bullet.flac")
+        self.bullet_sound = mixer.Sound(Setting.bulletMusic)
         self.bullet_sound.set_volume(0.4)
 
         #random_index = random.randint(1, 2)
-        random_index = 10
+        random_index = 4
         self.map_data = read_map(f'MAP/map{random_index}.txt')
 
         # Lưu vị trí cuối cùng không va chạm
@@ -49,11 +54,28 @@ class TankGame:
         # Kiểm tra với từng ô trong bản đồ
         for row_idx, row in enumerate(self.map_data):
             for col_idx, tile in enumerate(row):
-                if tile == '1':  # Tường
+                if tile == '1':
                     wall_rect = pygame.Rect(col_idx * TILE_SIZE, row_idx * TILE_SIZE, TILE_SIZE, TILE_SIZE)
                     if tank_rect.colliderect(wall_rect):
                         return True  # Va chạm với tường
         return False  # Không có va chạm
+
+    def check_collision_with_items(self, x, y):
+        # Kiểm tra va chạm của xe tăng với các item
+        tank_rect = self.tank.tank_rect.copy()
+        tank_rect.x = x
+        tank_rect.y = y
+
+        # Kiểm tra với từng ô trong bản đồ
+        for row_idx, row in enumerate(self.map_data):
+            for col_idx, tile in enumerate(row):
+                if tile != '1' and tile !='0' and tile != '-' and tile!='*':  # Các item
+                    item_rect = pygame.Rect(col_idx * TILE_SIZE, row_idx * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+                    if tank_rect.colliderect(item_rect):
+                        # Xóa item khỏi map sau khi va chạm
+                        self.map_data[row_idx][col_idx] = '0'
+                        return tile
+        return None
 
     def check_bullet_collision(self):
         # Kiểm tra va chạm giữa đạn và xe tăng
@@ -73,7 +95,7 @@ class TankGame:
 
         # Cài đặt âm thanh
         mixer.init()
-        mixer.music.load("asset/media.mp3")
+        mixer.music.load(Setting.backgroundMusic)
         mixer.music.set_volume(0.4)
         mixer.music.play()
 
@@ -100,9 +122,6 @@ class TankGame:
             # Điều khiển xe tăng
             self.control.handle_input()
 
-            # Kiểm tra va chạm giữa đạn và xe tăng
-            # self.check_bullet_collision()
-
             # Cập nhật vị trí mới tạm thời cho xe tăng
             new_x = int(self.tank.tank_x)
             new_y = int(self.tank.tank_y)
@@ -110,17 +129,21 @@ class TankGame:
 
             # Kiểm tra va chạm với tường
             if self.check_collision_with_walls(new_x, new_y):
-                # Nếu có va chạm, xe tăng không di chuyển, giữ vị trí cuối cùng không va chạm
                 self.tank.tank_x = self.last_valid_x
                 self.tank.tank_y = self.last_valid_y
                 self.tank.tank_angle = self.last_valid_angle
             else:
-                # Nếu không có va chạm, cập nhật vị trí hợp lệ
                 self.last_valid_x = new_x
                 self.last_valid_y = new_y
                 self.last_valid_angle = new_angle
                 self.tank.tank_rect.x = new_x
                 self.tank.tank_rect.y = new_y
+
+            # Kiểm tra va chạm với item
+            item_collision = self.check_collision_with_items(new_x, new_y)
+            if item_collision != None:
+                print(item_collision)
+                item.append(item_collision)
 
             rotated_tank = pygame.transform.rotate(self.tank.tank_image, self.tank.tank_angle)
             new_rect = rotated_tank.get_rect(center=self.tank.tank_rect.center)
@@ -131,32 +154,64 @@ class TankGame:
 
             # Vẽ xe tăng
             self.window.blit(rotated_tank, new_rect)
+
+            # Vẽ đạn
             for bullet in self.bullets[:]:
                 bullet.move()
                 if bullet.is_expired_bullet():
                     self.bullets.remove(bullet)
                 else:
                     bullet.draw(self.window)
+
             pygame.display.flip()
 
         pygame.quit()
+
+
 def read_map(file_path):
     with open(file_path, 'r') as file:
-        map_data = [line.strip() for line in file]
+        map_data = [list(line.strip()) for line in file]
     return map_data
 
 def draw_map(window, map_data, tile_size):
+    gunItem = pygame.image.load(Setting.gun).convert()
+    gunItem.set_colorkey(Setting.WHITE)
+    gunItem = pygame.transform.scale(gunItem, (tile_size+15, tile_size+15))
+
+    hpImage = pygame.image.load(Setting.hp).convert()
+    hpImage.set_colorkey(Setting.WHITE)
+    hpImage = pygame.transform.scale(hpImage, (tile_size+15, tile_size+15))
+
+    laser_gunItem = pygame.image.load(Setting.laser_gun).convert()
+    laser_gunItem.set_colorkey(Setting.WHITE)
+    laser_gunItem = pygame.transform.scale(laser_gunItem, (tile_size + 15, tile_size + 15))
+
+    speedItem = pygame.image.load(Setting.speed).convert()
+    speedItem.set_colorkey(Setting.WHITE)
+    speedItem = pygame.transform.scale(speedItem, (tile_size + 15, tile_size + 15))
+
+    x3Item = pygame.image.load(Setting.x3).convert()
+    x3Item.set_colorkey(Setting.WHITE)
+    x3Item = pygame.transform.scale(x3Item, (tile_size + 15, tile_size + 15))
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
             if tile == '1':  # Tường
                 color = (0, 0, 0)  # Màu đen
-            elif tile == '0':  # Ô trống
-                color = (255, 255, 255)  # Màu trắng
+                pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
             elif tile == '*':  # Xe tăng của người chơi
                 color = (0, 0, 255)  # Màu xanh
+                pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
             elif tile == '-':  # Đối thủ
                 color = (255, 0, 0)  # Màu đỏ
-            else:
-                continue
-            pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
+                pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
+            elif tile == '2':  # Item tăng sức mạnh (vũ khí)
+                window.blit(gunItem, (x * tile_size, y * tile_size))  # Vẽ ảnh súng
+            elif tile == '3':  # Item tăng máu (HP)
+                window.blit(hpImage, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+            elif tile == '4':  # Item tăng máu (HP)
+                window.blit(laser_gunItem, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+            elif tile == '5':  # Item tăng máu (HP)
+                window.blit(speedItem, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+            elif tile == '6':  # Item tăng máu (HP)
+                window.blit(x3Item, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
 

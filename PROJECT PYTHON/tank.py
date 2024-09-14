@@ -1,4 +1,5 @@
 import pygame
+import Setting
 
 class Tank:
     def __init__(self, image_path, window_width, window_height):
@@ -9,4 +10,4 @@ class Tank:
         self.tank_x = window_width // 2 - self.tank_width // 2 # cai dat vi tri cua xe tang theo chieu ngang
         self.tank_y = window_height // 2 - self.tank_height // 2 # cai dat vi tri xe tang theo chieu doc
         self.tank_angle = 0  # goc quay cua xe tang
-        self.tank_speed = 0.5 #van toc
+        self.tank_speed = Setting.playerSpeed #van toc
