@@ -16,6 +16,7 @@ class TankGame:
 
         self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
         self.control = TankControl(self.tank, window_width, window_height)
+
         self.bullets = []
         self.last_shot_time=0
         self.bullet_time=500 #1000 mili giay == 1s
