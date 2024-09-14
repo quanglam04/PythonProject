@@ -8,6 +8,7 @@ import button
 from StartScreen import result
 from tank import Tank
 from tank_control import TankControl
+import tank_control
 import math
 from bullet import Bullet
 
@@ -24,9 +25,7 @@ class TankGame:
         self.window_height = window_height
         self.window = None
         self.running = True
-
         self.tank = Tank(Setting.TankBlue, window_width, window_height)
-
 
         self.control = TankControl(self.tank, window_width, window_height)
 
@@ -35,9 +34,7 @@ class TankGame:
         self.bullet_time = 500  # 1000 mili giay == 1s
         self.bullet_sound = mixer.Sound(Setting.bulletMusic)
         self.bullet_sound.set_volume(0.4)
-
-        #random_index = random.randint(1, 2)
-        random_index = 4
+        random_index = result['selected_map']
         self.map_data = read_map(f'MAP/map{random_index}.txt')
 
         # Lưu vị trí cuối cùng không va chạm
@@ -142,7 +139,8 @@ class TankGame:
             # Kiểm tra va chạm với item
             item_collision = self.check_collision_with_items(new_x, new_y)
             if item_collision != None:
-                print(item_collision)
+                if item_collision == str(5):
+                    Setting.speedAdd = 1
                 item.append(item_collision)
 
             rotated_tank = pygame.transform.rotate(self.tank.tank_image, self.tank.tank_angle)
@@ -168,12 +166,16 @@ class TankGame:
         pygame.quit()
 
 
+
 def read_map(file_path):
     with open(file_path, 'r') as file:
         map_data = [list(line.strip()) for line in file]
     return map_data
 
 def draw_map(window, map_data, tile_size):
+    wall = pygame.image.load(Setting.wall).convert()
+    wall = pygame.transform.scale(wall, (tile_size  , tile_size ))
+
     gunItem = pygame.image.load(Setting.gun).convert()
     gunItem.set_colorkey(Setting.WHITE)
     gunItem = pygame.transform.scale(gunItem, (tile_size+15, tile_size+15))
@@ -196,8 +198,7 @@ def draw_map(window, map_data, tile_size):
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
             if tile == '1':  # Tường
-                color = (0, 0, 0)  # Màu đen
-                pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
+                window.blit(wall, (x * tile_size, y * tile_size))  # Vẽ ảnh súng
             elif tile == '*':  # Xe tăng của người chơi
                 color = (0, 0, 255)  # Màu xanh
                 pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))

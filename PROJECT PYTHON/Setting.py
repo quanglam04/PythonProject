@@ -1,4 +1,5 @@
 
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 DARKGREY = (40, 40, 40)
@@ -14,18 +15,19 @@ WIDTH = 1024
 HEIGHT = 688
 TITLE = "PROJECT GROUP 3 by Dat, Huy, Kien, Khoi, Lam"
 
-
-
 # player settings
 
-playerSpeed = 0.63
-angle = 0.62
+playerSpeed = 0.79
+speedAdd = 0
+angle = 0.68
 
 # initial position
 x0 = 1
 y0 = 1
 
 # image
+wall = 'asset/map/dirt.png'
+
 TankBlue = 'asset/Blue Tank.png'
 
 gun = 'asset/item/gun.png'

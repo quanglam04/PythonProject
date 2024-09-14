@@ -8,15 +8,14 @@ def draw_text(text,font,text_col,x,y):
     pygame.display.set_mode((TankGame(1080, 720).window_width, TankGame(1080, 720).window_height)).blit(img,(x,y))
 def main():
     pygame.init()
-    game = TankGame(Setting.WIDTH, Setting.HEIGHT)
-    window = pygame.display.set_mode((game.window_width, game.window_height))
+    window = pygame.display.set_mode((Setting.WIDTH, Setting.HEIGHT))
     pygame.display.set_caption(Setting.TITLE)
-    start_screen = StartScreen(game.window_width, game.window_height)
+    start_screen = StartScreen(Setting.WIDTH, Setting.HEIGHT)
 
     while True:
-
         result = start_screen.handle_events(window)
         if result == 'start':
+            game = TankGame(Setting.WIDTH, Setting.HEIGHT)
             game.run(window)
             break
         elif result == 'quit':

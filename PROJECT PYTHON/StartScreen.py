@@ -4,13 +4,14 @@ import pygame
 
 import Setting
 import button
+
+check = False
 result = {}
-
-
 
 
 class StartScreen:
     def __init__(self, width, height):
+
         self.width = width
         self.height = height
         self.font = pygame.font.SysFont(None, 55)
@@ -52,14 +53,12 @@ class StartScreen:
                 col = i % 2   # Tính cột của nút
                 map_btn.draw(screen)
         elif self.show_options:
-
             self.option_1_btn.draw(screen)
             self.option_2_btn.draw(screen)
             self.option_3_btn.draw(screen)
         else:
             self.start_btn.draw(screen)
             self.exit_btn.draw(screen)
-
     def handle_events(self, screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -84,4 +83,6 @@ class StartScreen:
                     if map_btn.draw(screen):
                         result['selected_map'] = i + 1
                         return 'start'
+
+
 
