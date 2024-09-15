@@ -1,4 +1,4 @@
-
+import random
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -26,7 +26,8 @@ x0 = 1
 y0 = 1
 
 # image
-wall = 'asset/map/dirt.png'
+random_index = random.randint(1,3)
+wall = f'asset/map/dirt{random_index}.png'
 
 TankBlue = 'asset/Blue Tank.png'
 

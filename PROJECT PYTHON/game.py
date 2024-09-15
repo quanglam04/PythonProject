@@ -25,9 +25,8 @@ class TankGame:
         self.window_height = window_height
         self.window = None
         self.running = True
-        self.tank = Tank(Setting.TankBlue, window_width, window_height)
 
-        self.control = TankControl(self.tank, window_width, window_height)
+
 
         self.bullets = []
         self.last_shot_time = 0
@@ -36,6 +35,9 @@ class TankGame:
         self.bullet_sound.set_volume(0.4)
         random_index = result['selected_map']
         self.map_data = read_map(f'MAP/map{random_index}.txt')
+
+        self.tank = Tank(Setting.TankBlue, window_width, window_height,random_index)
+        self.control = TankControl(self.tank, window_width, window_height)
 
         # Lưu vị trí cuối cùng không va chạm
         self.last_valid_x = self.tank.tank_x
@@ -147,7 +149,7 @@ class TankGame:
             new_rect = rotated_tank.get_rect(center=self.tank.tank_rect.center)
 
             # Vẽ bản đồ thay vì hình nền
-            self.window.fill((255, 255, 255))  # Xóa màn hình với màu trắng
+            self.window.fill(Setting.WHITE)  # Xóa màn hình với màu trắng
             draw_map(self.window, self.map_data, TILE_SIZE)
 
             # Vẽ xe tăng
@@ -186,7 +188,7 @@ def draw_map(window, map_data, tile_size):
 
     laser_gunItem = pygame.image.load(Setting.laser_gun).convert()
     laser_gunItem.set_colorkey(Setting.WHITE)
-    laser_gunItem = pygame.transform.scale(laser_gunItem, (tile_size + 15, tile_size + 15))
+    laser_gunItem = pygame.transform.scale(laser_gunItem, (tile_size + 17, tile_size + 17))
 
     speedItem = pygame.image.load(Setting.speed).convert()
     speedItem.set_colorkey(Setting.WHITE)
@@ -199,9 +201,6 @@ def draw_map(window, map_data, tile_size):
         for x, tile in enumerate(row):
             if tile == '1':  # Tường
                 window.blit(wall, (x * tile_size, y * tile_size))  # Vẽ ảnh súng
-            elif tile == '*':  # Xe tăng của người chơi
-                color = (0, 0, 255)  # Màu xanh
-                pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
             elif tile == '-':  # Đối thủ
                 color = (255, 0, 0)  # Màu đỏ
                 pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
