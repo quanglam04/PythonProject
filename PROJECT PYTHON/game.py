@@ -5,6 +5,7 @@ from tank import Tank
 from tank_control import TankControl
 import math
 from bullet import Bullet
+from bullet_Lazer import Laser
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -46,7 +47,7 @@ class TankGame:
                     if event.key == pygame.K_SPACE:
                         # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
                         if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
-                            bullet = Bullet(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
+                            bullet = Laser(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
                                             self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
                                             self.tank.tank_angle)
                             self.bullets.append(bullet)
