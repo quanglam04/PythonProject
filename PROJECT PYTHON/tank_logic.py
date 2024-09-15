@@ -9,7 +9,7 @@ class TankLogic:
 
         #sao phai chia ra tank_x tank_y ma khong lay luon tank_rect.x vi don gian mot cai no luoon la kieu int con cai con loai thi tuy thich, nen neu muon chuan xac va ay thi ta dung tank_x tuong trung cho tank_rect.x
         #dieu nay giup chuyen dong tro nen muot ma hon
-        tank.tank_x = max(0, min(tank.tank_x + dx, window_width - tank.tank_width)) # doan lay min la de khogn bi phong xe ra ngoai nhe
+        tank.tank_x = max(0, min(tank.tank_x + dx, window_width - tank.tank_width)) # doan lay min la de khong bi phong xe ra ngoai nhe
         tank.tank_y = max(0, min(tank.tank_y + dy, window_height - tank.tank_height))
 
     @staticmethod
