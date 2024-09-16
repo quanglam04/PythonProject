@@ -1,0 +1,24 @@
+(1920x1080) 16:9* (recommend)
+64.20765027322405
+48.0
+False
+F1
+F2
+F3
+F4
+F5
+Up
+Back
+Right
+Left
+0
+y
+h
+j
+g
+f
+8
+2
+6
+4
+1
