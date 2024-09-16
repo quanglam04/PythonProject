@@ -1,5 +1,3 @@
-import random
-
 import pygame
 import Setting
 from pygame import mixer
@@ -15,7 +13,7 @@ from bullet import Bullet
 item = []
 
 
-# Cấu hình các hằng số
+from explosion import Explosion
 TILE_SIZE = 16
 
 
@@ -25,7 +23,7 @@ class TankGame:
         self.window_height = window_height
         self.window = None
         self.running = True
-
+        self.explosions_bull = []
 
 
         self.bullets = []
@@ -155,13 +153,20 @@ class TankGame:
             # Vẽ xe tăng
             self.window.blit(rotated_tank, new_rect)
 
-            # Vẽ đạn
             for bullet in self.bullets[:]:
-                bullet.move(self.map_data, TILE_SIZE)
+                bullet.move(self.map_data,tile_size=16)
                 if bullet.is_expired_bullet():
+                    explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png", 256, 256)
+                    self.explosions_bull.append(explosion)
                     self.bullets.remove(bullet)
                 else:
                     bullet.draw(self.window)
+
+            for explosion in self.explosions_bull[:]:
+                explosion.update()
+                explosion.draw(self.window)
+                if explosion.image is None:
+                    self.explosions_bull.remove(explosion)
 
                 if check_collision(self.tank, bullet):
                     print("Va chạm xảy ra! Game over!")

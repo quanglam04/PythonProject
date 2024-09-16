@@ -63,4 +63,4 @@ class Bullet:
 
     def is_expired_bullet(self):
         # Kiểm tra số lần nảy
-        return self.bounce_count >= 50
+        return self.bounce_count >= 5
