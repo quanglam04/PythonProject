@@ -24,5 +24,5 @@ def main():
         pygame.display.flip()
 
 if __name__ == "__main__":
-    subprocess.run(["mid.exe"])
+    #subprocess.run(["mid.exe"])
     main()

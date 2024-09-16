@@ -2,11 +2,11 @@
 64.20765027322405
 48.0
 False
-w
-s
-d
-a
-q
+F1
+F2
+F3
+F4
+F5
 Up
 Back
 Right

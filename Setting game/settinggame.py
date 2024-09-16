@@ -1,10 +1,8 @@
 import re
-import time
 import tkinter as tk
 import subprocess
 from tkinter import PhotoImage, Button,  Canvas,messagebox
 from tkinter import ttk
-import sys,os
 import pygame
 from pygame import mixer
 

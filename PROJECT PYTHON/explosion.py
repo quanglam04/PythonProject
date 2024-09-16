@@ -8,11 +8,16 @@ class  Explosion:
         self.frame_height=frame_height
 
         self.frames=[] #call ra cac khung hinh
-        total_frame=self.sheet_path.get_width() // self.frame_width #tong con bao nhieu khung hinh tren hang (cai nay lay 1 hang thoi cho do lau)
+        total_frame_width=self.sheet_path.get_width() // self.frame_width
+        total_frame_height=self.sheet_path.get_height() //self.frame_height
+        total_frame=(self.sheet_path.get_width() // self.frame_width) * (self.sheet_path.get_height() //self.frame_height )   #tong con bao nhieu khung hinh tren hang (cai nay lay 1 hang thoi cho do lau)
 
-        for i in range(total_frame):
-            frame=self.sheet_path.subsurface(i*self.frame_width,0,self.frame_width,self.frame_height) # tham so (x,y,cr cua anh, cdai cua anh) lay 1 hang => y mac dinh=0
-            self.frames.append(frame)
+        for i in range(total_frame_height):
+            for j in range(total_frame_width):
+                frame = self.sheet_path.subsurface(j * self.frame_width, i*self.frame_height, self.frame_width,self.frame_height)  # tham so (x,y,cr cua anh, cdai cua anh) lay 1 hang => y mac dinh=0
+
+                self.frames.append(frame)
+
 
         self.current_frame=0
         self.image=self.frames[self.current_frame]
