@@ -95,7 +95,7 @@ class TankGame:
         # Cài đặt âm thanh
         mixer.init()
         mixer.music.load(Setting.backgroundMusic)
-        mixer.music.set_volume(0.4)
+        mixer.music.set_volume(0)
         mixer.music.play()
 
         while self.running:
@@ -111,8 +111,8 @@ class TankGame:
                         # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
                         if len(self.bullets) < 4 and current_time - self.last_shot_time >= self.bullet_time:
                             bullet = Bullet(
-                                self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
-                                self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
+                                self.tank.tank_rect.centerx + 40 * math.cos(math.radians(self.tank.tank_angle)),
+                                self.tank.tank_rect.centery - 40 * math.sin(math.radians(self.tank.tank_angle)),
                                 self.tank.tank_angle)
                             self.bullets.append(bullet)
                             self.last_shot_time = current_time
@@ -157,17 +157,23 @@ class TankGame:
 
             # Vẽ đạn
             for bullet in self.bullets[:]:
-                bullet.move()
+                bullet.move(self.map_data, TILE_SIZE)
                 if bullet.is_expired_bullet():
                     self.bullets.remove(bullet)
                 else:
                     bullet.draw(self.window)
 
+                if check_collision(self.tank, bullet):
+                    print("Va chạm xảy ra! Game over!")
+                    self.running = False  # Dừng game loop khi va chạm
+                    break
+
             pygame.display.flip()
 
         pygame.quit()
 
-
+def check_collision(tank, bullet):
+    return tank.tank_rect.colliderect(bullet.rect)
 
 def read_map(file_path):
     with open(file_path, 'r') as file:
@@ -176,7 +182,7 @@ def read_map(file_path):
 
 def draw_map(window, map_data, tile_size):
     wall = pygame.image.load(Setting.wall).convert()
-    wall = pygame.transform.scale(wall, (tile_size  , tile_size ))
+    wall = pygame.transform.scale(wall, (tile_size , tile_size ))
 
     gunItem = pygame.image.load(Setting.gun).convert()
     gunItem.set_colorkey(Setting.WHITE)
