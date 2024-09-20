@@ -2,17 +2,26 @@ import pygame
 from game import TankGame
 from StartScreen import StartScreen
 import Setting
-
-def draw_text(text,font,text_col,x,y):
-    img = font.render(text,True,text_col)
-    pygame.display.set_mode((TankGame(1080, 720).window_width, TankGame(1080, 720).window_height)).blit(img,(x,y))
+import LoadingBar
 def main():
+    flag = True
     pygame.init()
     window = pygame.display.set_mode((Setting.WIDTH, Setting.HEIGHT))
     pygame.display.set_caption(Setting.TITLE)
     start_screen = StartScreen(Setting.WIDTH, Setting.HEIGHT)
 
     while True:
+
+        keyPress = LoadingBar.handle()
+
+        if keyPress == 'Quit':
+            flag = False
+            break
+        elif keyPress == 'Enter':
+            break
+    while True:
+        if flag == False:
+            break
         result = start_screen.handle_events(window)
         if result == 'start':
             game = TankGame(Setting.WIDTH, Setting.HEIGHT)

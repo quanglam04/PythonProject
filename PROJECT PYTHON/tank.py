@@ -1,9 +1,6 @@
 import pygame
 from StartScreen import result
 import Setting
-
-
-
 class Tank:
     def __init__(self, image_path, window_width, window_height,random_index):
         with open(f'MAP/map{random_index}.txt', 'r') as file:
@@ -26,5 +23,4 @@ class Tank:
         self.tank_y = x*16 # cai dat vi tri xe tang theo chieu doc
         self.tank_angle = 0  # goc quay cua xe tang
         self.tank_speed = 0.79 #van toc
-        # window_width // 2 - self.tank_width // 2
-        # window_height // 2 - self.tank_height // 2
+

@@ -23,9 +23,10 @@ class StartScreen:
         self.exit_btn = button.Button(395, 270, pygame.image.load(Setting.exitBtn).convert_alpha(), 1)
 
         # Các nút lựa chọn hiển thị sau khi nhấn Start
-        self.option_1_btn = button.Button(60, 150, pygame.image.load(Setting.optionBtnOne).convert_alpha(), 1)
-        self.option_2_btn = button.Button(372.5, 150, pygame.image.load(Setting.optionBtnTwo).convert_alpha(), 1)
-        self.option_3_btn = button.Button(685, 150, pygame.image.load(Setting.optionBtnThree).convert_alpha(), 1)
+        self.option_1_btn = button.Button(63.4-10, 150, pygame.image.load(Setting.optionBtnOne).convert_alpha(), 0.7)
+        self.option_2_btn = button.Button(303.55-10, 150, pygame.image.load(Setting.optionBtnTwo).convert_alpha(), 0.7)
+        self.option_3_btn = button.Button(543.7-10, 150, pygame.image.load(Setting.optionBtnThree).convert_alpha(), 0.7)
+        self.option_4_btn = button.Button(783.85-10,150,pygame.image.load(Setting.optionBtnFour).convert_alpha(),0.7)
 
         self.map_btns = []
 
@@ -56,6 +57,7 @@ class StartScreen:
             self.option_1_btn.draw(screen)
             self.option_2_btn.draw(screen)
             self.option_3_btn.draw(screen)
+            self.option_4_btn.draw(screen)
         else:
             self.start_btn.draw(screen)
             self.exit_btn.draw(screen)
@@ -77,6 +79,9 @@ class StartScreen:
                     self.show_maps = True
                 elif self.option_3_btn.draw(screen):
                     result['numberOfPlayer'] = 3
+                    self.show_maps = True
+                elif self.option_4_btn.draw(screen):
+                    result['numberOfPlayer'] = 4
                     self.show_maps = True
             elif self.show_maps:
                 for i, map_btn in enumerate(self.map_btns):
