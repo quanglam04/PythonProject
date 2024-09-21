@@ -5,6 +5,7 @@ import Setting
 from pygame import mixer
 
 import button
+from LoadingBar import screen
 from StartScreen import result
 from tank import Tank
 from tank_control import TankControl
@@ -93,10 +94,7 @@ class TankGame:
         self.window = window
 
         # Cài đặt âm thanh
-        mixer.init()
-        mixer.music.load(Setting.backgroundMusic)
-        mixer.music.set_volume(0)
-        mixer.music.play()
+        setVolumn(0.5)
 
         while self.running:
             current_time = pygame.time.get_ticks()
@@ -156,6 +154,7 @@ class TankGame:
             self.window.blit(rotated_tank, new_rect)
 
             # Vẽ đạn
+            self.check = False
             for bullet in self.bullets[:]:
                 bullet.move(self.map_data, TILE_SIZE)
                 if bullet.is_expired_bullet():
@@ -164,12 +163,14 @@ class TankGame:
                     bullet.draw(self.window)
 
                 if check_collision(self.tank, bullet):
-                    print("Va chạm xảy ra! Game over!")
-                    self.running = False  # Dừng game loop khi va chạm
+                    self.check = True
+                    show_game_over_screen(self.window, self.window_width, self.window_height)
                     break
 
-            pygame.display.flip()
-
+            if self.check == False:
+                pygame.display.flip()
+            else:
+                self.running = False
         pygame.quit()
 
 def check_collision(tank, bullet):
@@ -179,6 +180,38 @@ def read_map(file_path):
     with open(file_path, 'r') as file:
         map_data = [list(line.strip()) for line in file]
     return map_data
+def show_game_over_screen(window, window_width, window_height):
+    setVolumn(0)
+    # Hiển thị màn hình Game Over
+    font = pygame.font.Font(None, 150)
+    text = font.render("Game Over", True, (255, 0, 0))  # Chữ màu đỏ
+    window.fill((0, 0, 0))  # Làm màn hình đen
+    window.blit(text, (window_width // 2 - text.get_width() // 2, window_height // 2 - text.get_height() // 2))
+
+    # Hiển thị thông báo "Press Q to exit"
+    small_font = pygame.font.Font(None, 50)
+    sub_text = small_font.render("Press Q to exit", True, (255, 255, 255))  # Chữ màu trắng
+    window.blit(sub_text, (window_width // 2 - sub_text.get_width() // 2, window_height // 2 + text.get_height() // 2 + 20-10))
+
+
+    pygame.display.flip()  # Cập nhật màn hình
+
+    waiting_for_exit = True
+    while waiting_for_exit:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                waiting_for_exit = False  # Cho phép thoát bằng cách nhấn nút đóng cửa sổ
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:  # Nếu người chơi bấm phím Q
+                    waiting_for_exit = False
+
+
+    pygame.quit()  # Thoát pygame
+def setVolumn(x):
+    mixer.init()
+    mixer.music.load(Setting.backgroundMusic)
+    mixer.music.set_volume(x)
+    mixer.music.play()
 
 def draw_map(window, map_data, tile_size):
     wall = pygame.image.load(Setting.wall).convert()

@@ -17,8 +17,8 @@ HEIGHT = 688
 TITLE = "PROJECT GROUP 3 by Dat, Huy, Kien, Khoi, Lam"
 
 # loading bar
-# Font chữ
-font = pygame.font.Font(None, 36)
+#---------------------------------------------- Font chữ---------------------------------------------------
+font = pygame.font.Font(None, 42)
 
 #-------------------------------------------- Thiết lập hình chữ nhật của thanh loading ---------------------------------------------
 bar_width = 400
@@ -44,6 +44,7 @@ y0 = 1
 # ---------------------------------------------- image ------------------------------------------------------------------------------
 random_index = random.randint(1,3)
 wall = f'asset/map/dirt{random_index}.png'
+
 
 TankBlue = 'asset/Blue Tank.png'
 
