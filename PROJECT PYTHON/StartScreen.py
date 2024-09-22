@@ -1,5 +1,5 @@
 
-
+import time
 import pygame
 
 import Setting
@@ -23,9 +23,10 @@ class StartScreen:
         self.exit_btn = button.Button(395, 270, pygame.image.load(Setting.exitBtn).convert_alpha(), 1)
 
         # Các nút lựa chọn hiển thị sau khi nhấn Start
-        self.option_1_btn = button.Button(60, 150, pygame.image.load(Setting.optionBtnOne).convert_alpha(), 1)
-        self.option_2_btn = button.Button(372.5, 150, pygame.image.load(Setting.optionBtnTwo).convert_alpha(), 1)
-        self.option_3_btn = button.Button(685, 150, pygame.image.load(Setting.optionBtnThree).convert_alpha(), 1)
+        self.option_1_btn = button.Button(63.4-10, 150, pygame.image.load(Setting.optionBtnOne).convert_alpha(), 0.7)
+        self.option_2_btn = button.Button(303.55-10, 150, pygame.image.load(Setting.optionBtnTwo).convert_alpha(), 0.7)
+        self.option_3_btn = button.Button(543.7-10, 150, pygame.image.load(Setting.optionBtnThree).convert_alpha(), 0.7)
+        self.option_4_btn = button.Button(783.85-10,150,pygame.image.load(Setting.optionBtnFour).convert_alpha(),0.7)
 
         self.map_btns = []
 
@@ -56,9 +57,11 @@ class StartScreen:
             self.option_1_btn.draw(screen)
             self.option_2_btn.draw(screen)
             self.option_3_btn.draw(screen)
+            self.option_4_btn.draw(screen)
         else:
             self.start_btn.draw(screen)
             self.exit_btn.draw(screen)
+
     def handle_events(self, screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -78,10 +81,36 @@ class StartScreen:
                 elif self.option_3_btn.draw(screen):
                     result['numberOfPlayer'] = 3
                     self.show_maps = True
+                elif self.option_4_btn.draw(screen):
+                    result['numberOfPlayer'] = 4
+                    self.show_maps = True
             elif self.show_maps:
                 for i, map_btn in enumerate(self.map_btns):
                     if map_btn.draw(screen):
                         result['selected_map'] = i + 1
+
+                        # Hiển thị màn hình xám
+                        screen.fill((128, 128, 128))  # Màu xám
+
+                        # Đếm ngược từ 3, 2, 1, Start
+                        font = pygame.font.Font(None, 150)
+                        for countdown in range(3, 0, -1):
+                            screen.fill((128, 128, 128))  # Làm mới màn hình xám
+                            text = font.render(str(countdown), True, (255, 255, 255))  # Màu chữ trắng
+                            screen.blit(text, (screen.get_width() // 2 - text.get_width() // 2,
+                                               screen.get_height() // 2 - text.get_height() // 2))
+                            pygame.display.flip()  # Cập nhật màn hình
+                            time.sleep(1)  # Dừng lại 1 giây
+
+                        # Hiển thị 'Start'
+                        screen.fill((128, 128, 128))
+                        start_text = font.render('Start!', True, (255, 255, 255))
+                        screen.blit(start_text, (screen.get_width() // 2 - start_text.get_width() // 2,
+                                                 screen.get_height() // 2 - start_text.get_height() // 2))
+                        pygame.display.flip()
+                        time.sleep(1)  # Hiển thị chữ 'Start' trong 1 giây
+
+
                         return 'start'
 
 

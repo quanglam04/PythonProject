@@ -10,12 +10,12 @@ class TankControl:
 
     def handle_input(self):#doc event hay doc input cua pygame
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w] :
+        if keys[Setting.up_player_1] :
             TankLogic.move_tank(self.tank, self.tank.tank_speed + float(Setting.speedAdd), self.window_width, self.window_height) #goi den ham di chuyen nha ae
-        if keys[pygame.K_s]:
+        if keys[Setting.down_player_1]:
             TankLogic.move_tank(self.tank, -self.tank.tank_speed - float(Setting.speedAdd), self.window_width, self.window_height)
-        if keys[pygame.K_a]:
+        if keys[Setting.right_player_1]:
             TankLogic.rotate_tank(self.tank, Setting.angle)
-        if keys[pygame.K_d]:
+        if keys[Setting.left_player_1]:
             TankLogic.rotate_tank(self.tank, -Setting.angle)
 
