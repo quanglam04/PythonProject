@@ -157,6 +157,11 @@ class TankGame:
                     self.bullets.remove(bullet)
                 else:
                     bullet.draw(self.window)
+                if check_collision(self.tank, bullet):
+                    print("YES")
+                    self.check = True
+                    show_game_over_screen(self.window, self.window_width, self.window_height)
+                    break
 
             for explosion in self.explosions_bull[:]:
                 explosion.update()
@@ -164,10 +169,7 @@ class TankGame:
                 if explosion.image is None:
                     self.explosions_bull.remove(explosion)
 
-                if check_collision(self.tank, bullet):
-                    self.check = True
-                    show_game_over_screen(self.window, self.window_width, self.window_height)
-                    break
+
 
             if self.check == False:
                 pygame.display.flip()

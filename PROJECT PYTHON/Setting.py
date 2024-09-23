@@ -29,14 +29,19 @@ tmp1 = lines[4].strip()[0]
 tmp2 = lines[5].strip()[0]
 tmp3 = lines[6].strip()[0]
 tmp4 = lines[7].strip()[0]
-tmp5 = lines[8].strip()[0]
+tmp5 = lines[8].strip()
+
+
 #---------------------------------------------- Key Press ---------------------------------
 
 up_player_1 = ord(tmp1)
 down_player_1 = ord(tmp2)
 left_player_1 = ord(tmp3)
 right_player_1 = ord(tmp4)
-hit_player_1 = ord(tmp5)
+hit_player_1 = None
+if tmp5 == 'space':
+    hit_player_1 = ord(' ')
+else: hit_player_1 = ord(tmp5[0])
 
 #-------------------------------------------- Thiết lập hình chữ nhật của thanh loading ---------------------------------------------
 bar_width = 400
