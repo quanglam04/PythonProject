@@ -13,10 +13,10 @@ class Bullet:
         self.speed = speed
         self.bullet_x = self.rect.x 
         self.bullet_y = self.rect.y
-        self.creation_time = pygame.time.get_ticks()
+        self.creation_time = pygame.time.get_ticks() # Tính bằng mili giây
         self.bounce_count = 0  # Biến đếm số lần nảy
 
-        # Tính toán vector hướng dựa trên góc
+        # Tính toán vector hướng dựa trên góc(tính theo rad)
         self.direction_x = math.cos(math.radians(self.angle)) * self.speed
         self.direction_y = -math.sin(math.radians(self.angle)) * self.speed
 
@@ -60,8 +60,6 @@ class Bullet:
         self.rect.x = int(self.bullet_x)
         self.rect.y = int(self.bullet_y)
 
-   
-
     def draw(self, window):
         rotated_bullet = pygame.transform.rotate(self.image, -self.angle)
         window.blit(rotated_bullet, self.rect)
@@ -70,26 +68,7 @@ class Bullet:
         # Kiểm tra số lần nảy
         return self.bounce_count >= 6
     
-class BulletStorm:
-    def __init__(self, x, y, angle):
-        self.bullets = []
-        # angle là góc ban đầu bắn
-        for i in range(10):
-           
-            spread_angle = angle + (i - 5) * 2  # Điều chỉnh góc phát tán
-            bullet = Bullet(x, y, spread_angle)
-            self.bullets.append(bullet)
 
-    def move(self, map_data,tile_size):
-        for bullet in self.bullets[:]:
-            bullet.move(map_data, tile_size)
-            if bullet.is_expired_bullet():
-                self.bullets.remove(bullet)
-
-    def draw(self, window):
-        for bullet in self.bullets:
-            bullet.draw(window)
-    
 
 
     

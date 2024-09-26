@@ -4,7 +4,9 @@ from pygame import mixer
 from tank import Tank
 from tank_control import TankControl
 import math
-from bullet import Bullet, BulletStorm
+from bulletStorm import BulletStorm
+from bullet import Bullet
+
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -55,7 +57,8 @@ class TankGame:
                         #     self.bullet_sound.play()
 
                         # test thử đạn chùm
-                        if current_time - self.last_shot_time >= self.bullet_time:
+                        # Bắn xong 2 lần thì được bắn tiếp
+                        if current_time - self.last_shot_time >= self.bullet_time and len(self.bullet_storms) < 2:
                             bullet_storm = BulletStorm(
                                 self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
                                 self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
