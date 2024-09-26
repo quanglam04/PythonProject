@@ -4,7 +4,7 @@ from pygame import mixer
 from tank import Tank
 from tank_control import TankControl
 import math
-from bullet import Bullet
+from bullet import Bullet, BulletStorm
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -17,6 +17,7 @@ class TankGame:
         self.control = TankControl(self.tank, window_width, window_height)
 
         self.bullets = []
+        self.bullet_storms = [] # luu dan chum
         self.last_shot_time=0
         self.bullet_time=500 #1000 mili giay == 1s
         self.bullet_sound=mixer.Sound("C:/Users/84334/Desktop/branchme/PythonProject/PROJECT PYTHON/asset/normal bullet.flac")
@@ -44,13 +45,24 @@ class TankGame:
                     if event.key == pygame.K_q:
                         self.running = False
                     if event.key == pygame.K_SPACE:
-                        # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
-                        if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
-                            bullet = Bullet(self.tank.tank_rect.centerx + 30 * math.cos(math.radians(self.tank.tank_angle)),
-                                            self.tank.tank_rect.centery - 30 * math.sin(math.radians(self.tank.tank_angle)),
-                                            self.tank.tank_angle)
-                            self.bullets.append(bullet)
-                            self.last_shot_time=current_time
+                        # # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
+                        # if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
+                        #     bullet = Bullet(self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
+                        #                     self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
+                        #                     self.tank.tank_angle)
+                        #     self.bullets.append(bullet)
+                        #     self.last_shot_time=current_time
+                        #     self.bullet_sound.play()
+
+                        # test thử đạn chùm
+                        if current_time - self.last_shot_time >= self.bullet_time:
+                            bullet_storm = BulletStorm(
+                                self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
+                                self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
+                                self.tank.tank_angle
+                            )
+                            self.bullet_storms.append(bullet_storm)
+                            self.last_shot_time = current_time
                             self.bullet_sound.play()
 
             # Điều khiển xe tăng
@@ -72,18 +84,21 @@ class TankGame:
 
             # vẽ đạn
             tmp = 1
-            for bullet in self.bullets[:]:
-                bullet.move(self.map_data, TILE_SIZE)  # Cập nhật với map_data và TILE_SIZE
-                if bullet.is_expired_bullet():
-                    self.bullets.remove(bullet)
-                else:
-                    bullet.draw(self.window)
+            # for bullet in self.bullets[:]:
+            #     bullet.move(self.map_data, TILE_SIZE)  # Cập nhật với map_data và TILE_SIZE
+            for bullet_storm in self.bullet_storms[:]:
+                bullet_storm.move(self.map_data, TILE_SIZE)  # Truyền TILE_SIZE vào
+                bullet_storm.draw(self.window)
+                # if bullet.is_expired_bullet():
+                #     self.bullets.remove(bullet)
+                # else:
+                #     bullet.draw(self.window)
 
                 # Kiểm tra va chạm giữa đạn và tank
-                if check_collision(self.tank, bullet):
-                    print("Va chạm xảy ra! Game over!")
-                    self.running = False  # Dừng game loop khi va chạm
-                    break
+                # if check_collision(self.tank, bullet):
+                #     print("Va chạm xảy ra! Game over!")
+                #     self.running = False  # Dừng game loop khi va chạm
+                #     break
 
             
 

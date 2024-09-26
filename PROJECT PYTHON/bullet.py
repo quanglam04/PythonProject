@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 
 class Bullet:
@@ -10,7 +11,7 @@ class Bullet:
         self.rect = self.image.get_rect(center=(x, y))
         self.angle = angle
         self.speed = speed
-        self.bullet_x = self.rect.x
+        self.bullet_x = self.rect.x 
         self.bullet_y = self.rect.y
         self.creation_time = pygame.time.get_ticks()
         self.bounce_count = 0  # Biến đếm số lần nảy
@@ -20,6 +21,8 @@ class Bullet:
         self.direction_y = -math.sin(math.radians(self.angle)) * self.speed
 
     def move(self, map_data, tile_size):
+
+        
         # Dự đoán vị trí mới của viên đạn (+ hướng di chuyển)
         new_bullet_x = self.bullet_x + self.direction_x
         new_bullet_y = self.bullet_y + self.direction_y
@@ -45,9 +48,10 @@ class Bullet:
                     # Xác định va chạm vào cạnh nào
                     if (self.bullet_x < left and new_bullet_x >= left) or (self.bullet_x > right and new_bullet_x <= right): # Kiểm tra va vào cạnh trái hay phải không
                         self.direction_x *= -1  # Đảo ngược hướng theo trục X
+                        print(self.direction_x)
                     if (self.bullet_y < top and new_bullet_y >= top) or (self.bullet_y > bottom and new_bullet_y <= bottom):
                         self.direction_y *= -1  # Đảo ngược hướng theo trục Y
-
+                        print(self.direction_y)
                     self.bounce_count += 1 # Nếu chạm đếm số lần nảy zo tường :)
 
         # Cập nhật vị trí của viên đạn
@@ -65,3 +69,28 @@ class Bullet:
     def is_expired_bullet(self):
         # Kiểm tra số lần nảy
         return self.bounce_count >= 6
+    
+class BulletStorm:
+    def __init__(self, x, y, angle):
+        self.bullets = []
+        # angle là góc ban đầu bắn
+        for i in range(10):
+           
+            spread_angle = angle + (i - 5) * 2  # Điều chỉnh góc phát tán
+            bullet = Bullet(x, y, spread_angle)
+            self.bullets.append(bullet)
+
+    def move(self, map_data,tile_size):
+        for bullet in self.bullets[:]:
+            bullet.move(map_data, tile_size)
+            if bullet.is_expired_bullet():
+                self.bullets.remove(bullet)
+
+    def draw(self, window):
+        for bullet in self.bullets:
+            bullet.draw(window)
+    
+
+
+    
+
