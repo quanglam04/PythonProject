@@ -86,8 +86,9 @@ void TerminateProcessByName(const char* processName) {
 //    CloseHandle(pi.hThread);
 //}
 int main() {
-	
-    const char* processName = "settinggame.exe";
+	std::string s; 
+	std::cin>>s;
+    const char* processName = s.c_str();
 
     while (IsProcessRunning(processName)) {
         std::cout << "Process is still running... attempting to terminate\n";

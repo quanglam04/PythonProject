@@ -1,24 +1,24 @@
-(800x600) 4:3
-50.0
-50.0
-False
-i
-k
-l
-j
-u
+(1920x1080) 16:9* (recommend)
+58.19672131147541
+42.07650273224044
+True
+Np_8
+Np_2
+Np_6
+Np_4
+Np_0
 Up
-Back
+Down
 Right
 Left
 0
 y
 h
-x
+j
 g
 f
 8
-2
+5
 6
 4
 1

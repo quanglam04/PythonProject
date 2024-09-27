@@ -11,7 +11,9 @@ YELLOW = (255, 255, 0)
 BROWN = (120, 104, 82)
 BLUE = (0, 0, 255)
 # game settings
-
+#---------------------------------------------- Read file -----------------------------------------------
+with open('../Setting game/Saved.txt', 'r') as file:
+    lines = file.readlines()
 WIDTH = 1024
 HEIGHT = 688
 TITLE = "PROJECT GROUP 3 by Dat, Huy, Kien, Khoi, Lam"
@@ -20,23 +22,97 @@ TITLE = "PROJECT GROUP 3 by Dat, Huy, Kien, Khoi, Lam"
 #---------------------------------------------- Font chữ---------------------------------------------------
 font = pygame.font.Font(None, 42)
 
-#---------------------------------------------- Read file -----------------------------------------------
-with open('../Setting game/Saved.txt', 'r') as file:
-    lines = file.readlines()
 
-# Lưu 5 dòng từ dòng số 5 đến dòng số 9 vào các biến tmp1, tmp2, tmp3, tmp4, tmp5
-tmp1 = lines[4].strip()[0]
-tmp2 = lines[5].strip()[0]
-tmp3 = lines[6].strip()[0]
-tmp4 = lines[7].strip()[0]
-tmp5 = lines[8].strip()[0]
+#   Các phím đặc biệt khi lưu dưới file không ở dưới dạng một char thì không thể dùng function ord     #
+
+special_keys = {
+    "BackSpace": 8,
+    "Tab":9,
+    "Enter": 13,
+    "Alt_L": 1073742050,
+    "Pause":1073741896,
+    "Escape": 27,
+    "Space":32,
+    "PgUp":1073741899,
+    "PgDn":1073741902,
+    "End":1073741901,
+    "Home":1073741898,
+    "Left":1073741904,
+    "Up":1073741906,
+    "Right":1073741903,
+    "Down":1073741905,
+    "Insert":1073741897,
+    "Delete":127,
+    "Win_L":1073742051,
+    "Win_R":1073742055,
+    "App":1073741925,
+    "F1": 1073741882,
+    "F2": 1073741883,
+    "F3": 1073741884,
+    "F4": 1073741885,
+    "F5": 1073741886,
+    "F6": 1073741887,
+    "F7": 1073741888,
+    "F8": 1073741889,
+    "F9": 1073741890,
+    "F10": 1073741891,
+    "F11": 1073741892,
+    "F12": 1073741893,
+    "Num_Lock":1073741907,
+    "Scroll_Lock":1073741881,
+    "Alt_R": 1073742054,
+    "Np_0":1073741922,
+    "Np_1":1073741913,
+    "Np_2":1073741914,
+    "Np_3":1073741915,
+    "Np_4":1073741916,
+    "Np_5":1073741917,
+    "Np_6":1073741918,
+    "Np_7":1073741919,
+    "Np_8":1073741920,
+    "Np_9":1073741921,
+    "Np_/":1073741908,
+    "Np_*":1073741909,
+    "Np_-":1073741910,
+    "Np_+":1073741911,
+    "Np_.":1073741923,
+}
+def get_key_code(key):
+    if key in special_keys:
+        return special_keys.get(key)
+    else:
+        return ord(key)
+
+
+
 #---------------------------------------------- Key Press ---------------------------------
+#player 1
+up_player_1 = get_key_code(lines[4].strip())
+down_player_1 = get_key_code(lines[5].strip())
+right_player_1 = get_key_code(lines[6].strip())
+left_player_1 = get_key_code(lines[7].strip())
+hit_player_1=get_key_code(lines[8].strip())
 
-up_player_1 = ord(tmp1)
-down_player_1 = ord(tmp2)
-left_player_1 = ord(tmp3)
-right_player_1 = ord(tmp4)
-hit_player_1 = ord(tmp5)
+#player2
+up_player_2 =get_key_code(lines[9].strip())
+down_player_2 =get_key_code(lines[10].strip())
+right_player_2=get_key_code(lines[11].strip())
+left_player_2=get_key_code(lines[12].strip())
+hit_player_2=get_key_code(lines[13].strip())
+
+#player3
+up_player_3 =get_key_code(lines[14].strip())
+down_player_3 =get_key_code(lines[15].strip())
+right_player_3=get_key_code(lines[16].strip())
+left_player_3=get_key_code(lines[17].strip())
+hit_player_3=get_key_code(lines[18].strip())
+
+#player4
+up_player_4 =get_key_code(lines[19].strip())
+down_player_4 =get_key_code(lines[20].strip())
+right_player_4=get_key_code(lines[21].strip())
+left_player_4=get_key_code(lines[22].strip())
+hit_player_4=get_key_code(lines[23].strip())
 
 #-------------------------------------------- Thiết lập hình chữ nhật của thanh loading ---------------------------------------------
 bar_width = 400
@@ -51,7 +127,7 @@ bar_color = (255, 85, 85)  # Màu thanh loading đỏ
 text_color = (255, 255, 255)  # Màu chữ trắng
 #------------------------------------------ player settings -------------------------------------------------------------------------
 
-playerSpeed = 0.79
+playerSpeed =0.79
 speedAdd = 0
 angle = 0.68
 
@@ -65,6 +141,16 @@ wall = f'asset/map/dirt{random_index}.png'
 
 
 TankBlue = 'asset/Blue Tank.png'
+Tankmodern = 'asset/newtank.png'
+TankRed = 'asset/Red Tank.png'
+TankGreen = 'asset/Green Tank.png'
+TankOrange ='asset/Orange Tank.png'
+Tank_dark='asset/tank_dark.png'
+Tank_sand="asset/tank_sand.png"
+Tank_red="asset/tank_red.png"
+Tank_green="asset/tank_green.png"
+Tank_blue ='asset/tank_blue.png'
+
 
 gun = 'asset/item/gun.png'
 hp = 'asset/item/hp.png'

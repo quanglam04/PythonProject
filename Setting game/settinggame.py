@@ -67,7 +67,7 @@ def load_setting():
                 lines[7].strip() if len(lines) > 7 else "a",
                 lines[8].strip()  if len(lines) > 8 else "q",
                 lines[9].strip() if len(lines) > 9 else "Up",
-                lines[10].strip() if len(lines) > 10 else "Back",
+                lines[10].strip() if len(lines) > 10 else "Down",
                 lines[11].strip() if len(lines) > 11 else "Right",
                 lines[12].strip() if len(lines) > 12 else "Left",
                 lines[13].strip() if len(lines) > 13 else "0",
@@ -105,7 +105,7 @@ def save_setting():
         "↑": "Up",
         "↓": "Down",
         "←": "Left",
-        "→": "Right"
+        "→": "Right",
     }
     button_states = [
         #Player 1
@@ -152,7 +152,7 @@ def reload_key():
         "Up": "↑",
         "Down": "↓",
         "Left": "←",
-        "Right": "→"
+        "Right": "→",
     }
     for i in range(20):
         button_states[i]=key_map.get(button_states[i],button_states[i])
@@ -212,6 +212,7 @@ resolution_frame.pack()
 resolution_menu = ttk.Combobox(resolution_frame, width=60,state="readonly")
 resolution_menu['values'] = resolutions
 resolution_menu.pack(pady=10)
+resolution_menu.bind("<Button-1>",lambda e:on_button_click())
 
 my_canvas.create_window(399, 190, window=display_index_frame,width=395)
 resolution_menu.set(saved_resolution)
@@ -237,6 +238,8 @@ window_mode=tk.Radiobutton(screen_mode,text="Window mode",variable=selected,valu
 full_screen=tk.Radiobutton(screen_mode,text="Full screen",variable=selected,value="False",command=lambda: on_select("False") )
 window_mode.grid(row=0,column=0,padx=48)
 full_screen.grid(row=0,column=1,padx=48)
+window_mode.bind("<Button-1>",lambda e: on_button_click_2())
+full_screen.bind("<Button-1>",lambda e:on_button_click_2())
 
 save_but=Button(root,text="Save",command=save_setting,width=10,height=1)
 save_but.pack()
@@ -247,12 +250,6 @@ start_but=Button(root,text="Start",command=start_game,width=10,height=1)
 start_but.pack()
 start_but.bind("<Button-1>",lambda  e:on_button_click_2())
 my_canvas.create_window(242,350,window=start_but)
-arrow_map = {
-    "↑": "Up",
-    "↓": "Down",
-    "←": "Left",
-    "→": "Right"
-}
 
 def received_but(button):
     button.focus_set()
@@ -263,44 +260,59 @@ def update_button_text(button,event):
         "Up": "↑",
         "Down": "↓",
         "Left": "←",
-        "Right": "→"
+        "Right": "→",
+        "comma": ',',
+        "period": '.',
+        "semicolon": ';',
+        "quoteright": "'",
+        "bracketleft": '[',
+        "bracketright": ']',
+        "backslash": '\\',
+        "quoteleft": '`',
+        "slash": '/',
+        "asterisk": '*',
+        "minus": '-',
+        "plus": '+',
+        "space":"Space",
+        "Prior":"PgUp",
+        "Next":"PgDn",
+        "Return":"Enter",
     }
     key=event.keysym
     print(key)
+    key=special_key.get(key,key)
     coppy_states = [
         # Player 1
-        arrow_map.get(Go_ahead_1.cget("text"), Go_ahead_1.cget("text")),
-        arrow_map.get(Go_back_1.cget("text"), Go_back_1.cget("text")),
-        arrow_map.get(Rotate_right_1.cget("text"), Rotate_right_1.cget("text")),
-        arrow_map.get(Rotate_left_1.cget("text"), Rotate_left_1.cget("text")),
-        arrow_map.get(Shoot_1.cget("text"), Shoot_1.cget("text")),
+        Go_ahead_1.cget("text"),
+        Go_back_1.cget("text"),
+        Rotate_right_1.cget("text"),
+         Rotate_left_1.cget("text"),
+         Shoot_1.cget("text"),
         # Player 2
-        arrow_map.get(Go_ahead_2.cget("text"), Go_ahead_2.cget("text")),
-        arrow_map.get(Go_back_2.cget("text"), Go_back_2.cget("text")),
-        arrow_map.get(Rotate_right_2.cget("text"), Rotate_right_2.cget("text")),
-        arrow_map.get(Rotate_left_2.cget("text"), Rotate_left_2.cget("text")),
-        arrow_map.get(Shoot_2.cget("text"), Shoot_2.cget("text")),
+         Go_ahead_2.cget("text"),
+         Go_back_2.cget("text"),
+         Rotate_right_2.cget("text"),
+         Rotate_left_2.cget("text"),
+         Shoot_2.cget("text"),
         # Player 3
-        arrow_map.get(Go_ahead_3.cget("text"), Go_ahead_3.cget("text")),
-        arrow_map.get(Go_back_3.cget("text"), Go_back_3.cget("text")),
-        arrow_map.get(Rotate_right_3.cget("text"), Rotate_right_3.cget("text")),
-        arrow_map.get(Rotate_left_3.cget("text"), Rotate_left_3.cget("text")),
-        arrow_map.get(Shoot_3.cget("text"), Shoot_3.cget("text")),
+         Go_ahead_3.cget("text"),
+         Go_back_3.cget("text"),
+         Rotate_right_3.cget("text"),
+         Rotate_left_3.cget("text"),
+         Shoot_3.cget("text"),
         # Player 4
-        arrow_map.get(Go_ahead_4.cget("text"), Go_ahead_4.cget("text")),
-        arrow_map.get(Go_back_4.cget("text"), Go_back_4.cget("text")),
-        arrow_map.get(Rotate_right_4.cget("text"), Rotate_right_4.cget("text")),
-        arrow_map.get(Rotate_left_4.cget("text"), Rotate_left_4.cget("text")),
-        arrow_map.get(Shoot_4.cget("text"), Shoot_4.cget("text"))
+         Go_ahead_4.cget("text"),
+         Go_back_4.cget("text"),
+         Rotate_right_4.cget("text"),
+         Rotate_left_4.cget("text"),
+         Shoot_4.cget("text")
     ]
-
+    if event.keycode >= 96 and event.keycode <= 111:
+        key = "Np_" + key
     if key in coppy_states:
-        messagebox.showerror("Key Error",f"Key '{key}' is already assigned to another button")
+            messagebox.showerror("Key Error", f"Key '{key}' is already assigned to another button")
     else:
-        if key in special_key:
-            button.config(text=special_key[key])
-        else:
-            button.config(text=key)
+        button.config(text=key)
 
 
 
@@ -424,7 +436,5 @@ Shoot_label_4.grid(row=0,column=4)
 Shoot_4=Button(Shoot_label_4,text=button_states[19],width=7,height=1)
 Shoot_4.pack()
 Shoot_4.bind("<Button-1>",lambda  e:received_but(Shoot_4))
-
-
 
 root.mainloop()

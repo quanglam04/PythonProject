@@ -3,10 +3,10 @@ import math
 
 
 class Bullet:
-    def __init__(self, x, y, angle, speed=0.9):
-        self.image = pygame.image.load("asset/bullet.png")
-        self.image.set_colorkey((255,255,255))
-        self.image = pygame.transform.scale(self.image, (15, 15))  # Điều chỉnh kích thước đạn
+    def __init__(self, x, y, angle, speed=0.7):
+        self.image = pygame.image.load("asset/bullet(1).png")
+        # self.image.set_colorkey((255,255,255))
+        self.image = pygame.transform.scale(self.image, (10, 10))  # Điều chỉnh kích thước đạn
         self.rect = self.image.get_rect(center=(x, y))
         self.angle = angle
         self.speed = speed
@@ -23,19 +23,20 @@ class Bullet:
         # Dự đoán vị trí mới của viên đạn (+ hướng di chuyển)
         new_bullet_x = self.bullet_x + self.direction_x
         new_bullet_y = self.bullet_y + self.direction_y
-
+        self.rect.x,self.rect.y=int(new_bullet_x),int(new_bullet_y)
+        r=self.image.get_width()/2
         # Tính toán vị trí ô trên bản đồ tương ứng với vị trí mới của viên đạn
-        map_x = int(new_bullet_x / tile_size)
-        map_y = int(new_bullet_y / tile_size)
+        map_x = int((self.rect.x+r) / tile_size)
+        map_y = int((self.rect.y+r) / tile_size)
 
         # Kiểm tra xem có va chạm với tường không
         if 0 <= map_y < len(map_data) and 0 <= map_x < len(map_data[0]):  # Kiển tra đạn trong bản đồ hay không
             if map_data[map_y][map_x] == '1':  # Ô có tường
                 # Xác định cạnh của ô tường (left, right, top, bottom)
                 left = map_x * tile_size
-                right = left + tile_size
+                right = left + tile_size - 1
                 top = map_y * tile_size
-                bottom = top + tile_size
+                bottom = top + tile_size - 1
 
                 # Kiểm tra va chạm với các cạnh của ô tường
                 # Đây là đảo ngược hướng đạn

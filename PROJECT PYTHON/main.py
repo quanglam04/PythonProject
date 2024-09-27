@@ -9,7 +9,6 @@ def main():
     window = pygame.display.set_mode((Setting.WIDTH, Setting.HEIGHT))
     pygame.display.set_caption(Setting.TITLE)
     start_screen = StartScreen(Setting.WIDTH, Setting.HEIGHT)
-
     while True:
 
         keyPress = LoadingBar.handle()

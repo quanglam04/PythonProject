@@ -1,1 +1,1 @@
-Screen Resolution: 2880x1800
+Screen Resolution: 1920x1080

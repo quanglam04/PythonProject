@@ -81,13 +81,13 @@ def handle():
                 return 'Quit'
 
             # Kiểm tra nếu người dùng nhấn Enter sau khi thanh loading đầy
-            if loading_done and event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            if loading_done and event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key==pygame.K_KP_ENTER)  :
 
                 return 'Enter'
 
         # Cập nhật progress
         if progress < 1.0:
-            progress += 0.01
+            progress += 1
             draw_loading_bar(progress)
             time.sleep(0.05)
 
