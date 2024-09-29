@@ -41,7 +41,7 @@ class Laser:        #Buoc 2: Đạn laser
 
         #Kiểm tra xem có va chạm với tường không
         if 0 <= map_y < len(map_data) and 0 <= map_x < len(map_data[0]):
-            if map_data[map_y][map_x] == '1':       #Ô có tường
+            if map_data[map_y][map_x] == 1:       #Ô có tường
                 left = map_x*tile_size
                 right = left + tile_size
                 top = map_y * tile_size
