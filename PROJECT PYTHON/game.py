@@ -6,6 +6,7 @@ from tank_control import TankControl
 import math
 from bullet_Lazer import Laser
 from Laser_Aiming_Line import LaserAiming
+import numpy as np
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -29,13 +30,61 @@ class TankGame:
         #Khoi tao laser aim line
         self.laser_aiming = LaserAiming(self.tank.tank_rect.centerx, self.tank.tank_rect.centery, self.tank.tank_angle, window_width, window_height, self.map_data)
 
+        self.collision_map = []
+
+        map_test = np.copy(self.map_data)
+        # 4 buc tuong xung quanh
+        self.collision_map.append(pygame.Rect(0 * 16, 0 * 16, 16, 16 * 43))
+        self.collision_map.append(pygame.Rect(1 * 16, 0 * 16, 16 * 63, 16 * 1))
+        self.collision_map.append(pygame.Rect(63 * 16, 1 * 16, 16, 16 * 42))
+        self.collision_map.append(pygame.Rect(1 * 16, 42 * 16, 16 * 62, 16))
+        # Cac buc tuong trong map
+        for i in range(1, 42):
+            row = map_test[i]
+            start = -1
+            length = 0
+            for j in range(1, 63):
+                if row[j] == 1:
+                    if length == 0:
+                        start = j
+                        length += 1
+                    else:
+                        length += 1
+                        if j == 62 and length >= 2:
+                            self.collision_map.append(pygame.Rect(start * 16, i * 16, length * 16, 16))
+                            for x in range(start, start + length):
+                                map_test[i][x] = 0
+                elif length >= 2:  # row[j] = 0 and length >=2
+                    self.collision_map.append(pygame.Rect(start * 16, i * 16, length * 16, 16))
+                    for x in range(start, start + length):
+                        map_test[i][x] = 0
+                    length = 0
+                else:
+                    length = 0  # row[j] = 0 and length <2
+        for j in range(1, 63):
+            start = -1
+            length = 0
+            for i in range(1, 42):
+                if map_test[i][j] == 1:
+                    if length == 0:
+                        start = i
+                        length += 1
+                    else:
+                        length += 1
+                        if i == 41:
+                            self.collision_map.append(pygame.Rect(j * 16, start * 16, 16, length * 16))
+                elif length:
+                    self.collision_map.append(pygame.Rect(j * 16, start * 16, 16, length * 16))
+                    length = 0
+
+
     def run(self, window):
         self.window = window
 
         # Cai dat am thanh
         mixer.init()
         mixer.music.load("asset/media.mp3")
-        mixer.music.set_volume(0.4)
+        mixer.music.set_volume(0.0)
         mixer.music.play()
         while self.running:
             current_time=pygame.time.get_ticks()
@@ -48,7 +97,7 @@ class TankGame:
                         self.running = False
                     if event.key == pygame.K_SPACE:
                         # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
-                        self.laser_aiming.turn_off_Laser()
+                        # self.laser_aiming.turn_off_Laser()
                         if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
                             bullet = Laser(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
                                             self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
@@ -78,9 +127,9 @@ class TankGame:
 
             # Vẽ tia laser: Phải vẽ trước xe tăng, để ảnh xe tăng đè lên.
             if self.laser_aiming.active:
-                 self.laser_aiming.remaining_length = 500
+                 self.laser_aiming.remaining_length = 500       #Khởi tạo lại remaining_length = 500 (do tia laser cũ đã bị trừ hết rồi)
                  while self.laser_aiming.remaining_length > 0:
-                    self.laser_aiming.calculate_end_point()
+                    self.laser_aiming.calculate_end_point(self.collision_map)
                     self.laser_aiming.draw_2_line(window)
 
                     #Update the location of self.x, self.y
@@ -95,11 +144,18 @@ class TankGame:
             self.window.blit(rotated_tank, new_rect)
 
             for bullet in self.bullets[:]:
-                bullet.move(self.map_data, TILE_SIZE)
                 if bullet.is_expired_bullet():
                     self.bullets.remove(bullet)
                 else:
-                    bullet.draw(self.window)
+                    #Tinh end_x, end_y
+                    bullet.cal_end_point(self.collision_map)
+
+                    #Ve dan laser
+                    bullet.draw(window)
+
+                    #Cap nhat lai x, y, angle của bullet để chuẩn bị cho hàm run tiếp theo
+                    bullet.update()
+
             pygame.display.flip()
 
         pygame.quit()

@@ -13,7 +13,6 @@ def main():
     start_screen = StartScreen(game.window_width, game.window_height)
 
     while True:
-
         result = start_screen.handle_events(window)
         if result == 'start':
             game.run(window)
