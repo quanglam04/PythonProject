@@ -90,7 +90,7 @@ class TankGame:
         mixer.music.set_volume(0.0)
         mixer.music.play()
 
-        bullet_Counter = 0 # (= 0 : Đạn lazer); (= 1 Đạn thường); (= 2 Đạn chùm)
+        bullet_Counter = 2 # (= 0 : Đạn lazer); (= 1 Đạn thường); (= 2 Đạn chùm)
 
         while self.running:
             current_time=pygame.time.get_ticks()
