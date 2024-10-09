@@ -38,7 +38,7 @@ def draw_map(map_data):
             pygame.draw.rect(screen, color, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
 
 # Đọc bản đồ từ file
-map_data = read_map('MAP/map1.txt')
+map_data = read_map('C:/Users/84334/Desktop/branchme/PythonProject/PROJECT PYTHON/MAP/map1.txt')
 
 # Vòng lặp chính
 running = True

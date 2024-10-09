@@ -1,5 +1,6 @@
 import pygame
 import math
+from bullet_logic import Bullet_logic
 
 
 class Bullet:

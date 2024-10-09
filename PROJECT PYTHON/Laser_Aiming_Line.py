@@ -71,8 +71,3 @@ class LaserAiming:
 
     def draw_2_line(self, window):
         pygame.draw.line(window, (255, 0, 0), [self.x, self.y], [self.end_x, self.end_y], 2)
-
-
-
-
-

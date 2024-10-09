@@ -1,12 +1,15 @@
 import random
 import pygame
+import numpy as np
+import math
 from pygame import mixer
 from tank import Tank
 from tank_control import TankControl
-import math
 from bullet_Lazer import Laser
 from Laser_Aiming_Line import LaserAiming
-import numpy as np
+from bullet_logic import Bullet_logic
+from bullet_nomal import Bullet_normal
+
 
 class TankGame:
     def __init__(self, window_width, window_height):
@@ -86,6 +89,9 @@ class TankGame:
         mixer.music.load("asset/media.mp3")
         mixer.music.set_volume(0.0)
         mixer.music.play()
+
+        bullet_Counter = 1 # (= 0 : Đạn lazer); (= 1 Đạn thường); (= 2 Đạn chùm)
+
         while self.running:
             current_time=pygame.time.get_ticks()
 
@@ -96,15 +102,41 @@ class TankGame:
                     if event.key == pygame.K_q:
                         self.running = False
                     if event.key == pygame.K_SPACE:
-                        # Tạo viên đạn dựa trên vị trí và góc quay hiện tại của xe tăng
-                        # self.laser_aiming.turn_off_Laser()
-                        if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
-                            bullet = Laser(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
-                                            self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
-                                            self.tank.tank_angle)
-                            self.bullets.append(bullet)
-                            self.last_shot_time=current_time
-                            self.bullet_sound.play()
+
+                        if bullet_Counter == 0 :
+                            # Đạn lazer
+                            if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
+                                bullet = Laser(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
+                                                self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
+                                                self.tank.tank_angle)
+                                self.bullets.append(bullet)
+                                
+                        
+                        if bullet_Counter == 1 :
+                            # Đạn thường
+                            if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
+                                bullet = Bullet_normal(self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
+                                                self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
+                                                self.tank.tank_angle)
+                                self.bullets.append(bullet)
+                                
+
+                        if bullet_Counter == 2 :
+                            # Đạn chùm
+                            if current_time - self.last_shot_time >= self.bullet_time :
+                                
+                                for i in range(10):
+                                    spread_angle = self.tank.tank_angle + (i - 5) * 2  # Điều chỉnh góc phát tán
+
+                                    bullet = Bullet_normal(
+                                    self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
+                                    self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
+                                    spread_angle)
+
+                                    
+                                    self.bullets.append(bullet)
+                        self.last_shot_time = current_time
+                        self.bullet_sound.play()
 
             # Turn laser back on after shooting cooldown
             if current_time - self.last_shot_time >= self.bullet_time:
@@ -125,24 +157,27 @@ class TankGame:
             self.window.fill((255, 255, 255))  # Xóa màn hình với màu trắng
             draw_map(self.window, self.map_data, TILE_SIZE)
 
-            # Vẽ tia laser: Phải vẽ trước xe tăng, để ảnh xe tăng đè lên.
-            if self.laser_aiming.active:
-                 self.laser_aiming.remaining_length = 500       #Khởi tạo lại remaining_length = 500 (do tia laser cũ đã bị trừ hết rồi)
-                 while self.laser_aiming.remaining_length > 0:
-                    self.laser_aiming.calculate_end_point(self.collision_map)
-                    self.laser_aiming.draw_2_line(window)
 
-                    #Update the location of self.x, self.y
-                    self.laser_aiming.x = self.laser_aiming.end_x
-                    self.laser_aiming.y = self.laser_aiming.end_y
-                    if self.laser_aiming.normal[0] != 0:
-                        self.laser_aiming.angle = 180 - self.laser_aiming.angle
-                    else:
-                        self.laser_aiming.angle = 360 - self.laser_aiming.angle
+            # Vẽ tia laser: Phải vẽ trước xe tăng, để ảnh xe tăng đè lên.
+            # if self.laser_aiming.active:
+            #      self.laser_aiming.remaining_length = 500       #Khởi tạo lại remaining_length = 500 (do tia laser cũ đã bị trừ hết rồi)
+            #      while self.laser_aiming.remaining_length > 0:
+            #         self.laser_aiming.calculate_end_point(self.collision_map)
+            #         self.laser_aiming.draw_2_line(window)
+
+            #         #Update the location of self.x, self.y
+            #         self.laser_aiming.x = self.laser_aiming.end_x
+            #         self.laser_aiming.y = self.laser_aiming.end_y
+            #         if self.laser_aiming.normal[0] != 0:
+            #             self.laser_aiming.angle = 180 - self.laser_aiming.angle
+            #         else:
+            #             self.laser_aiming.angle = 360 - self.laser_aiming.angle
+
 
             # Vẽ xe tăng
             self.window.blit(rotated_tank, new_rect)
 
+            # Vẽ đạn
             for bullet in self.bullets[:]:
                 if bullet.is_expired_bullet():
                     self.bullets.remove(bullet)
@@ -150,12 +185,11 @@ class TankGame:
                     #Tinh end_x, end_y
                     bullet.cal_end_point(self.collision_map)
 
-                    #Ve dan laser
+                    #Ve dan 
                     bullet.draw(window)
 
                     #Cap nhat lai x, y, angle của bullet để chuẩn bị cho hàm run tiếp theo
                     bullet.update()
-
             pygame.display.flip()
 
         pygame.quit()
