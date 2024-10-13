@@ -6,8 +6,9 @@ from pygame import mixer
 from tank import Tank
 from tank_control import TankControl
 from bullet_Lazer import Laser
+from bullet import Bullet
 from Laser_Aiming_Line import LaserAiming
-from bullet_logic import Bullet_logic
+from bullet_logic import Laser_logic
 from bullet_nomal import Bullet_normal
 
 
@@ -37,10 +38,10 @@ class TankGame:
 
         map_test = np.copy(self.map_data)
         # 4 buc tuong xung quanh
-        self.collision_map.append(pygame.Rect(0 * 16, 0 * 16, 16, 16 * 43))
-        self.collision_map.append(pygame.Rect(1 * 16, 0 * 16, 16 * 63, 16 * 1))
-        self.collision_map.append(pygame.Rect(63 * 16, 1 * 16, 16, 16 * 42))
-        self.collision_map.append(pygame.Rect(1 * 16, 42 * 16, 16 * 62, 16))
+        self.collision_map.append(pygame.Rect(0 * 16, 0 * 16, 16, 16 * 43))     #doc trai
+        self.collision_map.append(pygame.Rect(1 * 16, 0 * 16, 16 * 63, 16 * 1)) #ngang tren
+        self.collision_map.append(pygame.Rect(63 * 16, 1 * 16, 16, 16 * 42))    #doc phai
+        self.collision_map.append(pygame.Rect(1 * 16, 42 * 16, 16 * 62, 16))    #ngang duoi
         # Cac buc tuong trong map
         for i in range(1, 42):
             row = map_test[i]

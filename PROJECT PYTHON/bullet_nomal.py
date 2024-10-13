@@ -25,14 +25,9 @@ class Bullet_normal(Bullet_logic):
         self.end_x = 0
         self.end_y = 0
 
-        self.check = False
+        self.check = 0
 
     def draw(self, window):
-        # Cập nhật vị trí đạn dựa trên chuyển động
-        self.x += self.direction_x
-        self.y += self.direction_y
-        self.rect.center = (self.x, self.y)
-
         # Xoay đạn dựa theo góc và vẽ lên màn hình
         rotated_bullet = pygame.transform.rotate(self.image, -self.angle)
         

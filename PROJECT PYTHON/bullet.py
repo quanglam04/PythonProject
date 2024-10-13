@@ -3,8 +3,8 @@ import math
 from bullet_logic import Bullet_logic
 
 
-class Bullet:
-    def __init__(self, x, y, angle, speed=0.2):
+class Bullet(Bullet_logic):
+    def __init__(self, x, y, angle, speed=0.5   ):
         self.image = pygame.image.load("asset/bullet.png")
         self.image.set_colorkey((255,255,255))
         self.image = pygame.transform.scale(self.image, (15, 15))  # Điều chỉnh kích thước đạn
@@ -18,18 +18,13 @@ class Bullet:
         # Tính toán vector hướng dựa trên góc
         self.direction_x = math.cos(math.radians(self.angle)) * self.speed
         self.direction_y = -math.sin(math.radians(self.angle)) * self.speed
-
-    def move(self):
-        # Cập nhật vị trí của đạn dựa trên hướng đã tính toán
-        self.bullet_x += self.direction_x
-        self.bullet_y += self.direction_y
-        self.rect.x = int (self.bullet_x)
-        self.rect.y= int (self.bullet_y)
+        self.check = 0
 
     def draw(self, window):
+        # Xoay đạn dựa theo góc và vẽ lên màn hình
         rotated_bullet = pygame.transform.rotate(self.image, -self.angle)
-        window.blit(rotated_bullet, self.rect)
 
+        # Tính toán lại vị trí của viên đạn sau khi xoay
+        new_rect = rotated_bullet.get_rect(center=self.rect.center)
 
-    def is_expired_bullet(self):
-        return pygame.time.get_ticks()-self.creation_time>4000
+        window.blit(rotated_bullet, new_rect)
