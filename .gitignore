@@ -1,4 +1,4 @@
 .idea/
-.gitignore
-.ignore/
-/test/
+PROJECT PYTHON/.idea
+PROJECT PYTHON/__pycache__
+

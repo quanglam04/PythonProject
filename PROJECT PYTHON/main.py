@@ -1,42 +1,28 @@
 import pygame
-from pygame import FULLSCREEN
-
-from game import TankGame
+from game import TankGame 
 from StartScreen import StartScreen
-import Setting
-import LoadingBar
+
+def draw_text(text,font,text_col,x,y): 
+    img = font.render(text,True,text_col)    
+    pygame.display.set_mode((TankGame(1080, 720).window_width, TankGame(1080, 720).window_height)).blit(img,(x,y))
 def main():
-    flag = True
     pygame.init()
-    print(Setting.Window_mode)
-    if Setting.Window_mode :
-        window = pygame.display.set_mode((Setting.WIDTH,Setting.HEIGHT))
-    else:
-        window = pygame.display.set_mode((Setting.WIDTH, Setting.HEIGHT),FULLSCREEN)
-    pygame.display.set_caption(Setting.TITLE)
-    start_screen = StartScreen(Setting.WIDTH, Setting.HEIGHT)
-    while True:
+    game = TankGame(1024, 600)  
+    window = pygame.display.set_mode((game.window_width, game.window_height ))
+    pygame.display.set_caption("PROJECT GROUP 3 by Dat, Huy, Kien, Khoi, Lam")
+    start_screen = StartScreen(game.window_width, game.window_height)
 
-        keyPress = LoadingBar.handle()
-
-        if keyPress == 'Quit':
-            flag = False
-            break
-        elif keyPress == 'Enter':
-            break
     while True:
-        if flag == False:
-            break
         result = start_screen.handle_events(window)
         if result == 'start':
-            game = TankGame(Setting.WIDTH, Setting.HEIGHT)
             game.run(window)
             break
         elif result == 'quit':
-            break
+            break  
         start_screen.draw(window)
         pygame.display.flip()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     main()
+   
