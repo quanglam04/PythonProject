@@ -1,234 +1,329 @@
-import random
 import pygame
-import numpy as np
-import math
+import Setting
 from pygame import mixer
+import button
+from tank import load_map
 from tank import Tank
 from tank_control import TankControl
-from bullet_Lazer import Laser
+from tank_logic import TankLogic
 from bullet import Bullet
-from Laser_Aiming_Line import LaserAiming
-from bullet_logic import Laser_logic
-from bullet_nomal import Bullet_normal
-
+import StartScreen
+from tank import draw_health_bar
+from explosion import Explosion
+TILE_SIZE = 16
+item = []
 
 class TankGame:
+
     def __init__(self, window_width, window_height):
         self.window_width = window_width
         self.window_height = window_height
         self.window = None
         self.running = True
-
-        self.tank = Tank("asset/Blue Tank.png", window_width, window_height)
-        self.control = TankControl(self.tank, window_width, window_height)
-
-        self.bullets = []
-        self.last_shot_time=0
-        self.bullet_time=500 #1000 mili giay == 1s
-        self.bullet_sound=mixer.Sound("asset/normal bullet.flac")
-        self.bullet_sound.set_volume(0.4)
-
-        random_index = random.randint(1, 2)
+        self.explosions_bull = []
+        self.bullets = [[] for _ in range(StartScreen.result['numberOfPlayer'])]
+        random_index = StartScreen.result['selected_map']
         self.map_data = read_map(f'MAP/map{random_index}.txt')
+        self.spawn_points = load_map(random_index)
+        self.tanks=[]
+        self.initialize_tanks()
 
-        #Khoi tao laser aim line
-        self.laser_aiming = LaserAiming(self.tank.tank_rect.centerx, self.tank.tank_rect.centery, self.tank.tank_angle, window_width, window_height, self.map_data)
+        self.map_mask,self.map_surface,self.item_name = create_map_mask(self.map_data,TILE_SIZE)
 
-        self.collision_map = []
+    def initialize_tanks(self):
+        control_settings_player_1 = {
+            'up': Setting.up_player_1,
+            'down': Setting.down_player_1,
+            'left': Setting.left_player_1,
+            'right': Setting.right_player_1,
+            'shoot': Setting.hit_player_1
+        }
 
-        map_test = np.copy(self.map_data)
-        # 4 buc tuong xung quanh
-        self.collision_map.append(pygame.Rect(0 * 16, 0 * 16, 16, 16 * 43))     #doc trai
-        self.collision_map.append(pygame.Rect(1 * 16, 0 * 16, 16 * 63, 16 * 1)) #ngang tren
-        self.collision_map.append(pygame.Rect(63 * 16, 1 * 16, 16, 16 * 42))    #doc phai
-        self.collision_map.append(pygame.Rect(1 * 16, 42 * 16, 16 * 62, 16))    #ngang duoi
-        # Cac buc tuong trong map
-        for i in range(1, 42):
-            row = map_test[i]
-            start = -1
-            length = 0
-            for j in range(1, 63):
-                if row[j] == 1:
-                    if length == 0:
-                        start = j
-                        length += 1
-                    else:
-                        length += 1
-                        if j == 62 and length >= 2:
-                            self.collision_map.append(pygame.Rect(start * 16, i * 16, length * 16, 16))
-                            for x in range(start, start + length):
-                                map_test[i][x] = 0
-                elif length >= 2:  # row[j] = 0 and length >=2
-                    self.collision_map.append(pygame.Rect(start * 16, i * 16, length * 16, 16))
-                    for x in range(start, start + length):
-                        map_test[i][x] = 0
-                    length = 0
+        control_settings_player_2 = {
+            'up': Setting.up_player_2,
+            'down': Setting.down_player_2,
+            'left': Setting.left_player_2,
+            'right': Setting.right_player_2,
+            'shoot': Setting.hit_player_2
+        }
+        control_settings_player_3 = {
+            'up': Setting.up_player_3,
+            'down': Setting.down_player_3,
+            'left': Setting.left_player_3,
+            'right': Setting.right_player_3,
+            'shoot': Setting.hit_player_3
+        }
+
+        control_settings_player_4 = {
+            'up': Setting.up_player_4,
+            'down': Setting.down_player_4,
+            'left': Setting.left_player_4,
+            'right': Setting.right_player_4,
+            'shoot': Setting.hit_player_4
+        }
+
+        for i in range(StartScreen.result['numberOfPlayer']):
+                tank_path = None
+                control_setting = None
+                pos = None
+
+                if i == 0:
+                    tank_path = Setting.Tank_blue
+                    control_setting = control_settings_player_1
+                elif i == 1:
+                    tank_path = Setting.Tank_red
+                    control_setting = control_settings_player_2
+                elif i == 2:
+                    tank_path = Setting.Tank_sand
+                    control_setting = control_settings_player_3
                 else:
-                    length = 0  # row[j] = 0 and length <2
-        for j in range(1, 63):
-            start = -1
-            length = 0
-            for i in range(1, 42):
-                if map_test[i][j] == 1:
-                    if length == 0:
-                        start = i
-                        length += 1
-                    else:
-                        length += 1
-                        if i == 41:
-                            self.collision_map.append(pygame.Rect(j * 16, start * 16, 16, length * 16))
-                elif length:
-                    self.collision_map.append(pygame.Rect(j * 16, start * 16, 16, length * 16))
-                    length = 0
+                    tank_path = Setting.Tank_green
+                    control_setting = control_settings_player_4
+                if i < len(self.spawn_points):
+                    pos = self.spawn_points[i]
+                else:
+                    pos = (0, 0)
+                tank = Tank(tank_path, pos)
+                tank.control = TankControl(tank, self.window_width, self.window_height, self.bullets[i], control_setting)
+                self.tanks.append(tank)
+
 
 
     def run(self, window):
+        start_time=0
+        start_time_gun=0
         self.window = window
 
-        # Cai dat am thanh
-        mixer.init()
-        mixer.music.load("asset/media.mp3")
-        mixer.music.set_volume(0.0)
-        mixer.music.play()
-
-        bullet_Counter = 1 # (= 0 : Đạn lazer); (= 1 Đạn thường); (= 2 Đạn chùm)
-
+        # Cài đặt âm thanh
+        setVolumn(0.0)
         while self.running:
-            current_time=pygame.time.get_ticks()
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        self.running = False
-                    if event.key == pygame.K_SPACE:
 
-                        if bullet_Counter == 0 :
-                            # Đạn lazer
-                            if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
-                                bullet = Laser(self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
-                                                self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
-                                                self.tank.tank_angle)
-                                self.bullets.append(bullet)
-                                
-                        
-                        if bullet_Counter == 1 :
-                            # Đạn thường
-                            if len(self.bullets) < 4 and current_time-self.last_shot_time >=self.bullet_time :
-                                bullet = Bullet_normal(self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
-                                                self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
-                                                self.tank.tank_angle)
-                                self.bullets.append(bullet)
-                                
-
-                        if bullet_Counter == 2 :
-                            # Đạn chùm
-                            if current_time - self.last_shot_time >= self.bullet_time :
-                                
-                                for i in range(10):
-                                    spread_angle = self.tank.tank_angle + (i - 5) * 2  # Điều chỉnh góc phát tán
-
-                                    bullet = Bullet_normal(
-                                    self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
-                                    self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
-                                    spread_angle)
-
-                                    
-                                    self.bullets.append(bullet)
-                        self.last_shot_time = current_time
-                        self.bullet_sound.play()
-
-            # Turn laser back on after shooting cooldown
-            if current_time - self.last_shot_time >= self.bullet_time:
-                self.laser_aiming.turn_on_Laser()
-
-            # Điều khiển xe tăng
-            self.control.handle_input()
-
-            # Cập nhật vị trí của xe tăng
-            self.tank.tank_rect.x = int(self.tank.tank_x)
-            self.tank.tank_rect.y = int(self.tank.tank_y)
-            self.laser_aiming.update(self.tank.tank_rect.centerx, self.tank.tank_rect.centery, self.tank.tank_angle)
-
-            rotated_tank = pygame.transform.rotate(self.tank.tank_image, self.tank.tank_angle)
-            new_rect = rotated_tank.get_rect(center=self.tank.tank_rect.center)
-
-            # Vẽ bản đồ thay vì hình nền
-            self.window.fill((255, 255, 255))  # Xóa màn hình với màu trắng
+            # # Vẽ bản đồ thay vì hình nền
+            self.window.fill(Setting.YELLOW)  # Xóa màn hình với màu trắng
             draw_map(self.window, self.map_data, TILE_SIZE)
 
+            for i, tank in enumerate(self.tanks):
+                # Điều khiển xe tăng
+                tank.check=False
+                tank.control.handle_input()
+                tank.update_tank_mask()
+                if not tank.check :
+                    tank.dx,tank.dy=0,0
+                item_have=TankLogic.check_collision_with_items(tank,item,self.item_name,self.map_data,TILE_SIZE)
+                if item_have == 3:
+                    tank.speed_add += Setting.speedAdd
+                    start_time=pygame.time.get_ticks()
+                elif item_have ==1:
+                    tank.health +=25
+                elif item_have ==0:
+                    tank.dame =50
+                    start_time_gun=pygame.time.get_ticks()
+                if tank.speed_add !=0 :
+                    if pygame.time.get_ticks()-start_time >=10000:
+                        tank.speed_add =0
+                if tank.dame !=10 :
+                    if pygame.time.get_ticks()-start_time_gun >=10000:
+                        tank.dame=10
+                if TankLogic.check_collision_with_wall(tank,self.map_mask):
+                    tank.tank_x = tank.tank_x-tank.dx
+                    tank.tank_y = tank.tank_y-tank.dy
+                    tank.tank_angle = (tank.tank_angle-tank.d_angle) % 360
+                    tank.update_tank_mask()
+                    # print(tank.dx, tank.dy, tank.d_angle)
+                for tank2 in self.tanks:
+                    if tank2 is not tank:
+                        if  TankLogic.check_collision_with_tank(tank, tank2):
+                            tank.tank_x = tank.tank_x - tank.dx
+                            tank.tank_y = tank.tank_y - tank.dy
+                            tank.tank_angle = (tank.tank_angle - tank.d_angle) % 360
+                            tank.update_tank_mask()
+                            tank2.tank_x = tank2.tank_x - tank2.dx
+                            tank2.tank_y = tank2.tank_y - tank2.dy
+                            tank2.tank_angle = (tank2.tank_angle - tank2.d_angle) % 360
+                            tank2.update_tank_mask()
+                            break
 
-            # Vẽ tia laser: Phải vẽ trước xe tăng, để ảnh xe tăng đè lên.
-            # if self.laser_aiming.active:
-            #      self.laser_aiming.remaining_length = 500       #Khởi tạo lại remaining_length = 500 (do tia laser cũ đã bị trừ hết rồi)
-            #      while self.laser_aiming.remaining_length > 0:
-            #         self.laser_aiming.calculate_end_point(self.collision_map)
-            #         self.laser_aiming.draw_2_line(window)
 
-            #         #Update the location of self.x, self.y
-            #         self.laser_aiming.x = self.laser_aiming.end_x
-            #         self.laser_aiming.y = self.laser_aiming.end_y
-            #         if self.laser_aiming.normal[0] != 0:
-            #             self.laser_aiming.angle = 180 - self.laser_aiming.angle
-            #         else:
-            #             self.laser_aiming.angle = 360 - self.laser_aiming.angle
+                tank.tank_rect.x = int(tank.tank_x)
+                tank.tank_rect.y = int(tank.tank_y)
 
 
-            # Vẽ xe tăng
-            self.window.blit(rotated_tank, new_rect)
 
-            # Vẽ đạn
-            for bullet in self.bullets[:]:
-                if bullet.is_expired_bullet():
-                    self.bullets.remove(bullet)
-                else:
-                    #Tinh end_x, end_y
-                    bullet.cal_end_point(self.collision_map)
 
-                    #Ve dan 
-                    bullet.draw(window)
 
-                    #Cap nhat lai x, y, angle của bullet để chuẩn bị cho hàm run tiếp theo
-                    bullet.update()
+
+
+                self.window.blit(tank.rotated_tank_image,tank.new_rect)
+                draw_health_bar(tank,window)
+
+
+
+            for i in range(len(self.bullets)):
+                bullets_to_remove = []
+                for j in range(len(self.bullets[i])):
+                    bullet = self.bullets[i][j]
+
+                    bullet.move(self.map_data, 16)
+                    if bullet.is_expired_bullet():
+                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png", 256,
+                                              256)
+                        self.explosions_bull.append(explosion)
+                        bullets_to_remove.append(j)
+                    else:
+                        bullet.draw(self.window)
+                    for tank in self.tanks:
+
+                        if TankLogic.check_collision(tank, bullet):
+                            explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png",
+                                                  256, 256)
+                            self.explosions_bull.append(explosion)
+                            tank.health-=bullet.tank.dame
+                            if tank.health==0:
+                                explosion=Explosion(tank.tank_rect.centerx,tank.tank_rect.centery,"asset/explosion 4.png",256,256)
+                                self.explosions_bull.append(explosion)
+                                self.tanks.remove(tank)
+                            bullets_to_remove.append(j)
+                            break
+                for j in reversed(bullets_to_remove):
+                    self.bullets[i].pop(j)
+            for explosion in self.explosions_bull[:]:
+                explosion.update()
+                explosion.draw(self.window)
+                if explosion.image is None:
+                    self.explosions_bull.remove(explosion)
+
             pygame.display.flip()
 
         pygame.quit()
 
-
-# Cấu hình các hằng số
-TILE_SIZE = 16
+# def show_game_over_screen(window, window_width, window_height):
+#     setVolumn(0)
+#     # Hiển thị màn hình Game Over
+#     font = pygame.font.Font(None, 150)
+#     text = font.render("Game Over", True, (255, 0, 0))  # Chữ màu đỏ
+#     window.fill((0, 0, 0))  # Làm màn hình đen
+#     window.blit(text, (window_width // 2 - text.get_width() // 2, window_height // 2 - text.get_height() // 2))
+#
+#     # Hiển thị thông báo "Press Q to exit"
+#     small_font = pygame.font.Font(None, 50)
+#     sub_text = small_font.render("Press Q to exit", True, (255, 255, 255))  # Chữ màu trắng
+#     window.blit(sub_text, (window_width // 2 - sub_text.get_width() // 2, window_height // 2 + text.get_height() // 2 + 20-10))
+#
+#
+#     pygame.display.flip()  # Cập nhật màn hình
+#
+#     waiting_for_exit = True
+#     while waiting_for_exit:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 waiting_for_exit = False  # Cho phép thoát bằng cách nhấn nút đóng cửa sổ
+#             elif event.type == pygame.KEYDOWN:
+#                 if event.key == pygame.K_q:  # Nếu người chơi bấm phím Q
+#                     waiting_for_exit = False
+#
+#
+#     pygame.quit()  # Thoát pygame
+def setVolumn(x):
+    mixer.init()
+    mixer.music.load(Setting.backgroundMusic)
+    mixer.music.set_volume(x)
+    mixer.music.play()
 
 def read_map(file_path):
-    tmp_data = []
     with open(file_path, 'r') as file:
-        for line in file:
-            a = []
-            for i in line.strip():
-                if i == '0':
-                    a.append(0)
-                if i == '1':
-                    a.append(1)
-                if i == '*':
-                    a.append(3)
-                if i == '-':
-                    a.append(4)
-
-            tmp_data.append(a)
-    return tmp_data
-
+        map_data = [list(line.strip()) for line in file]
+    return map_data
 
 def draw_map(window, map_data, tile_size):
+    wall = pygame.image.load(Setting.wall).convert()
+    wall = pygame.transform.scale(wall, (tile_size , tile_size ))
+
+    gunItem = pygame.image.load(Setting.gun).convert()
+    gunItem.set_colorkey(Setting.WHITE)
+    gunItem = pygame.transform.scale(gunItem, (tile_size+15, tile_size+15))
+
+    hpImage = pygame.image.load(Setting.hp).convert()
+    hpImage.set_colorkey(Setting.WHITE)
+    hpImage = pygame.transform.scale(hpImage, (tile_size+15, tile_size+15))
+
+    laser_gunItem = pygame.image.load(Setting.laser_gun).convert()
+    laser_gunItem.set_colorkey(Setting.WHITE)
+    laser_gunItem = pygame.transform.scale(laser_gunItem, (tile_size + 17, tile_size + 17))
+
+    speedItem = pygame.image.load(Setting.speed).convert()
+    speedItem.set_colorkey(Setting.WHITE)
+    speedItem = pygame.transform.scale(speedItem, (tile_size + 15, tile_size + 15))
+
+    x3Item = pygame.image.load(Setting.x3).convert()
+    x3Item.set_colorkey(Setting.WHITE)
+    x3Item = pygame.transform.scale(x3Item, (tile_size + 15, tile_size + 15))
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
-            if tile == 1:  # Tường
-                color = (0, 0, 0)  # Màu đen
-            elif tile == 0:  # Ô trống
-                color = (255, 255, 255)  # Màu trắng
-            elif tile == 2:  # Xe tăng của người chơi
-                color = (0, 0, 255)  # Màu xanh
-            elif tile == 3:  # Đối thủ
-                color = (255, 0, 0)  # Màu đỏ
-            else:
-                continue
-            pygame.draw.rect(window, color, pygame.Rect(x * tile_size, y * tile_size, tile_size, tile_size))
+            if tile == '1':  # Tường
+                window.blit(wall, (x * tile_size, y * tile_size))  # Vẽ ảnh súng
+            elif tile == '2':  # Item tăng sức mạnh (vũ khí)
+                window.blit(gunItem, (x * tile_size, y * tile_size))  # Vẽ ảnh súng
+            elif tile == '3':  # Item tăng máu (HP)
+                window.blit(hpImage, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+            elif tile == '4':  # Item tăng máu (HP)
+                window.blit(laser_gunItem, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+            elif tile == '5':  # Item tăng máu (HP)
+                window.blit(speedItem, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+            elif tile == '6':  # Item tăng máu (HP)
+                window.blit(x3Item, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+
+
+def create_map_mask(map_data, tile_size=16):
+    map_width = 1024
+    map_height = 688
+    wall = pygame.image.load(Setting.wall).convert()
+    wall = pygame.transform.scale(wall, (tile_size , tile_size ))
+
+    gunItem = pygame.image.load(Setting.gun).convert()
+    gunItem.set_colorkey(Setting.WHITE)
+    gunItem = pygame.transform.scale(gunItem, (tile_size+15, tile_size+15))
+    gunItem_mask=pygame.mask.from_surface(gunItem)
+
+    hpImage = pygame.image.load(Setting.hp).convert()
+    hpImage.set_colorkey(Setting.WHITE)
+    hpImage = pygame.transform.scale(hpImage, (tile_size+15, tile_size+15))
+    hpImage_mask=pygame.mask.from_surface(hpImage)
+
+    laser_gunItem = pygame.image.load(Setting.laser_gun).convert()
+    laser_gunItem.set_colorkey(Setting.WHITE)
+    laser_gunItem = pygame.transform.scale(laser_gunItem, (tile_size + 17, tile_size + 17))
+    laser_gunItem_mask=pygame.mask.from_surface(laser_gunItem)
+
+    speedItem = pygame.image.load(Setting.speed).convert()
+    speedItem.set_colorkey(Setting.WHITE)
+    speedItem = pygame.transform.scale(speedItem, (tile_size + 15, tile_size + 15))
+    speedItem_mask= pygame.mask.from_surface(speedItem)
+
+    x3Item = pygame.image.load(Setting.x3).convert()
+    x3Item.set_colorkey(Setting.WHITE)
+    x3Item = pygame.transform.scale(x3Item, (tile_size + 15, tile_size + 15))
+    x3Item_mask = pygame.mask.from_surface(x3Item)
+    map_surface = pygame.Surface((map_width, map_height),pygame.SRCALPHA)
+    map_surface.fill((0, 0, 0,0))
+    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,x3Item_mask]
+    for y, row in enumerate(map_data):
+        for x, tile in enumerate(row):
+            if tile == '1':  # Walls
+                map_surface.blit(wall, (x * tile_size, y * tile_size))
+            elif tile == '2':  # Item tăng sức mạnh (vũ khí)
+                item.append((0,x,y))
+            elif tile == '3':  # Item tăng máu (HP)
+                item.append((1,x,y))
+            elif tile == '4':  # Item tăng máu (HP)
+                item.append((2,x,y))
+            elif tile == '5':  # Item tăng máu (HP)
+                item.append((3,x,y))
+            elif tile == '6':  # Item tăng máu (HP)
+                item.append((4,x,y))
+    map_mask = pygame.mask.from_surface(map_surface)
+    return map_mask, map_surface,item_name
+
+
