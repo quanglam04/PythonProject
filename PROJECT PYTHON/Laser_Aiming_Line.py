@@ -29,8 +29,8 @@ class LaserAiming:
 
     def calculate_end_point(self, collision_map):  # Đã gộp chung với đoạn va chạm tường
         """ Tính toán điểm kết thúc của đoạn tia laser dựa trên góc và độ dài """
-        self.end_x = self.x + 1000 * math.cos(math.radians(self.angle))
-        self.end_y = self.y + 1000 * math.sin(math.radians(self.angle))
+        self.end_x = self.x + 10000 * math.cos(math.radians(self.angle))
+        self.end_y = self.y + 10000* math.sin(math.radians(self.angle))
         line_length = 9999999999
         temp_min = []
         for i in collision_map:
