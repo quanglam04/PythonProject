@@ -1,19 +1,42 @@
 import pygame
-# from StartScreen import result
-# import Setting
+import Setting
 import math
-class Tank:
+class Tank :
     def __init__(self, image_path,pos):
-        self.tank_image = pygame.image.load(image_path) # load hinh anh cua xe tang
+        self.tank_image = pygame.image.load(image_path).convert_alpha() # load hinh anh cua xe tang
         self.tank_image=pygame.transform.smoothscale(self.tank_image,(45,30))
+        self.tank_mask=pygame.mask.from_surface(self.tank_image)
         #get_rect co 3 gia tri la x y va center tank_rect.x goi ra chieu ngan cua xe con .y chieu doc .center la vi tri trung tam
         self.tank_rect = self.tank_image.get_rect() # cho biet chieu ngang, rong cua xe tang va lay vi tri hien tai cua xe tang
         self.tank_width, self.tank_height = self.tank_rect.size # tank_rect.size cho biet kich co cua buc anh
         self.tank_x,self.tank_y = pos # cai dat vi tri cua xe tang (vi tri ben trai cung khi ve xe tang)
+        self.tank_rect.x,self.tank_rect.y=int (self.tank_x),int (self.tank_y)
         self.tank_angle = 0  # goc quay cua xe tang
-        self.tank_speed = 0.79 #van toc
+        self.tank_speed = Setting.playerSpeed #van toc
         self.health=100
         self.health_bar_width, self.health_bar_height=40,5
+
+        self.new_rect=None
+        self.dx,self.dy=0,0
+        self.d_angle=0
+        self.check = False
+        self.control=None
+
+        self.speed_add=0
+        self.dame=10
+
+        self.rotated_tank_image=None
+        self.bounding_size = max(self.tank_rect.width, self.tank_rect.height) * 2
+        self.tank_bounding_surface = pygame.Surface((self.bounding_size, self.bounding_size), pygame.SRCALPHA)
+    def update_tank_mask(self):
+        self.tank_bounding_surface.fill((0,0,0,0))
+        self.rotated_tank_image = pygame.transform.rotate(self.tank_image, self.tank_angle)
+        self.new_rect = self.rotated_tank_image.get_rect(center=self.tank_rect.center)
+        rotated_rect = self.rotated_tank_image.get_rect(center=(self.bounding_size // 2, self.bounding_size // 2))
+
+        self.tank_bounding_surface.blit(self.rotated_tank_image, rotated_rect.topleft)
+
+        self.tank_mask = pygame.mask.from_surface(self.tank_bounding_surface)
 
 
 def load_map(random_index):
@@ -27,6 +50,7 @@ def load_map(random_index):
         return spawn_points
 def draw_health_bar(self, window):
         # Tạo hình ảnh thanh máu
+        if self.health >100: self.health=100
         health_bar_surface = pygame.Surface((self.health_bar_width, self.health_bar_height))
         health_bar_surface.set_colorkey((0, 0, 0))  # đặt màu đen là màu trong suốt
         health_bar_surface.fill((255, 0, 0))  # Màu đỏ cho thanh máu
@@ -52,4 +76,7 @@ def draw_health_bar(self, window):
 
         # Vẽ tại vị trí mới
         window.blit(rotated_health_bar, rotated_rect.topleft)
-
+def get_tank_mask(tank):
+    tank_image = pygame.transform.rotate(tank.tank_image, tank.tank_angle)  # Get the rotated tank image
+    tank_mask = pygame.mask.from_surface(tank_image)
+    return tank_mask

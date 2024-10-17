@@ -76,15 +76,18 @@ special_keys = {
     "Np_-":1073741910,
     "Np_+":1073741911,
     "Np_.":1073741923,
+    "Control_R":1073742052,
+    "Control_L":1073742048
 }
 def get_key_code(key):
     if key in special_keys:
         return special_keys.get(key)
     else:
         return ord(key)
-
-
-
+if lines[3].strip()=="True" :
+    Window_mode=True
+else:
+    Window_mode=False
 #---------------------------------------------- Key Press ---------------------------------
 #player 1
 up_player_1 = get_key_code(lines[4].strip())
@@ -128,8 +131,8 @@ text_color = (255, 255, 255)  # Màu chữ trắng
 #------------------------------------------ player settings -------------------------------------------------------------------------
 
 playerSpeed =0.79
-speedAdd = 0
-angle = 0.68
+speedAdd = 1.5
+angle = 1
 
 #------------------------------------------ vị trí ban đầu -----------------------------------------------------------------------
 x0 = 1

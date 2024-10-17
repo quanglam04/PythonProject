@@ -1,4 +1,6 @@
 import pygame
+from pygame import FULLSCREEN
+
 from game import TankGame
 from StartScreen import StartScreen
 import Setting
@@ -6,7 +8,11 @@ import LoadingBar
 def main():
     flag = True
     pygame.init()
-    window = pygame.display.set_mode((Setting.WIDTH, Setting.HEIGHT))
+    print(Setting.Window_mode)
+    if Setting.Window_mode :
+        window = pygame.display.set_mode((Setting.WIDTH,Setting.HEIGHT))
+    else:
+        window = pygame.display.set_mode((Setting.WIDTH, Setting.HEIGHT),FULLSCREEN)
     pygame.display.set_caption(Setting.TITLE)
     start_screen = StartScreen(Setting.WIDTH, Setting.HEIGHT)
     while True:

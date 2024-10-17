@@ -30,7 +30,6 @@ class  Explosion:
         if elapsed_time<self.animation: #cho animation chay khong qua animation giay
             self.current_frame=(elapsed_time //(self.animation//len(self.frames)) ) %len(self.frames) #chia ra xem la thoi diem nao ung voi khung hinh nao
             self.image=self.frames[self.current_frame] #cap nhat hinh anh
-
         else:
             self.image=None
 

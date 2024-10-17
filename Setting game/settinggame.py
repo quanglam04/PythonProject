@@ -59,7 +59,7 @@ def load_setting():
             saved_resolution = lines[0].strip() if len(lines) > 0 else resolutions[0]
             saved_bgm = float(lines[1].strip()) if len(lines) > 1 else 50
             saved_sfx = float(lines[2].strip()) if len(lines) > 2 else 50
-            saved_screen = lines[3].strip() if len(lines) > 3 else "None"
+            saved_screen = lines[3].strip() if len(lines) > 3 else "True"
             button_states = [
                 lines[4].strip() if len(lines) > 4 else "w",
                 lines[5].strip() if len(lines) > 5 else "s",
