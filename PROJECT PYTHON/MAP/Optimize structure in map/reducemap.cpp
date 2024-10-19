@@ -41,7 +41,6 @@ int main (int argc,char* argv[] ){
 	}
 	f.close();
 	map<pair<int,int> , int> mp_width,mp_height;
-	vector < tuple<int,int,int,int> > result;
 	int visited[v.size()+1][s.size()+1] ={0};
 	
 	for (int i=0;i<v.size();i++) {
