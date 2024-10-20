@@ -86,8 +86,8 @@ int main (int argc,char* argv[] ){
 					pair<int,int>p ={i,j}; 
 					if (mp_width[p] >1 and mp_height[p]==1 ) mp_height[p]=0;
 					else if(mp_width[p] ==1 and mp_height[p] >1  ) mp_width[p]=0;
-					if (mp_width[p] !=0 )  of<<"("<<j<<", "<<i<<", "<<mp_width[p]<<", 1),"<<endl;
-					if (mp_height[p] !=0 ) of<<"("<<j<<", "<<i<<", 1, "<<mp_height[p]<<"),"<<endl;
+					if (mp_width[p] !=0 )  of<<j<<" "<<i<<" "<<mp_width[p]<<" 1"<<endl;
+					if (mp_height[p] !=0 ) of<<j<<" "<<i<<" 1 "<<mp_height[p]<<endl;
 				}
 		   	}
 	    }
