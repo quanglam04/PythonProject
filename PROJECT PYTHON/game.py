@@ -405,6 +405,3 @@ def load_wall_rect(filename):
                 except ValueError as e:
                     print(f"Error parsing line '{line}': {e}")
     return rect_walls
-
-# mask_surface = tank.tank_mask.to_surface(unsetcolor=None, setcolor=(255, 0, 0, 255))
-# self.window.blit(mask_surface, (tank.tank_x + 100, tank.tank_y + 100))
