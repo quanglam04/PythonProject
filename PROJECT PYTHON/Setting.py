@@ -10,6 +10,7 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BROWN = (120, 104, 82)
 BLUE = (0, 0, 255)
+ORANGE=(255,165,0)
 # game settings
 #---------------------------------------------- Read file -----------------------------------------------
 with open('../Setting game/Saved.txt', 'r') as file:
@@ -142,17 +143,29 @@ y0 = 1
 random_index = random.randint(1,3)
 wall = f'asset/map/dirt{random_index}.png'
 
+Blue_image="Blue Tank.png"
+Red_image="Red Tank.png"
+Green_image="Green Tank.png"
+Orange_image="Orange Tank.png"
+asset="asset/"
+Laser_path="Laser/"
+Tank_power_bullet="Tank_power_bullet/"
 
-TankBlue = 'asset/Blue Tank.png'
+
+TankBlue = asset+Blue_image
 Tankmodern = 'asset/newtank.png'
-TankRed = 'asset/Red Tank.png'
-TankGreen = 'asset/Green Tank.png'
-TankOrange ='asset/Orange Tank.png'
+TankRed = asset + Red_image
+TankGreen = asset + Green_image
+TankOrange =asset + Orange_image
 Tank_dark='asset/tank_dark.png'
 Tank_sand="asset/tank_sand.png"
 Tank_red="asset/tank_red.png"
 Tank_green="asset/tank_green.png"
 Tank_blue ='asset/tank_blue.png'
+
+TankBlue_laser="asset/Laser/"
+
+
 
 
 gun = 'asset/item/gun.png'
@@ -160,6 +173,7 @@ hp = 'asset/item/hp.png'
 laser_gun = 'asset/item/laser_gun.png'
 speed = 'asset/item/speed.png'
 x3 = 'asset/item/x3.png'
+laser_line = 'asset/item/Laser.png'
 
 background = 'asset/background.jpg'
 startBtn = 'asset/btn/start_btn_newVersion.png'

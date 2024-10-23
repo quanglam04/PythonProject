@@ -1,18 +1,17 @@
 import pygame
 import Setting
 from pygame import mixer
-import button
 from tank import load_map
 from tank import Tank
 from tank_control import TankControl
 from tank_logic import TankLogic
-from bullet import Bullet
 import StartScreen
 from tank import draw_health_bar
 from explosion import Explosion
+
 TILE_SIZE = 16
 item = []
-
+from Laser_Aiming_Line import LaserAiming
 class TankGame:
 
     def __init__(self, window_width, window_height):
@@ -21,15 +20,23 @@ class TankGame:
         self.window = None
         self.running = True
         self.explosions_bull = []
-        self.bullets = [[] for _ in range(StartScreen.result['numberOfPlayer'])]
+        # self.bullets = [[] for _ in range(StartScreen.result['numberOfPlayer'])]
+        self.bullets = []
+        self.lasers=[]
         random_index = StartScreen.result['selected_map']
         self.map_data = read_map(f'MAP/map{random_index}.txt')
+        self.map_optimize= load_wall_rect(f'MAP/Optimize_structure_in_map/map{random_index}optimize.txt')
+        self.collision_map=[]
+
         self.spawn_points = load_map(random_index)
         self.tanks=[]
         self.initialize_tanks()
 
         self.map_mask,self.map_surface,self.item_name = create_map_mask(self.map_data,TILE_SIZE)
 
+        for rect in self.map_optimize:
+            x,y,width,height=rect
+            self.collision_map.append(pygame.Rect(x*TILE_SIZE,y*TILE_SIZE,width*TILE_SIZE,height*TILE_SIZE))
     def initialize_tanks(self):
         control_settings_player_1 = {
             'up': Setting.up_player_1,
@@ -63,28 +70,33 @@ class TankGame:
         }
 
         for i in range(StartScreen.result['numberOfPlayer']):
-                tank_path = None
-                control_setting = None
-                pos = None
 
                 if i == 0:
-                    tank_path = Setting.Tank_blue
+                    tank_path = Setting.TankBlue
+                    image_name = Setting.Blue_image
+                    color=Setting.BLUE
                     control_setting = control_settings_player_1
                 elif i == 1:
-                    tank_path = Setting.Tank_red
+                    tank_path = Setting.TankRed
+                    image_name=Setting.Red_image
+                    color=Setting.RED
                     control_setting = control_settings_player_2
                 elif i == 2:
-                    tank_path = Setting.Tank_sand
+                    tank_path = Setting.TankOrange
+                    image_name=Setting.Orange_image
+                    color=Setting.ORANGE
                     control_setting = control_settings_player_3
                 else:
-                    tank_path = Setting.Tank_green
+                    tank_path = Setting.TankGreen
+                    image_name=Setting.Green_image
+                    color=Setting.GREEN
                     control_setting = control_settings_player_4
                 if i < len(self.spawn_points):
                     pos = self.spawn_points[i]
                 else:
                     pos = (0, 0)
-                tank = Tank(tank_path, pos)
-                tank.control = TankControl(tank, self.window_width, self.window_height, self.bullets[i], control_setting)
+                tank = Tank(tank_path, pos,image_name,color)
+                tank.control = TankControl(tank, self.window_width, self.window_height, self.bullets,self.lasers ,control_setting)
                 self.tanks.append(tank)
 
 
@@ -96,6 +108,10 @@ class TankGame:
 
         # Cài đặt âm thanh
         setVolumn(0.0)
+        for tank in self.tanks:
+            tank.tank_laser = LaserAiming(tank.tank_x, tank.tank_y, tank.tank_angle, self.window_width,
+                                          self.window_height, self.map_data)
+
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -118,15 +134,32 @@ class TankGame:
                     start_time=pygame.time.get_ticks()
                 elif item_have ==1:
                     tank.health +=25
-                elif item_have ==0:
-                    tank.dame =50
+                elif item_have == 0:
+                    tank.dame =35
                     start_time_gun=pygame.time.get_ticks()
+                    image_path = Setting.asset +Setting.Tank_power_bullet+tank.tank_name
+                    tank.update_tank_image(image_path)
+                    tank.bullet_color=tank.color
+
+                elif item_have == 5:
+                    tank.tank_laser.active=True
+                    tank.gun_mode = 2
+                    image_path= Setting.asset+Setting.Laser_path+tank.tank_name
+                    tank.update_tank_image(image_path)
+
+
+
                 if tank.speed_add !=0 :
                     if pygame.time.get_ticks()-start_time >=10000:
                         tank.speed_add =0
                 if tank.dame !=10 :
                     if pygame.time.get_ticks()-start_time_gun >=10000:
                         tank.dame=10
+                        image_path = Setting.asset+tank.tank_name
+                        tank.update_tank_image(image_path)
+                        tank.bullet_color=Setting.BLACK
+
+
                 if TankLogic.check_collision_with_wall(tank,self.map_mask):
                     tank.tank_x = tank.tank_x-tank.dx
                     tank.tank_y = tank.tank_y-tank.dy
@@ -151,44 +184,60 @@ class TankGame:
                 tank.tank_rect.y = int(tank.tank_y)
 
 
+                if tank.tank_laser.active:
+                    tank.tank_laser = LaserAiming(tank.tank_x , tank.tank_y , tank.tank_angle, self.window_width,
+                                                  self.window_height, self.map_data)
+                    tank.tank_laser.active=True
+                    tank.tank_laser.update(tank.tank_rect.centerx,tank.tank_rect.centery,tank.tank_angle)
+                    tank.laser_endpoints=[]
+                    while tank.tank_laser.remaining_length >0:
+                        tank.tank_laser.calculate_end_point(self.collision_map)
+                        tank.laser_endpoints.append((tank.tank_laser.end_x,tank.tank_laser.end_y))
+                        tank.tank_laser.draw_2_line(self.window,tank.color)
 
+                        tank.tank_laser.x=tank.tank_laser.end_x
+                        tank.tank_laser.y=tank.tank_laser.end_y
 
-
+                        if tank.tank_laser.normal[0] !=0:
+                            tank.tank_laser.angle=180-tank.tank_laser.angle
+                        else:
+                            tank.tank_laser.angle = 360 - tank.tank_laser.angle
 
 
                 self.window.blit(tank.rotated_tank_image,tank.new_rect)
                 draw_health_bar(tank,window)
 
 
-
-            for i in range(len(self.bullets)):
-                bullets_to_remove = []
-                for j in range(len(self.bullets[i])):
-                    bullet = self.bullets[i][j]
-
-                    bullet.move(self.map_data, 16)
-                    if bullet.is_expired_bullet():
-                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png", 256,
-                                              256)
+            for bullet in self.bullets:
+                bullet.move(self.map_data,TILE_SIZE)
+                if bullet.is_expired_bullet():
+                    explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png", 256,
+                                          256)
+                    self.bullets.remove(bullet)
+                    self.explosions_bull.append(explosion)
+                else:
+                    bullet.draw(self.window)
+                for tank in self.tanks:
+                    if TankLogic.check_collision(tank,bullet):
+                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png",
+                                              256, 256)
                         self.explosions_bull.append(explosion)
-                        bullets_to_remove.append(j)
-                    else:
-                        bullet.draw(self.window)
-                    for tank in self.tanks:
-
-                        if TankLogic.check_collision(tank, bullet):
-                            explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png",
-                                                  256, 256)
+                        tank.health -= bullet.tank.dame
+                        self.bullets.remove(bullet)
+                        if tank.health == 0:
+                            explosion = Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,
+                                                  "asset/explosion 4.png", 256, 256)
                             self.explosions_bull.append(explosion)
-                            tank.health-=bullet.tank.dame
-                            if tank.health==0:
-                                explosion=Explosion(tank.tank_rect.centerx,tank.tank_rect.centery,"asset/explosion 4.png",256,256)
-                                self.explosions_bull.append(explosion)
-                                self.tanks.remove(tank)
-                            bullets_to_remove.append(j)
-                            break
-                for j in reversed(bullets_to_remove):
-                    self.bullets[i].pop(j)
+                            self.tanks.remove(tank)
+                        break
+            for laser in self.lasers:
+                if laser.is_expired_bullet():
+                    laser.draw(self.window)
+                    self.lasers.remove(laser)
+                else:
+                    laser.laser_move()
+                    laser.draw(self.window)
+
             for explosion in self.explosions_bull[:]:
                 explosion.update()
                 explosion.draw(self.window)
@@ -260,6 +309,11 @@ def draw_map(window, map_data, tile_size):
     x3Item = pygame.image.load(Setting.x3).convert()
     x3Item.set_colorkey(Setting.WHITE)
     x3Item = pygame.transform.scale(x3Item, (tile_size + 15, tile_size + 15))
+
+    laser_line = pygame.image.load(Setting.laser_line)
+    laser_line.set_colorkey(Setting.WHITE)
+    laser_line=pygame.transform.scale(laser_line,(tile_size+15,tile_size+15))
+
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
             if tile == '1':  # Tường
@@ -274,6 +328,8 @@ def draw_map(window, map_data, tile_size):
                 window.blit(speedItem, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
             elif tile == '6':  # Item tăng máu (HP)
                 window.blit(x3Item, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+            elif tile == '7':
+                window.blit(laser_line,(x*tile_size,y*tile_size))
 
 
 def create_map_mask(map_data, tile_size=16):
@@ -306,9 +362,14 @@ def create_map_mask(map_data, tile_size=16):
     x3Item.set_colorkey(Setting.WHITE)
     x3Item = pygame.transform.scale(x3Item, (tile_size + 15, tile_size + 15))
     x3Item_mask = pygame.mask.from_surface(x3Item)
+
+    laser_line = pygame.image.load(Setting.laser_line)
+    laser_line.set_colorkey(Setting.WHITE)
+    laser_line=pygame.transform.scale(laser_line,(tile_size+15,tile_size+15))
+    laser_line_mask = pygame.mask.from_surface(laser_line)
     map_surface = pygame.Surface((map_width, map_height),pygame.SRCALPHA)
     map_surface.fill((0, 0, 0,0))
-    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,x3Item_mask]
+    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,x3Item_mask,laser_line_mask]
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
             if tile == '1':  # Walls
@@ -323,7 +384,27 @@ def create_map_mask(map_data, tile_size=16):
                 item.append((3,x,y))
             elif tile == '6':  # Item tăng máu (HP)
                 item.append((4,x,y))
+            elif tile== '7':
+                item.append((5,x,y))
     map_mask = pygame.mask.from_surface(map_surface)
     return map_mask, map_surface,item_name
 
 
+def load_wall_rect(filename):
+    rect_walls = []
+    with open(filename, 'r') as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                try:
+                    rect = tuple(map(int, line.split()))
+                    if len(rect) == 4:
+                        rect_walls.append(rect)
+                    else:
+                        print(f"Invalid rectangle, wrong number of values: {line}")
+                except ValueError as e:
+                    print(f"Error parsing line '{line}': {e}")
+    return rect_walls
+
+# mask_surface = tank.tank_mask.to_surface(unsetcolor=None, setcolor=(255, 0, 0, 255))
+# self.window.blit(mask_surface, (tank.tank_x + 100, tank.tank_y + 100))

@@ -4,7 +4,7 @@ from tank_logic import TankLogic
 class Bullet:
     def __init__(self,tank, x, y, angle, speed=1.25):
         self.radius = 5  # Radius of the bullet circle
-        self.color = (0, 0, 0)  # Color of the bullet (red)
+        self.color = tank.bullet_color
         self.rect = pygame.Rect(x - self.radius, y - self.radius, self.radius * 2, self.radius * 2)
         self.angle = angle
         self.speed = speed
@@ -17,6 +17,7 @@ class Bullet:
         self.direction_x = math.cos(math.radians(self.angle)) * self.speed
         self.direction_y = -math.sin(math.radians(self.angle)) * self.speed
         self.tank=tank
+
     def move(self, map_data, tile_size):
         a=self.rect.x+self.radius
         b=self.rect.y+self.radius

@@ -1,7 +1,6 @@
-
 import pygame
 import math
-import numpy as np
+
 
 
 class LaserAiming:
@@ -14,24 +13,18 @@ class LaserAiming:
         self.screen_height = screen_height
         self.map_data = map_data    # Data of map (0 and 1)
         self.tile_size = 16     # Size of each tile in map
-        self.active = True  # Status of the laser aiming
-        self.remaining_length = 500
+        self.active = False  # Status of the laser aiming
+        self.remaining_length = 5
         self.end_x = 0
         self.end_y = 0
         self.normal = [0, 0]
 
-    # Turn on, turn off the Laser
-    def turn_on_Laser(self):
-        self.active = True
-
-    def turn_off_Laser(self):
-        self.active = False
 
     def calculate_end_point(self, collision_map):  # Đã gộp chung với đoạn va chạm tường
         """ Tính toán điểm kết thúc của đoạn tia laser dựa trên góc và độ dài """
         self.end_x = self.x + 10000 * math.cos(math.radians(self.angle))
         self.end_y = self.y + 10000* math.sin(math.radians(self.angle))
-        line_length = 9999999999
+        line_length = 999999999
         temp_min = []
         for i in collision_map:
             line = i.clipline(self.x, self.y, self.end_x, self.end_y)
@@ -48,20 +41,11 @@ class LaserAiming:
                         self.normal = [0, -1]
                     elif abs(line[0][1] - i.y - i.height) <= 1.5:
                         self.normal = [0, 1]
-
-                """
-                line = self.collision_map[len()-1]
-                if line:
-                    length = 
-                    if length < line_length:
-                        remaining_length = 0
-                        line_length = length
-                        
-                """
         if temp_min:
             self.end_x = temp_min[0]
             self.end_y = temp_min[1]
-        self.remaining_length -= math.sqrt((self.end_x - self.x) ** 2 + (self.end_y - self.y) ** 2)
+        # self.remaining_length -= math.sqrt((self.end_x - self.x) ** 2 + (self.end_y - self.y) ** 2)
+        self.remaining_length -=1
 
     def update(self, tank_x, tank_y, tank_angle):
         # Cập nhật vị trí và góc của laser khi xe tăng thay đổi
@@ -69,8 +53,8 @@ class LaserAiming:
         self.y = tank_y
         self.angle = 360 - tank_angle
 
-    def draw_2_line(self, window):
-        pygame.draw.line(window, (255, 0, 0), [self.x, self.y], [self.end_x, self.end_y], 2)
+    def draw_2_line(self, window,color):
+        pygame.draw.line(window, color, [self.x, self.y], [self.end_x, self.end_y], 1)
 
 
 
