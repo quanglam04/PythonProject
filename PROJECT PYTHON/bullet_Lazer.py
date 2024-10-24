@@ -34,7 +34,7 @@ class Laser:        #Buoc 2: Đạn laser
 
 
     def laser_move(self):
-        if pygame.time.get_ticks() - self.start_time >= 50:
+        if pygame.time.get_ticks() - self.start_time >= 20:
             if self.i > 5:
                 self.i =self.i-5
                 self.j +=1

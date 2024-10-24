@@ -198,10 +198,10 @@ map_10 = 'asset/map/map10.png'
 #---------------------------------------------------------- media ---------------------------------------------------------------------
 backgroundMusic = 'asset/media/media.mp3'
 bulletMusic = 'asset/media/normal bullet.flac'
-laser_sound = 'asset/media/laser-shot-ingame-230500.mp3'
+laser_sound = 'asset/media/laser.wav'
 #-------------------------------------------------------------------------------------------------------------------------------------
 
-
+shot_effect='asset/explosion 2.png'
 
 
 

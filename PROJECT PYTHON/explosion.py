@@ -1,21 +1,22 @@
 import pygame
 
+from Setting import angle
+
+
 class  Explosion:
 
     def __init__(self,x,y,sheet_path,frame_width,frame_height,animation=1000):
         self.sheet_path=pygame.image.load(sheet_path).convert_alpha() #nghe don lam cho hinh anh muot ma hon
         self.frame_width=frame_width
         self.frame_height=frame_height
-
         self.frames=[] #call ra cac khung hinh
-        total_frame_width=self.sheet_path.get_width() // self.frame_width
-        total_frame_height=self.sheet_path.get_height() //self.frame_height
-        total_frame=(self.sheet_path.get_width() // self.frame_width) * (self.sheet_path.get_height() //self.frame_height )   #tong con bao nhieu khung hinh tren hang (cai nay lay 1 hang thoi cho do lau)
+        self.total_frame_width=self.sheet_path.get_width() // self.frame_width
+        self.total_frame_height=self.sheet_path.get_height() //self.frame_height
+        # total_frame=(self.sheet_path.get_width() // self.frame_width) * (self.sheet_path.get_height() //self.frame_height )   #tong con bao nhieu khung hinh tren hang (cai nay lay 1 hang thoi cho do lau)
 
-        for i in range(total_frame_height):
-            for j in range(total_frame_width):
+        for i in range(self.total_frame_height):
+            for j in range(self.total_frame_width):
                 frame = self.sheet_path.subsurface(j * self.frame_width, i*self.frame_height, self.frame_width,self.frame_height)  # tham so (x,y,cr cua anh, cdai cua anh) lay 1 hang => y mac dinh=0
-
                 self.frames.append(frame)
 
 
@@ -37,6 +38,19 @@ class  Explosion:
 
     def draw(self,surface):
         if self.image is not None: #ve
-            surface.blit(self.image, self.rect)
+            surface.blit(self.image,self.rect)
 
+
+class Animation(Explosion):
+    def __init__(self, x, y, sheet_path, frame_width, frame_height, angle, animation=1000):
+        super().__init__(x, y, sheet_path, frame_width, frame_height, animation=1000)
+        self.angle = angle
+
+    def draw(self, surface):
+        if self.image is not None:
+            self.image=pygame.transform.smoothscale(self.image,(128,128))
+            # Xoay hình ảnh theo góc của Animation
+            rotated_image = pygame.transform.rotate(self.image, self.angle)
+            new_rect = rotated_image.get_rect(center=self.rect.center)
+            surface.blit(rotated_image, new_rect)
 

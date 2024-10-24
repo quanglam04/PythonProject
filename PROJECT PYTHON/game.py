@@ -1,5 +1,5 @@
 import pygame
-from pefile import sizeof_type
+import math
 
 import Setting
 from pygame import mixer
@@ -127,7 +127,7 @@ class TankGame:
 
                 # Điều khiển xe tăng
                 tank.check=False
-                tank.control.handle_input()
+                tank.control.handle_input(self.explosions_bull)
                 tank.update_tank_mask()
                 if not tank.check :
                     tank.dx,tank.dy=0,0
