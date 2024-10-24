@@ -203,9 +203,6 @@ class TankGame:
                             tank.tank_laser.angle=180-tank.tank_laser.angle
                         else:
                             tank.tank_laser.angle = 360 - tank.tank_laser.angle
-                rect=TankLogic.calculate_rotated_corners(tank)
-                # print(rect,tank.tank_rect.centerx,tank.tank_rect.centery)
-
                 self.window.blit(tank.rotated_tank_image,tank.new_rect)
                 draw_health_bar(tank,window)
 
