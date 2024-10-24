@@ -1,6 +1,4 @@
 import pygame
-import math
-
 import Setting
 from pygame import mixer
 from tank import load_map
