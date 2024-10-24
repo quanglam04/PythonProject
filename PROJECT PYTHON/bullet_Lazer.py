@@ -1,12 +1,11 @@
 import pygame
-import math
+
 
 class Laser:        #Buoc 2: Đạn laser
     def __init__(self,tank, x, y, angle):
         self.tank=tank
         self.color =tank.color   # Màu của tia laser
         self.width = 5  # Độ dày của tia laser
-        self.length = 10  # Chiều dài của tia laser
         self.x = x
         self.y = y
         self.dame=20
