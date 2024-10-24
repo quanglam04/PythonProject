@@ -38,11 +38,10 @@ class TankControl:
                     self.last_shoot=current_time
                     self.bullet_sound.play()
             elif self.tank.gun_mode == 2:
-                laser=Laser(self.tank,self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
-                            self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
+                laser=Laser(self.tank,self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
+                            self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle)),
                             self.tank.tank_angle)
                 self.lasers.append(laser)
-                # self.tank.gun_mode =1
                 self.tank.tank_laser.active =False
 
 

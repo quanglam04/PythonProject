@@ -31,7 +31,7 @@ class Tank :
         self.laser_endpoints=[]
 
         self.speed_add=0
-        self.dame=10
+        self.dame_bonus=0
         self.laser_bull=None
         self.rotated_tank_image=None
         self.bounding_size = max(self.tank_rect.width, self.tank_rect.height) * 2

@@ -1,5 +1,5 @@
 import math
-
+import numpy as np
 class TankLogic:
     @staticmethod
     def move_tank(tank, speed, window_width, window_height):
@@ -101,3 +101,97 @@ class TankLogic:
                 item.remove(tmp)
                 break
         return res
+    @staticmethod
+    def is_on_line(x,y,A,B,C):
+        d= abs(A*x+B*y+C) / math.sqrt(A*A+B*B)
+        return d <0.5
+    @staticmethod
+    def line_from_point(p1,p2):
+        x1, y1 = p1
+        x2, y2 = p2
+        A = y2 - y1
+        B = x1 - x2
+        C = (x2 * y1 - x1 * y2)
+        return A, B, C
+    @staticmethod
+    def distance_point(x1,y1,x2,y2):
+        return math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1) )
+    @staticmethod
+    def check_point_between(x1,y1,x2,y2,x3,y3):
+        CA=TankLogic.distance_point(x1,y1,x2,y2)
+        CB=TankLogic.distance_point(x2,y2,x3,y3)
+        AB=TankLogic.distance_point(x1,y1,x3,y3)
+        return CA+CB-AB<1
+    @staticmethod
+    def check_collision_with_laser(tank,laser):
+        #phuong trinh duong thang cua laser Ax+By+C=0
+        #vi du end_x=4 end_y =5 x=2 y=3
+        A= laser.end_y-laser.y #2
+        B= laser.x-laser.end_x # -2
+        C=laser.end_x*laser.y-laser.end_y*laser.x #4*3 -5*2 =2 => 2x-2y+2=0
+
+        #4 goc hinh chu nhat
+        rects=TankLogic.calculate_rotated_corners(tank)
+        for rect in rects:
+            if TankLogic.check_point_between(laser.x, laser.y, rect[0], rect[1], laser.end_x, laser.end_y) :
+                return rect[0],rect[1]
+
+
+        res= [TankLogic.line_from_point(rects[0], rects[1]), TankLogic.line_from_point(rects[1], rects[3]),
+              TankLogic.line_from_point(rects[2], rects[3]), TankLogic.line_from_point(rects[0], rects[2])]
+        #lan luot la canh ben tren, canh ben phai, canh o duoi, canh ben trai
+
+        tmp=res[0] #canh ben tren
+        a = np.array([[A, B], [tmp[0], tmp[1]]])
+        b = np.array([-C, -tmp[2]])
+        solution = np.linalg.solve(a, b)
+        x, y = solution
+
+        if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[0][0],rects[0][1],x,y,rects[1][0],rects[1][1]):
+            return x,y
+
+        tmp=res[1] #canh ben phai
+        a = np.array([[A, B], [tmp[0], tmp[1]]])
+        b = np.array([-C, -tmp[2]])
+        solution = np.linalg.solve(a, b)
+        x, y = solution
+        if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[1][0],rects[1][1],x,y,rects[3][0],rects[3][1]):
+            return x,y
+
+
+        tmp=res[2] #canh ben duoi
+        a = np.array([[A, B], [tmp[0], tmp[1]]])
+        b = np.array([-C, -tmp[2]])
+        solution = np.linalg.solve(a, b)
+        x, y = solution
+        if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[2][0],rects[2][1],x,y,rects[3][0],rects[3][1]):
+            return x,y
+
+
+        tmp=res[3] #canh ben trai
+        a = np.array([[A, B], [tmp[0], tmp[1]]])
+        b = np.array([-C, -tmp[2]])
+        solution = np.linalg.solve(a, b)
+        x, y = solution
+        if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[0][0],rects[0][1],x,y,rects[3][0],rects[3][1]):
+            return x,y
+
+
+
+        # for tmp in res:
+        #     a=np.array([  [A,B] , [tmp[0],tmp[1]]  ])
+        #     b=np.array([-C,-tmp[2]])
+        #     try:
+        #         solution=np.linalg.solve(a,b)
+        #         x,y=solution
+        #         #print(x,y,laser.x,laser.y,laser.end_x,laser.end_y)
+        #         if  TankLogic.check_point_between(laser.x,laser.y,x,y,laser.end_x,laser.end_y):
+        #             print(A,B,C,tmp[0],tmp[1],tmp[2],"diem: " ,x,y,laser.x,laser.y,laser.end_x,laser.end_y )
+        #             print(res)
+        #             print(A, B, C)
+        #             return True
+        #     except np.linalg.LinAlgError:
+        #         pass
+
+        return None,None
+

@@ -1,4 +1,6 @@
 import pygame
+from pefile import sizeof_type
+
 import Setting
 from pygame import mixer
 from tank import load_map
@@ -121,7 +123,8 @@ class TankGame:
             self.window.fill(Setting.YELLOW)  # Xóa màn hình với màu trắng
             draw_map(self.window, self.map_data, TILE_SIZE)
 
-            for i, tank in enumerate(self.tanks):
+            for tank in self.tanks:
+
                 # Điều khiển xe tăng
                 tank.check=False
                 tank.control.handle_input()
@@ -135,7 +138,7 @@ class TankGame:
                 elif item_have ==1:
                     tank.health +=25
                 elif item_have == 0:
-                    tank.dame =35
+                    tank.dame_bonus =35
                     start_time_gun=pygame.time.get_ticks()
                     image_path = Setting.asset +Setting.Tank_power_bullet+tank.tank_name
                     tank.update_tank_image(image_path)
@@ -152,9 +155,9 @@ class TankGame:
                 if tank.speed_add !=0 :
                     if pygame.time.get_ticks()-start_time >=10000:
                         tank.speed_add =0
-                if tank.dame !=10 :
+                if tank.dame_bonus  :
                     if pygame.time.get_ticks()-start_time_gun >=10000:
-                        tank.dame=10
+                        tank.dame_bonus=0
                         image_path = Setting.asset+tank.tank_name
                         tank.update_tank_image(image_path)
                         tank.bullet_color=Setting.BLACK
@@ -202,7 +205,8 @@ class TankGame:
                             tank.tank_laser.angle=180-tank.tank_laser.angle
                         else:
                             tank.tank_laser.angle = 360 - tank.tank_laser.angle
-
+                rect=TankLogic.calculate_rotated_corners(tank)
+                # print(rect,tank.tank_rect.centerx,tank.tank_rect.centery)
 
                 self.window.blit(tank.rotated_tank_image,tank.new_rect)
                 draw_health_bar(tank,window)
@@ -222,7 +226,7 @@ class TankGame:
                         explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png",
                                               256, 256)
                         self.explosions_bull.append(explosion)
-                        tank.health -= bullet.tank.dame
+                        tank.health = tank.health- bullet.dame -bullet.tank.dame_bonus*(bullet.tank.dame_bonus-bullet.dame)//(60-bullet.dame)
                         self.bullets.remove(bullet)
                         if tank.health == 0:
                             explosion = Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,
@@ -230,13 +234,30 @@ class TankGame:
                             self.explosions_bull.append(explosion)
                             self.tanks.remove(tank)
                         break
+            print(len(self.lasers))
             for laser in self.lasers:
-                if laser.is_expired_bullet():
-                    laser.draw(self.window)
-                    self.lasers.remove(laser)
-                else:
+                if laser.tank.gun_mode == 2:
                     laser.laser_move()
+                    if laser.is_expired_bullet():
+                        laser.draw(self.window)
+                        self.lasers.remove(laser)
+                        laser.tank.gun_mode = 1
+
+
+                    for tank in self.tanks:
+                                x,y=TankLogic.check_collision_with_laser(tank,laser)
+                                if x is not None and y is not None :
+                                    laser.end_x,laser.end_y=x,y
+                                    laser.draw(self.window)
+                                    self.lasers.remove(laser)
+                                    laser.tank.gun_mode=1
+                                    tank.health = tank.health- laser.dame -laser.tank.dame_bonus*(laser.tank.dame_bonus-laser.dame)//(60-laser.dame)
+                                    explosion = Explosion(x, y, "asset/explosion 1.png",
+                                                          256, 256)
+                                    self.explosions_bull.append(explosion)
+                                    break
                     laser.draw(self.window)
+
 
             for explosion in self.explosions_bull[:]:
                 explosion.update()
