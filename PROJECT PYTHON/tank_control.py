@@ -15,7 +15,9 @@ class TankControl:
         self.last_shoot=0
         self.control_setting=control_setting
         self.bullet_sound = mixer.Sound(Setting.bulletMusic)
-        self.bullet_sound.set_volume(0.4)
+        self.bullet_sound.set_volume(0.5)
+        self.laser_sound = mixer.Sound(Setting.laser_sound)
+        self.laser_sound.set_volume(0.5)
     def handle_input(self):#doc event hay doc input cua pygame
         keys = pygame.key.get_pressed()
         if keys[self.control_setting['up']] :
@@ -43,6 +45,9 @@ class TankControl:
                             self.tank.tank_angle)
                 self.lasers.append(laser)
                 self.tank.tank_laser.active =False
+                image_path = Setting.asset + self.tank.tank_name
+                self.tank.update_tank_image(image_path)
+                self.laser_sound.play()
 
 
 

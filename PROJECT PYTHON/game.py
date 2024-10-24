@@ -228,13 +228,8 @@ class TankGame:
                         self.explosions_bull.append(explosion)
                         tank.health = tank.health- bullet.dame -bullet.tank.dame_bonus*(bullet.tank.dame_bonus-bullet.dame)//(60-bullet.dame)
                         self.bullets.remove(bullet)
-                        if tank.health == 0:
-                            explosion = Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,
-                                                  "asset/explosion 4.png", 256, 256)
-                            self.explosions_bull.append(explosion)
-                            self.tanks.remove(tank)
+
                         break
-            print(len(self.lasers))
             for laser in self.lasers:
                 if laser.tank.gun_mode == 2:
                     laser.laser_move()
@@ -242,9 +237,8 @@ class TankGame:
                         laser.draw(self.window)
                         self.lasers.remove(laser)
                         laser.tank.gun_mode = 1
-
-
-                    for tank in self.tanks:
+                    else:
+                        for tank in self.tanks:
                                 x,y=TankLogic.check_collision_with_laser(tank,laser)
                                 if x is not None and y is not None :
                                     laser.end_x,laser.end_y=x,y
@@ -256,8 +250,13 @@ class TankGame:
                                                           256, 256)
                                     self.explosions_bull.append(explosion)
                                     break
-                    laser.draw(self.window)
-
+                        laser.draw(self.window)
+            for tank in self.tanks:
+                if tank.health <= 0:
+                    explosion = Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,
+                                          "asset/explosion 4.png", 256, 256)
+                    self.explosions_bull.append(explosion)
+                    self.tanks.remove(tank)
 
             for explosion in self.explosions_bull[:]:
                 explosion.update()
