@@ -54,7 +54,7 @@ def draw_loading_bar(progress):
 # Hàm hiển thị thông báo sau khi load xong
 def show_message():
     message = "Press Enter to continue..."
-    text_surface = Setting.font.render(message, True, Setting.text_color)
+    text_surface = pygame.font.Font(None, 42).render(message, True, Setting.text_color)
     text_rect = text_surface.get_rect(center=(Setting.WIDTH // 2, Setting.HEIGHT // 2 + 70))
 
     # Vẽ nền lại và hiển thị thông báo

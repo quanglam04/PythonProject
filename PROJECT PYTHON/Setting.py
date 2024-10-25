@@ -1,6 +1,5 @@
 import random
-import pygame
-pygame.init()
+title_size=16
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 DARKGREY = (40, 40, 40)
@@ -21,7 +20,6 @@ TITLE = "PROJECT GROUP 3 by Dat, Huy, Kien, Khoi, Lam"
 
 # loading bar
 #---------------------------------------------- Font chữ---------------------------------------------------
-font = pygame.font.Font(None, 42)
 
 
 #   Các phím đặc biệt khi lưu dưới file không ở dưới dạng một char thì không thể dùng function ord     #
@@ -174,6 +172,9 @@ laser_gun = 'asset/item/laser_gun.png'
 speed = 'asset/item/speed.png'
 x3 = 'asset/item/x3.png'
 laser_line = 'asset/item/Laser.png'
+machine_gun='asset/item/Machine Gun.png'
+
+
 
 background = 'asset/background.jpg'
 startBtn = 'asset/btn/start_btn_newVersion.png'

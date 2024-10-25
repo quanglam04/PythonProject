@@ -2,7 +2,7 @@ import pygame
 import math
 from tank_logic import TankLogic
 class Bullet:
-    def __init__(self,tank, x, y, angle, speed=1.25):
+    def __init__(self,tank, x, y, angle, speed=1):
         self.radius = 5  # Radius of the bullet circle
         self.color = tank.bullet_color
         self.rect = pygame.Rect(x - self.radius, y - self.radius, self.radius * 2, self.radius * 2)
@@ -17,7 +17,6 @@ class Bullet:
         self.direction_x = math.cos(math.radians(self.angle)) * self.speed
         self.direction_y = -math.sin(math.radians(self.angle)) * self.speed
         self.tank=tank
-
     def move(self, map_data, tile_size):
         a=self.rect.x+self.radius
         b=self.rect.y+self.radius
@@ -39,7 +38,6 @@ class Bullet:
             self.direction_x *=-1
             self.bounce_count+=1
         elif map_data[int((b+self.radius)/16)][int((a+self.radius)/16)]=='1':
-            print("Trai tren")
             x= int((a+self.radius)/16)*16
             y= int((b+self.radius)/16)*16
             if TankLogic.check_in_circle((x,y),a,b,self.radius):
@@ -47,7 +45,6 @@ class Bullet:
                     self.direction_x *=-1
                 else: self.direction_y *=-1
         elif map_data[int((b - self.radius) / 16)][int((a + self.radius) / 16)] == '1':
-            print("Trai duoi")
             x= int((a+self.radius)/16)*16
             y=int((b - self.radius) / 16)+16
             if TankLogic.check_in_circle((x,y),a,b,self.radius):
@@ -55,7 +52,6 @@ class Bullet:
                     self.direction_y*=-1
                 else: self.direction_x *=-1
         elif map_data[int((b - self.radius) / 16)][int((a - self.radius) / 16)] == '1':
-            print("Phai tren")
             x=int((a - self.radius) / 16)+16
             y=int((b - self.radius) / 16)
             if TankLogic.check_in_circle((x,y),a,b,self.radius):
@@ -63,7 +59,6 @@ class Bullet:
                     self.direction_y *=-1
                 else: self.direction_x*=-1
         elif map_data[int((b + self.radius) / 16)][int((a - self.radius) / 16)] == '1':
-            print ("Phai duoi")
             x=int((a - self.radius) / 16)+16
             y=int((b + self.radius) / 16) +16
             if TankLogic.check_in_circle((x,y),a,b,self.radius):

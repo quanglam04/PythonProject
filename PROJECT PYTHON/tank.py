@@ -23,7 +23,7 @@ class Tank :
         self.d_angle=0
         self.check = False
         self.control=None
-        self.gun_mode=1 #mac dinh la sung thuong 2 la laser 3 la dan trum
+        self.gun_mode=3 #mac dinh la sung thuong 2 la laser 3 la machine gun
         self.bullet_color=Setting.BLACK
 
 

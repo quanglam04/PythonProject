@@ -83,20 +83,20 @@ class TankLogic:
         return collision_point is not None
     @staticmethod
     def check_collision_with_wall(tank,map_mask):
-        offset_x=int (tank.tank_x-22.5)
-        offset_y=int (tank.tank_y-30)
+        offset_x=int (tank.tank_x-tank.tank_width/2)
+        offset_y=int (tank.tank_y-tank.tank_height)
         check = map_mask.overlap(tank.tank_mask,(offset_x,offset_y))
         return check is not None
     @staticmethod
     def check_collision_with_items(tank, item,item_name,map_data,title_size):
         res=None
         for tmp in item:
-            offset_x= int(tank.tank_x-tmp[1]*title_size-title_size)
-            offset_y= int(tank.tank_y-tmp[2]*title_size-title_size)
+            offset_x= int(tank.tank_x-tmp[1]-title_size)
+            offset_y= int(tank.tank_y-tmp[2]-title_size)
             check=item_name[tmp[0]].overlap(tank.tank_mask,(offset_x,offset_y))
             if check is not None:
                 print(item_name[tmp[0]])
-                map_data[tmp[2]][tmp[1]]= '0'
+                map_data[tmp[2]//title_size][tmp[1]//title_size]= '0'
                 res=tmp[0]
                 item.remove(tmp)
                 break
