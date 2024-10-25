@@ -3,8 +3,10 @@ import math
 from tank_logic import TankLogic
 class Bullet:
     def __init__(self,tank, x, y, angle, speed=1):
+        self.tank=tank
         self.radius = 5  # Radius of the bullet circle
         self.color = tank.bullet_color
+        self.name="Normal"
         self.rect = pygame.Rect(x - self.radius, y - self.radius, self.radius * 2, self.radius * 2)
         self.angle = angle
         self.speed = speed
@@ -12,11 +14,11 @@ class Bullet:
         self.bullet_y = self.rect.y
         self.creation_time = pygame.time.get_ticks()
         self.bounce_count = 0  # Count how many times the bullet has bounced
-        self.dame=10
+        #self.dame=10
         # Calculate direction vector based on angle
         self.direction_x = math.cos(math.radians(self.angle)) * self.speed
         self.direction_y = -math.sin(math.radians(self.angle)) * self.speed
-        self.tank=tank
+
     def move(self, map_data, tile_size):
         a=self.rect.x+self.radius
         b=self.rect.y+self.radius
@@ -78,5 +80,7 @@ class Bullet:
 
     def is_expired_bullet(self):
         return self.bounce_count >= 10
-    def update(self,dame):
-        self.dame=dame
+    def dame(self):
+        if self.tank.dame_bonus != 0:
+            return 20
+        return 10

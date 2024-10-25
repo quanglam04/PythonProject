@@ -5,8 +5,9 @@ import math
 from bullet import Bullet
 from pygame import mixer
 from bullet_Lazer import Laser
-from explosion import Animation
 from Minibullet import Minigun
+import Static_object
+from explosion import Animation
 class TankControl:
     def __init__(self, tank, window_width, window_height,bullets,lasers,control_setting):
         self.tank = tank #chuyen tham so cua xe tang vao bao gom kich co vi tri goc quay
@@ -20,6 +21,8 @@ class TankControl:
         self.bullet_sound.set_volume(0.5)
         self.laser_sound = mixer.Sound(Setting.laser_sound)
         self.laser_sound.set_volume(0.5)
+        self.machine_gun_sound= mixer.Sound(Setting.machine_sound)
+        self.machine_gun_sound.set_volume(0.5)
     def handle_input(self,explosion_bull):#doc event hay doc input cua pygame
         keys = pygame.key.get_pressed()
         if keys[self.control_setting['up']] :
@@ -42,7 +45,7 @@ class TankControl:
                     self.last_shoot=current_time
                     self.bullet_sound.play()
                     animation=Animation(self.tank.tank_rect.centerx + 55 * math.cos(math.radians(self.tank.tank_angle)),
-                        self.tank.tank_rect.centery - 55 * math.sin(math.radians(self.tank.tank_angle)),Setting.shot_effect,256,256,self.tank.tank_angle)
+                         self.tank.tank_rect.centery - 55 * math.sin(math.radians(self.tank.tank_angle)),Static_object.shot_frames,self.tank.tank_angle)
                     explosion_bull.append(animation)
             elif self.tank.gun_mode == 2:
                 laser=Laser(self.tank,self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
@@ -58,18 +61,19 @@ class TankControl:
             elif self.tank.gun_mode == 3:
                 if (current_time - self.last_shoot) > 200:
                     minibull_1=Minigun(self.tank,
-                        self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
-                        self.tank.tank_rect.centery - 45 * math.sin(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centerx + 30 * math.cos(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
                         self.tank.tank_angle)
                     minibull_2=Minigun(self.tank,
-                        self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
-                        self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centerx + 25 * math.cos(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centery - 25 * math.sin(math.radians(self.tank.tank_angle)),
                         self.tank.tank_angle)
                     minibull_3=Minigun(self.tank,
-                        self.tank.tank_rect.centerx + 45 * math.cos(math.radians(self.tank.tank_angle)),
-                        self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centery - 30 * math.sin(math.radians(self.tank.tank_angle)),
                         self.tank.tank_angle)
                     self.last_shoot=current_time
                     self.bullets.append(minibull_1)
                     self.bullets.append(minibull_2)
                     self.bullets.append(minibull_3)
+                    self.machine_gun_sound.play()

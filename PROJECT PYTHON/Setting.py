@@ -1,4 +1,5 @@
 import random
+
 title_size=16
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -200,10 +201,12 @@ map_10 = 'asset/map/map10.png'
 backgroundMusic = 'asset/media/media.mp3'
 bulletMusic = 'asset/media/normal bullet.flac'
 laser_sound = 'asset/media/laser.wav'
+machine_sound='asset/media/single-gunshot-52-80191.mp3'
 #-------------------------------------------------------------------------------------------------------------------------------------
 
-shot_effect='asset/explosion 2.png'
-
+shot_effect_sheet='asset/explosion 2.png'
+explosion_eff_1_sheet='asset/explosion 1.png'
+explosion_eff_4_sheet='asset/explosion 4.png'
 
 
 

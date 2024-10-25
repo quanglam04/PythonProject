@@ -1,15 +1,18 @@
 import pygame
+from pygame.examples.aliens import Explosion
+
 import Setting
 from pygame import mixer
+
+import Static_object
 from tank import load_map
 from tank import Tank
 from tank_control import TankControl
 from tank_logic import TankLogic
 import StartScreen
 from tank import draw_health_bar
-from explosion import Explosion
 import Static_object as St
-
+from explosion import Explosion
 TILE_SIZE = 16
 item = []
 from Laser_Aiming_Line import LaserAiming
@@ -103,6 +106,7 @@ class TankGame:
 
 
     def run(self, window):
+
         start_time=0
         start_time_gun=0
         self.window = window
@@ -123,7 +127,6 @@ class TankGame:
             draw_map(self.window, self.map_data, TILE_SIZE)
 
             for tank in self.tanks:
-
                 # Điều khiển xe tăng
                 tank.check=False
                 tank.control.handle_input(self.explosions_bull)
@@ -137,7 +140,7 @@ class TankGame:
                 elif item_have ==1:
                     tank.health +=25
                 elif item_have == 0:
-                    tank.dame_bonus =35
+                    tank.dame_bonus =10
                     start_time_gun=pygame.time.get_ticks()
                     image_path = Setting.asset +Setting.Tank_power_bullet+tank.tank_name
                     tank.update_tank_image(image_path)
@@ -211,18 +214,19 @@ class TankGame:
             for bullet in self.bullets:
                 bullet.move(self.map_data,TILE_SIZE)
                 if bullet.is_expired_bullet():
-                    explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png", 256,
-                                          256)
+                    if bullet.radius >=5:
+                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery,Static_object.expl_1_frames)
+                        self.explosions_bull.append(explosion)
                     self.bullets.remove(bullet)
-                    self.explosions_bull.append(explosion)
                 else:
                     bullet.draw(self.window)
                 for tank in self.tanks:
                     if TankLogic.check_collision(tank,bullet):
-                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery, "asset/explosion 1.png",
-                                              256, 256)
+                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery,Static_object.expl_1_frames)
                         self.explosions_bull.append(explosion)
-                        tank.health = tank.health- bullet.dame -bullet.tank.dame_bonus*(bullet.tank.dame_bonus-bullet.dame)//(60-bullet.dame)
+
+                        tank.health = tank.health- bullet.dame()
+
                         self.bullets.remove(bullet)
 
                         break
@@ -241,25 +245,27 @@ class TankGame:
                                     laser.draw(self.window)
                                     self.lasers.remove(laser)
                                     laser.tank.gun_mode=1
-                                    tank.health = tank.health- laser.dame -laser.tank.dame_bonus*(laser.tank.dame_bonus-laser.dame)//(60-laser.dame)
-                                    explosion = Explosion(x, y, "asset/explosion 1.png",
-                                                          256, 256)
+                                    tank.health = tank.health- laser.dame -laser.tank.dame_bonus
+                                    explosion=Explosion(x,y,Static_object.expl_1_frames)
+                                    #explosion.update(x,y,0)
                                     self.explosions_bull.append(explosion)
                                     break
                         laser.draw(self.window)
 
             for tank in self.tanks:
                 if tank.health <= 0:
-                    explosion = Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,
-                                          "asset/explosion 4.png", 256, 256)
+                    explosion=Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,Static_object.expl_4_frames)
                     self.explosions_bull.append(explosion)
                     self.tanks.remove(tank)
 
             for explosion in self.explosions_bull[:]:
                 explosion.update()
+
                 explosion.draw(self.window)
+
                 if explosion.image is None:
                     self.explosions_bull.remove(explosion)
+
 
             pygame.display.flip()
 
