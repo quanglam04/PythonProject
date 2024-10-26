@@ -1,6 +1,6 @@
 import pygame
 class  Explosion:
-    def __init__(self,x,y,frames,animation=1000):
+    def __init__(self,x,y,frames,animation):
         self.frames=frames
         self.animation = animation
         self.current_frame=0
@@ -22,8 +22,8 @@ class  Explosion:
 
 
 class Animation(Explosion):
-    def __init__(self, x,y,frames,angle,animation=1000):
-        super().__init__( x,y,frames, animation=1000)
+    def __init__(self, x,y,frames,angle,animation):
+        super().__init__( x,y,frames, animation)
         self.angle=angle
     def draw(self, surface):
         if self.image is not None:

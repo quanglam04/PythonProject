@@ -204,10 +204,11 @@ laser_sound = 'asset/media/laser.wav'
 machine_sound='asset/media/single-gunshot-52-80191.mp3'
 #-------------------------------------------------------------------------------------------------------------------------------------
 
-shot_effect_sheet='asset/explosion 2.png'
-explosion_eff_1_sheet='asset/explosion 1.png'
-explosion_eff_4_sheet='asset/explosion 4.png'
-
+shot_effect_sheet='asset/Sprite_sheet/explosion 2.png'
+explosion_eff_1_sheet='asset/Sprite_sheet/explosion 1.png'
+explosion_eff_4_sheet='asset/Sprite_sheet/explosion 4.png'
+explosion_eff_3_sheet='asset/Sprite_sheet/explosion 3.png'
+mini_gun_shot_eff_sheet='asset/Sprite_sheet/ImpactMetal8Generic.png'
 
 
 

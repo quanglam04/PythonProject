@@ -45,7 +45,8 @@ laser_line = tf.scale(laser_line, (25, 25))
 expl_1_frames=caculate_frame(Setting.explosion_eff_1_sheet,256,256)
 shot_frames =caculate_frame(Setting.shot_effect_sheet,256,256)
 expl_4_frames= caculate_frame(Setting.explosion_eff_4_sheet,256,256)
-
+expl_3_frames= caculate_frame(Setting.explosion_eff_3_sheet,256,256)
+minigun_shot_frames=caculate_frame(Setting.mini_gun_shot_eff_sheet,192,192)
 
 
 pygame.display.quit()

@@ -215,14 +215,14 @@ class TankGame:
                 bullet.move(self.map_data,TILE_SIZE)
                 if bullet.is_expired_bullet():
                     if bullet.radius >=5:
-                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery,Static_object.expl_1_frames)
+                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery,Static_object.expl_1_frames,1000)
                         self.explosions_bull.append(explosion)
                     self.bullets.remove(bullet)
                 else:
                     bullet.draw(self.window)
                 for tank in self.tanks:
                     if TankLogic.check_collision(tank,bullet):
-                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery,Static_object.expl_1_frames)
+                        explosion = Explosion(bullet.rect.centerx, bullet.rect.centery,Static_object.expl_1_frames,1000)
                         self.explosions_bull.append(explosion)
 
                         tank.health = tank.health- bullet.dame()
@@ -246,15 +246,15 @@ class TankGame:
                                     self.lasers.remove(laser)
                                     laser.tank.gun_mode=1
                                     tank.health = tank.health- laser.dame -laser.tank.dame_bonus
-                                    explosion=Explosion(x,y,Static_object.expl_1_frames)
-                                    #explosion.update(x,y,0)
+                                    explosion=Explosion(x,y,Static_object.expl_1_frames,1000)
+
                                     self.explosions_bull.append(explosion)
                                     break
                         laser.draw(self.window)
 
             for tank in self.tanks:
                 if tank.health <= 0:
-                    explosion=Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,Static_object.expl_4_frames)
+                    explosion=Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,Static_object.expl_4_frames,1000)
                     self.explosions_bull.append(explosion)
                     self.tanks.remove(tank)
 

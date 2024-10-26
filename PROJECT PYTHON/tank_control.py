@@ -45,7 +45,7 @@ class TankControl:
                     self.last_shoot=current_time
                     self.bullet_sound.play()
                     animation=Animation(self.tank.tank_rect.centerx + 55 * math.cos(math.radians(self.tank.tank_angle)),
-                         self.tank.tank_rect.centery - 55 * math.sin(math.radians(self.tank.tank_angle)),Static_object.shot_frames,self.tank.tank_angle)
+                         self.tank.tank_rect.centery - 55 * math.sin(math.radians(self.tank.tank_angle)),Static_object.shot_frames,self.tank.tank_angle,1000)
                     explosion_bull.append(animation)
             elif self.tank.gun_mode == 2:
                 laser=Laser(self.tank,self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
@@ -61,19 +61,24 @@ class TankControl:
             elif self.tank.gun_mode == 3:
                 if (current_time - self.last_shoot) > 200:
                     minibull_1=Minigun(self.tank,
-                        self.tank.tank_rect.centerx + 30 * math.cos(math.radians(self.tank.tank_angle)),
-                        self.tank.tank_rect.centery - 20 * math.sin(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle+15)),
+                        self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle+15)),
                         self.tank.tank_angle)
                     minibull_2=Minigun(self.tank,
-                        self.tank.tank_rect.centerx + 25 * math.cos(math.radians(self.tank.tank_angle)),
-                        self.tank.tank_rect.centery - 25 * math.sin(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle)),
                         self.tank.tank_angle)
                     minibull_3=Minigun(self.tank,
-                        self.tank.tank_rect.centerx + 20 * math.cos(math.radians(self.tank.tank_angle)),
-                        self.tank.tank_rect.centery - 30 * math.sin(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle-15)),
+                        self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle-15)),
                         self.tank.tank_angle)
                     self.last_shoot=current_time
                     self.bullets.append(minibull_1)
                     self.bullets.append(minibull_2)
                     self.bullets.append(minibull_3)
+                    animation = Animation(
+                        self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
+                        Static_object.minigun_shot_frames, self.tank.tank_angle,156)
+                    explosion_bull.append(animation)
                     self.machine_gun_sound.play()
