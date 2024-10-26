@@ -87,6 +87,9 @@ if lines[3].strip()=="True" :
     Window_mode=True
 else:
     Window_mode=False
+bg_volume=float(lines[1].strip()) /100
+sf_volume=float(lines[2].strip()) /100
+
 #---------------------------------------------- Key Press ---------------------------------
 #player 1
 up_player_1 = get_key_code(lines[4].strip())
@@ -196,11 +199,18 @@ map_8 = 'asset/map/map8.png'
 map_9 = 'asset/map/map9.png'
 map_10 = 'asset/map/map10.png'
 
-#---------------------------------------------------------- media ---------------------------------------------------------------------
+#---------------------------------------------------------- Amo Sound eff ---------------------------------------------------------------------
 backgroundMusic = 'asset/media/media.mp3'
 bulletMusic = 'asset/media/normal bullet.flac'
 laser_sound = 'asset/media/laser.wav'
-machine_sound='asset/media/single-gunshot-52-80191.mp3'
+machine_sound='asset/media/rifle_fire_1.wav'
+
+#---------------------------------------------Item Sound eff---------------------------------------------------------------------------------
+mg_item_se='asset/media/rifle_deploy_1.wav'
+la_item_se='asset/media/laser_on.wav'
+
+
+
 #-------------------------------------------------------------------------------------------------------------------------------------
 
 shot_effect_sheet='asset/Sprite_sheet/explosion 2.png'

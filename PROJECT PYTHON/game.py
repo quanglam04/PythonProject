@@ -1,6 +1,6 @@
 import pygame
 import Setting
-from pygame import mixer
+import Sound
 import Static_object
 from tank import load_map
 from tank import Tank
@@ -21,7 +21,6 @@ class TankGame:
         self.window = None
         self.running = True
         self.explosions_bull = []
-        # self.bullets = [[] for _ in range(StartScreen.result['numberOfPlayer'])]
         self.bullets = []
         self.lasers=[]
         random_index = StartScreen.result['selected_map']
@@ -103,14 +102,9 @@ class TankGame:
 
 
     def run(self, window):
-
         start_time=0
         start_time_gun=0
         self.window = window
-
-        # Cài đặt âm thanh
-        setVolumn(0.0)
-
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -136,18 +130,21 @@ class TankGame:
                 elif item_have == 0:
                     tank.dame_bonus =10
                     start_time_gun=pygame.time.get_ticks()
-                    image_path = Setting.asset +Setting.Tank_power_bullet+tank.tank_name
-                    tank.update_tank_image(image_path)
+                    # image_path = Setting.asset +Setting.Tank_power_bullet+tank.tank_name
+                    # tank.update_tank_image(image_path)
                     tank.bullet_color=tank.color
 
                 elif item_have == 5:
                     tank.gun_mode = 2
                     image_path= Setting.asset+Setting.Laser_path+tank.tank_name
                     tank.update_tank_image(image_path)
+                    Sound.ls_item_s.play()
+
                 elif item_have == 6:
                     tank.gun_mode= 3
                     image_path =Setting.asset+Setting.Machine_path+tank.tank_name
                     tank.update_tank_image(image_path)
+                    Sound.mg_item_s.play()
 
                 if tank.speed_add !=0 :
                     if pygame.time.get_ticks()-start_time >=10000:
@@ -186,7 +183,7 @@ class TankGame:
                 tank.tank_rect.x = int(tank.tank_x)
                 tank.tank_rect.y = int(tank.tank_y)
 
-                print(tank.gun_mode)
+
                 if tank.gun_mode==2:
                     tank.tank_laser = LaserAiming(tank.tank_x , tank.tank_y , tank.tank_angle, self.window_width,
                                                   self.window_height, self.map_data)
@@ -296,11 +293,7 @@ class TankGame:
 #
 #
 #     pygame.quit()  # Thoát pygame
-def setVolumn(x):
-    mixer.init()
-    mixer.music.load(Setting.backgroundMusic)
-    mixer.music.set_volume(x)
-    mixer.music.play()
+
 
 def read_map(file_path):
     with open(file_path, 'r') as file:

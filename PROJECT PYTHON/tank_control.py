@@ -3,11 +3,11 @@ import Setting
 from tank_logic import TankLogic
 import math
 from bullet import Bullet
-from pygame import mixer
 from bullet_Lazer import Laser
 from Minibullet import Minigun
 import Static_object
 from explosion import Animation
+import Sound
 class TankControl:
     def __init__(self, tank, window_width, window_height,bullets,lasers,control_setting):
         self.tank = tank #chuyen tham so cua xe tang vao bao gom kich co vi tri goc quay
@@ -17,12 +17,6 @@ class TankControl:
         self.lasers=lasers
         self.last_shoot=0
         self.control_setting=control_setting
-        self.bullet_sound = mixer.Sound(Setting.bulletMusic)
-        self.bullet_sound.set_volume(0.5)
-        self.laser_sound = mixer.Sound(Setting.laser_sound)
-        self.laser_sound.set_volume(0.5)
-        self.machine_gun_sound= mixer.Sound(Setting.machine_sound)
-        self.machine_gun_sound.set_volume(0.5)
     def handle_input(self,explosion_bull):#doc event hay doc input cua pygame
         keys = pygame.key.get_pressed()
         if keys[self.control_setting['up']] :
@@ -43,7 +37,7 @@ class TankControl:
                         self.tank.tank_angle)
                     self.bullets.append(bullet)
                     self.last_shoot=current_time
-                    self.bullet_sound.play()
+                    Sound.bullet_sound.play()
                     animation=Animation(self.tank.tank_rect.centerx + 55 * math.cos(math.radians(self.tank.tank_angle)),
                          self.tank.tank_rect.centery - 55 * math.sin(math.radians(self.tank.tank_angle)),Static_object.shot_frames,self.tank.tank_angle,1000)
                     explosion_bull.append(animation)
@@ -56,7 +50,7 @@ class TankControl:
                 self.tank.gun_mode =1 #lap tuc chuyen gun_mode ve mac dinh
                 image_path = Setting.asset + self.tank.tank_name
                 self.tank.update_tank_image(image_path)
-                self.laser_sound.play()
+                Sound.laser_sound.play()
                 self.last_shoot = current_time
 
             elif self.tank.gun_mode == 3:
@@ -82,5 +76,5 @@ class TankControl:
                         self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
                         Static_object.minigun_shot_frames, self.tank.tank_angle,156)
                     explosion_bull.append(animation)
-                    self.machine_gun_sound.play()
+                    Sound.machine_gun_sound.play()
                     self.tank.minigun_bull_count +=3

@@ -22,8 +22,8 @@ class TankLogic:
     @staticmethod
     def check_in_circle(point, a, b, r):
         distance = (point[0] - a) * (point[0] - a) + (point[1] - b) * (point[1] - b)
-        print(point[0], point[1], a, b)
-        print(distance, r * r)
+        # print(point[0], point[1], a, b)
+        # print(distance, r * r)
         return r * r - distance >= 0
     @staticmethod
     def calculate_rotated_corners(tank):
@@ -95,7 +95,7 @@ class TankLogic:
             offset_y= int(tank.tank_y-tmp[2]-title_size)
             check=item_name[tmp[0]].overlap(tank.tank_mask,(offset_x,offset_y))
             if check is not None:
-                print(item_name[tmp[0]])
+                # print(item_name[tmp[0]])
                 map_data[tmp[2]//title_size][tmp[1]//title_size]= '0'
                 res=tmp[0]
                 item.remove(tmp)
