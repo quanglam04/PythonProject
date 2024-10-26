@@ -52,7 +52,8 @@ class TankControl:
                             self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle)),
                             self.tank.tank_angle)
                 self.lasers.append(laser)
-                self.tank.tank_laser.active =False
+                self.tank.tank_laser.active =True #Khi bam shot tuc la tia laser da duoc active
+                self.tank.gun_mode =1 #lap tuc chuyen gun_mode ve mac dinh
                 image_path = Setting.asset + self.tank.tank_name
                 self.tank.update_tank_image(image_path)
                 self.laser_sound.play()

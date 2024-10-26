@@ -110,9 +110,6 @@ class TankGame:
 
         # Cài đặt âm thanh
         setVolumn(0.0)
-        for tank in self.tanks:
-            tank.tank_laser = LaserAiming(tank.tank_x, tank.tank_y, tank.tank_angle, self.window_width,
-                                          self.window_height, self.map_data)
 
         while self.running:
             for event in pygame.event.get():
@@ -144,7 +141,6 @@ class TankGame:
                     tank.bullet_color=tank.color
 
                 elif item_have == 5:
-                    tank.tank_laser.active=True
                     tank.gun_mode = 2
                     image_path= Setting.asset+Setting.Laser_path+tank.tank_name
                     tank.update_tank_image(image_path)
@@ -190,8 +186,8 @@ class TankGame:
                 tank.tank_rect.x = int(tank.tank_x)
                 tank.tank_rect.y = int(tank.tank_y)
 
-
-                if tank.tank_laser.active:
+                print(tank.gun_mode)
+                if tank.gun_mode==2:
                     tank.tank_laser = LaserAiming(tank.tank_x , tank.tank_y , tank.tank_angle, self.window_width,
                                                   self.window_height, self.map_data)
                     tank.tank_laser.active=True
@@ -233,12 +229,12 @@ class TankGame:
 
                         break
             for laser in self.lasers:
-                if laser.tank.gun_mode == 2:
+                if laser.tank.tank_laser.active: #trong  vai ms thi cau lenh an nut shot co the da tao ra nhieu laser, ta chi lay duy nhat mot cai
                     laser.laser_move()
                     if laser.is_expired_bullet():
                         laser.draw(self.window)
                         self.lasers.remove(laser)
-                        laser.tank.gun_mode = 1
+                        laser.tank.tank_laser.active = False #khi como
                     else:
                         for tank in self.tanks:
                                 x,y=TankLogic.check_collision_with_laser(tank,laser)
@@ -246,7 +242,7 @@ class TankGame:
                                     laser.end_x,laser.end_y=x,y
                                     laser.draw(self.window)
                                     self.lasers.remove(laser)
-                                    laser.tank.gun_mode=1
+                                    laser.tank.tank_laser.active= False #khi co mot tia va cham roi thi cac tia o ngay sau se khong dc tinh nua
                                     tank.health = tank.health- laser.dame -laser.tank.dame_bonus
                                     explosion=Explosion(x,y,Static_object.expl_1_frames,1000)
 
