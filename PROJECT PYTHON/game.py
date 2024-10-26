@@ -312,32 +312,6 @@ def read_map(file_path):
     return map_data
 
 def draw_map(window, map_data, tile_size):
-    # wall = pygame.image.load(Setting.wall).convert()
-    # wall = pygame.transform.scale(wall, (tile_size , tile_size ))
-    #
-    # gunItem = pygame.image.load(Setting.gun).convert()
-    # gunItem.set_colorkey(Setting.WHITE)
-    # gunItem = pygame.transform.scale(gunItem, (tile_size*2, tile_size*2))
-    #
-    # hpImage = pygame.image.load(Setting.hp).convert()
-    # hpImage.set_colorkey(Setting.WHITE)
-    # hpImage = pygame.transform.scale(hpImage, (tile_size*2, tile_size*2))
-    #
-    # laser_gunItem = pygame.image.load(Setting.laser_gun).convert()
-    # laser_gunItem.set_colorkey(Setting.WHITE)
-    # laser_gunItem = pygame.transform.scale(laser_gunItem, (tile_size*2 , tile_size*2 ))
-    #
-    # speedItem = pygame.image.load(Setting.speed).convert()
-    # speedItem.set_colorkey(Setting.WHITE)
-    # speedItem = pygame.transform.scale(speedItem, (tile_size*2 , tile_size*2 ))
-    #
-    # x3Item = pygame.image.load(Setting.x3).convert()
-    # x3Item.set_colorkey(Setting.WHITE)
-    # x3Item = pygame.transform.scale(x3Item, (tile_size*2 , tile_size*2))
-    #
-    # laser_line = pygame.image.load(Setting.laser_line)
-    # laser_line.set_colorkey(Setting.WHITE)
-    # laser_line=pygame.transform.scale(laser_line,(tile_size*2,tile_size*2))
 
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
