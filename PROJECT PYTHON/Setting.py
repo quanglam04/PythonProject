@@ -1,5 +1,4 @@
 import random
-
 title_size=16
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -149,7 +148,7 @@ Orange_image="Orange Tank.png"
 asset="asset/"
 Laser_path="Laser/"
 Tank_power_bullet="Tank_power_bullet/"
-
+Machine_path="Machine Gun/"
 
 TankBlue = asset+Blue_image
 Tankmodern = 'asset/newtank.png'

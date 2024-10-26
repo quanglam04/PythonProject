@@ -1,9 +1,6 @@
 import pygame
-from pygame.examples.aliens import Explosion
-
 import Setting
 from pygame import mixer
-
 import Static_object
 from tank import load_map
 from tank import Tank
@@ -151,19 +148,24 @@ class TankGame:
                     tank.gun_mode = 2
                     image_path= Setting.asset+Setting.Laser_path+tank.tank_name
                     tank.update_tank_image(image_path)
-
-
+                elif item_have == 6:
+                    tank.gun_mode= 3
+                    image_path =Setting.asset+Setting.Machine_path+tank.tank_name
+                    tank.update_tank_image(image_path)
 
                 if tank.speed_add !=0 :
                     if pygame.time.get_ticks()-start_time >=10000:
                         tank.speed_add =0
-                if tank.dame_bonus  :
+                if tank.dame_bonus :
                     if pygame.time.get_ticks()-start_time_gun >=10000:
                         tank.dame_bonus=0
                         image_path = Setting.asset+tank.tank_name
                         tank.update_tank_image(image_path)
                         tank.bullet_color=Setting.BLACK
-
+                if tank.gun_mode ==3 and tank.minigun_bull_count ==18:
+                    tank.gun_mode=1
+                    image_path=Setting.asset+tank.tank_name
+                    tank.update_tank_image(image_path)
 
                 if TankLogic.check_collision_with_wall(tank,self.map_mask):
                     tank.tank_x = tank.tank_x-tank.dx
@@ -353,51 +355,40 @@ def draw_map(window, map_data, tile_size):
                 window.blit(St.x3Item, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
             elif tile == '7':
                 window.blit(St.laser_line,(x*tile_size,y*tile_size))
-
+            elif tile =='8':
+                window.blit(St.machine_gun,(x*tile_size,y*tile_size))
 
 def create_map_mask(map_data, tile_size=16):
     map_width = 1024
     map_height = 688
-    wall = pygame.image.load(Setting.wall).convert()
-    wall = pygame.transform.scale(wall, (tile_size , tile_size ))
+    # wall = pygame.image.load(Setting.wall).convert()
+    # wall = pygame.transform.scale(wall, (tile_size , tile_size ))
 
-    # gunItem = pygame.image.load(Setting.gun).convert()
-    # gunItem.set_colorkey(Setting.WHITE)
-    # gunItem = pygame.transform.scale(gunItem, (tile_size*2, tile_size*2))
     gunItem_mask=pygame.mask.from_surface(St.gunItem)
 
-    # hpImage = pygame.image.load(Setting.hp).convert()
-    # hpImage.set_colorkey(Setting.WHITE)
-    # hpImage = pygame.transform.scale(hpImage, (tile_size*2, tile_size*2))
     hpImage_mask=pygame.mask.from_surface(St.hpImage)
 
-    # laser_gunItem = pygame.image.load(Setting.laser_gun).convert()
-    # laser_gunItem.set_colorkey(Setting.WHITE)
-    # laser_gunItem = pygame.transform.scale(laser_gunItem, (tile_size*2 , tile_size*2 ))
+
     laser_gunItem_mask=pygame.mask.from_surface(St.laser_gunItem)
 
-    # speedItem = pygame.image.load(Setting.speed).convert()
-    # speedItem.set_colorkey(Setting.WHITE)
-    # speedItem = pygame.transform.scale(speedItem, (tile_size*2 , tile_size*2 ))
+
     speedItem_mask= pygame.mask.from_surface(St.speedItem)
 
-    # x3Item = pygame.image.load(Setting.x3).convert()
-    # x3Item.set_colorkey(Setting.WHITE)
-    # x3Item = pygame.transform.scale(x3Item, (tile_size*2 , tile_size*2 ))
+
     x3Item_mask = pygame.mask.from_surface(St.x3Item)
 
-    # laser_line = pygame.image.load(Setting.laser_line)
-    # laser_line.set_colorkey(Setting.WHITE)
-    # laser_line=pygame.transform.scale(laser_line,(tile_size*2,tile_size*2))
+
     laser_line_mask = pygame.mask.from_surface(St.laser_line)
+
+    machine_gun_mask=pygame.mask.from_surface(St.machine_gun)
 
     map_surface = pygame.Surface((map_width, map_height),pygame.SRCALPHA)
     map_surface.fill((0, 0, 0,0))
-    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,x3Item_mask,laser_line_mask]
+    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,x3Item_mask,laser_line_mask,machine_gun_mask]
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
             if tile == '1':  # Walls
-                map_surface.blit(wall, (x * tile_size, y * tile_size))
+                map_surface.blit(St.wall, (x * tile_size, y * tile_size))
             elif tile == '2':  # Item tăng sức mạnh (vũ khí)
                 item.append((0,x*tile_size,y*tile_size))
             elif tile == '3':  # Item tăng máu (HP)
@@ -410,6 +401,8 @@ def create_map_mask(map_data, tile_size=16):
                 item.append((4,x*tile_size,y*tile_size))
             elif tile== '7':
                 item.append((5,x*tile_size,y*tile_size))
+            elif tile =='8':
+                item.append((6,x*tile_size,y*tile_size))
     map_mask = pygame.mask.from_surface(map_surface)
     return map_mask, map_surface,item_name
 

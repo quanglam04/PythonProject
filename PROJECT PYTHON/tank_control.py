@@ -82,3 +82,4 @@ class TankControl:
                         Static_object.minigun_shot_frames, self.tank.tank_angle,156)
                     explosion_bull.append(animation)
                     self.machine_gun_sound.play()
+                    self.tank.minigun_bull_count +=3

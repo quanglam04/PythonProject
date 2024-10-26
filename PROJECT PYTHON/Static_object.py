@@ -42,6 +42,10 @@ laser_line = img.load(Setting.laser_line)
 laser_line.set_colorkey(Setting.WHITE)
 laser_line = tf.scale(laser_line, (25, 25))
 
+machine_gun=img.load(Setting.machine_gun)
+machine_gun.set_colorkey(Setting.WHITE)
+machine_gun=tf.scale(machine_gun,(25,25))
+
 expl_1_frames=caculate_frame(Setting.explosion_eff_1_sheet,256,256)
 shot_frames =caculate_frame(Setting.shot_effect_sheet,256,256)
 expl_4_frames= caculate_frame(Setting.explosion_eff_4_sheet,256,256)
