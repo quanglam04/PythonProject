@@ -140,41 +140,50 @@ class TankLogic:
         res= [TankLogic.line_from_point(rects[0], rects[1]), TankLogic.line_from_point(rects[1], rects[3]),
               TankLogic.line_from_point(rects[2], rects[3]), TankLogic.line_from_point(rects[0], rects[2])]
         #lan luot la canh ben tren, canh ben phai, canh o duoi, canh ben trai
+        try:
+            tmp=res[0] #canh ben tren
+            a = np.array([[A, B], [tmp[0], tmp[1]]])
+            b = np.array([-C, -tmp[2]])
+            solution = np.linalg.solve(a, b)
+            x, y = solution
 
-        tmp=res[0] #canh ben tren
-        a = np.array([[A, B], [tmp[0], tmp[1]]])
-        b = np.array([-C, -tmp[2]])
-        solution = np.linalg.solve(a, b)
-        x, y = solution
+            if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[0][0],rects[0][1],x,y,rects[1][0],rects[1][1]):
+                return x,y
+        except np.linalg.LinAlgError:
+            pass
 
-        if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[0][0],rects[0][1],x,y,rects[1][0],rects[1][1]):
-            return x,y
+        try:
+            tmp=res[1] #canh ben phai
+            a = np.array([[A, B], [tmp[0], tmp[1]]])
+            b = np.array([-C, -tmp[2]])
+            solution = np.linalg.solve(a, b)
+            x, y = solution
+            if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[1][0],rects[1][1],x,y,rects[3][0],rects[3][1]):
+                return x,y
+        except np.linalg.LinAlgError:
+            pass
 
-        tmp=res[1] #canh ben phai
-        a = np.array([[A, B], [tmp[0], tmp[1]]])
-        b = np.array([-C, -tmp[2]])
-        solution = np.linalg.solve(a, b)
-        x, y = solution
-        if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[1][0],rects[1][1],x,y,rects[3][0],rects[3][1]):
-            return x,y
+        try:
+            tmp=res[2] #canh ben duoi
+            a = np.array([[A, B], [tmp[0], tmp[1]]])
+            b = np.array([-C, -tmp[2]])
+            solution = np.linalg.solve(a, b)
+            x, y = solution
+            if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[2][0],rects[2][1],x,y,rects[3][0],rects[3][1]):
+                return x,y
+        except np.linalg.LinAlgError:
+            pass
 
-
-        tmp=res[2] #canh ben duoi
-        a = np.array([[A, B], [tmp[0], tmp[1]]])
-        b = np.array([-C, -tmp[2]])
-        solution = np.linalg.solve(a, b)
-        x, y = solution
-        if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[2][0],rects[2][1],x,y,rects[3][0],rects[3][1]):
-            return x,y
-
-
-        tmp=res[3] #canh ben trai
-        a = np.array([[A, B], [tmp[0], tmp[1]]])
-        b = np.array([-C, -tmp[2]])
-        solution = np.linalg.solve(a, b)
-        x, y = solution
-        if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[0][0],rects[0][1],x,y,rects[3][0],rects[3][1]):
-            return x,y
+        try:
+            tmp=res[3] #canh ben trai
+            a = np.array([[A, B], [tmp[0], tmp[1]]])
+            b = np.array([-C, -tmp[2]])
+            solution = np.linalg.solve(a, b)
+            x, y = solution
+            if TankLogic.check_point_between(laser.x, laser.y, x, y, laser.end_x, laser.end_y) and TankLogic.check_point_between(rects[0][0],rects[0][1],x,y,rects[3][0],rects[3][1]):
+                return x,y
+        except np.linalg.LinAlgError:
+            pass
 
 
 
