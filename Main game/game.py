@@ -142,6 +142,7 @@ class TankGame:
 
                 elif item_have == 6:
                     tank.gun_mode= 3
+                    tank.minigun_bull_count=0
                     image_path =Setting.asset+Setting.Machine_path+tank.tank_name
                     tank.update_tank_image(image_path)
                     Sound.mg_item_s.play()
