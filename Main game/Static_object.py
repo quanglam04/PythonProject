@@ -34,9 +34,9 @@ speedItem = img.load(Setting.speed).convert()
 speedItem.set_colorkey(Setting.WHITE)
 speedItem = tf.scale(speedItem, (25,25))
 
-x3Item = img.load(Setting.x3).convert()
-x3Item.set_colorkey(Setting.WHITE)
-x3Item = tf.scale(x3Item, (25, 25))
+shield_item = img.load(Setting.shield).convert()
+shield_item.set_colorkey(Setting.WHITE)
+shield_item = tf.scale(shield_item, (25, 25))
 
 laser_line = img.load(Setting.laser_line)
 laser_line.set_colorkey(Setting.WHITE)

@@ -316,7 +316,7 @@ def draw_map(window, map_data, tile_size):
             elif tile == '5':  # Item tăng máu (HP)
                 window.blit(St.speedItem, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
             elif tile == '6':  # Item tăng máu (HP)
-                window.blit(St.x3Item, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
+                window.blit(St.shield_item, (x * tile_size, y * tile_size))  # Vẽ ảnh tăng máu
             elif tile == '7':
                 window.blit(St.laser_line,(x*tile_size,y*tile_size))
             elif tile =='8':
@@ -339,7 +339,7 @@ def create_map_mask(map_data, tile_size=16):
     speedItem_mask= pygame.mask.from_surface(St.speedItem)
 
 
-    x3Item_mask = pygame.mask.from_surface(St.x3Item)
+    x3Item_mask = pygame.mask.from_surface(St.shield_item)
 
 
     laser_line_mask = pygame.mask.from_surface(St.laser_line)

@@ -173,7 +173,7 @@ gun = 'asset/item/gun.png'
 hp = 'asset/item/hp.png'
 laser_gun = 'asset/item/laser_gun.png'
 speed = 'asset/item/speed.png'
-x3 = 'asset/item/x3.png'
+shield = 'asset/item/shield.png'
 laser_line = 'asset/item/Laser.png'
 machine_gun='asset/item/Machine Gun.png'
 
