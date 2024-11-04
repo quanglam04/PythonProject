@@ -15,7 +15,9 @@ class Tank :
         self.tank_rect.x,self.tank_rect.y=int (self.tank_x),int (self.tank_y)
         self.tank_angle = 0  # goc quay cua xe tang
         self.tank_speed = Setting.playerSpeed #van toc
-        self.health=100
+        self.health = 100
+        self.armor = 100
+
         self.health_bar_width, self.health_bar_height=40,5
         self.tank_laser=None
         self.new_rect=None
@@ -60,20 +62,32 @@ def load_map(random_index):
                     if map_data[i][j]=='*':
                         spawn_points.append( ((j * 16), (i * 16)) )
         return spawn_points
-def draw_health_bar(self, window):
+def draw_health_bar(self, window, check):
         # Tạo hình ảnh thanh máu
-        if self.health >100: self.health=100
+        if self.health > 100: self.health=100
         health_bar_surface = pygame.Surface((self.health_bar_width, self.health_bar_height))
         health_bar_surface.set_colorkey((0, 0, 0))  # đặt màu đen là màu trong suốt
-        health_bar_surface.fill((255, 0, 0))  # Màu đỏ cho thanh máu
-        pygame.draw.rect(health_bar_surface, (0, 255, 0),
-            (0, 0, int(self.health_bar_width * (self.health / 100)), self.health_bar_height))
 
-        # Xoay thanh máu theo xe tank
+        GREEN = (0, 255, 0)
+        GRAY = (128, 128, 128)
+
+        if not check:
+            health_bar_surface.fill((255, 0, 0))  # Màu đỏ cho thanh máu
+            pygame.draw.rect(health_bar_surface, GREEN,
+            (0, 0, int(self.health_bar_width * (self.health / 100)), self.health_bar_height))
+        else: pygame.draw.rect(health_bar_surface, GRAY,
+            (0, 0, int(self.health_bar_width * (self.armor / 100)), self.health_bar_height))
+
+        # Xoay thanh máu/máu ảo theo xe tank
         rotated_health_bar = pygame.transform.rotate(health_bar_surface, self.tank_angle)
 
-        offset_x = -2
-        offset_y = -self.tank_rect.height // 2 - 10
+        if not check:
+            offset_x = -2
+            offset_y = -self.tank_rect.height // 2 - 10
+
+        else:
+            offset_x = -2
+            offset_y = -self.tank_rect.height // 2 + 40
 
         # Tính toán vị trí theo xe tank
         rad_angle = math.radians(-self.tank_angle)
