@@ -320,7 +320,7 @@ def draw_map(window, map_data, tile_size):
             elif tile == '7':
                 window.blit(St.laser_line,(x*tile_size,y*tile_size))
             elif tile =='8':
-                window.blit(St.machine_gun,(x*tile_size,y*tile_size))
+                window.blit(St.machine_gun,(x*tile_size,y*tile_size)) # day la check sung may ma
 
 def create_map_mask(map_data, tile_size=16):
     map_width = 1024
