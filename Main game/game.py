@@ -12,7 +12,6 @@ import Static_object as St
 from explosion import Explosion
 TILE_SIZE = 16
 item = []
-check = True # dùng để lấy làm điều kiện in thanh máu xám - True là hiện False là không
 from Laser_Aiming_Line import LaserAiming
 class TankGame:
 
@@ -205,9 +204,7 @@ class TankGame:
                         else:
                             tank.tank_laser.angle = 360 - tank.tank_laser.angle
                 self.window.blit(tank.rotated_tank_image,tank.new_rect)
-                draw_health_bar(tank, window, False)
-                # chuyển cái này xuống chỗ ăn item (thay cái True bằng biến check ở trên line3 nhé
-                if tank.armor != 0: draw_health_bar(tank, window, True)
+                draw_health_bar(tank,window)
 
 
             for bullet in self.bullets:
@@ -224,8 +221,7 @@ class TankGame:
                         explosion = Explosion(bullet.rect.centerx, bullet.rect.centery,Static_object.expl_1_frames,1000)
                         self.explosions_bull.append(explosion)
 
-                        if not check: tank.health = tank.health - bullet.dame()
-                        else: tank.armor = tank.armor - 50
+                        tank.health = tank.health- bullet.dame()
 
                         self.bullets.remove(bullet)
 
@@ -369,15 +365,8 @@ def create_map_mask(map_data, tile_size=16):
                 item.append((4,x*tile_size,y*tile_size))
             elif tile== '7':
                 item.append((5,x*tile_size,y*tile_size))
-            elif tile =='8': #Item tạo máu ảo
+            elif tile =='8':
                 item.append((6,x*tile_size,y*tile_size))
-                # Tạo khung code sẵn nhờ thầy Đạt sửa hộ
-                # sau mỗi lần ăn thì đặt lại armor = 100 nhé
-                #bây giờ thầy Đạt cho nó hiện thanh máu ảo ở đây nhé, code cho khi nào thanh máu ảo <= 0 thì không in nữa
-                #tui đang cho theo kiểu nó đỡ được 2 lần tâất cả các loại đạn
-                #bởi vì nếu cho nó theo kiểu tạo thanh mới = 40% máu hiện tại khác nào mình cho sửa thành luôn cái cục heal +40% đấy ấy
-                #mình nên làm nó khác khác với item đấy
-
     map_mask = pygame.mask.from_surface(map_surface)
     return map_mask, map_surface,item_name
 
