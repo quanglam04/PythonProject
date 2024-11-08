@@ -28,6 +28,19 @@ class TankGame:
         self.map_optimize= load_wall_rect(f'MAP/Optimize_structure_in_map/map{random_index}optimize.txt')
         self.collision_map=[]
 
+        self.informationOfTank = pygame.image.load(Setting.informationOfTank)
+
+        if Setting.informationOfTank == 'asset/Stats/one-player.png':
+            self.informationOfTank = pygame.transform.scale(self.informationOfTank, (300, 500))
+        elif Setting.informationOfTank == 'asset/Stats/two-player.png':
+            self.informationOfTank = pygame.transform.scale(self.informationOfTank, (450, 500))
+        elif Setting.informationOfTank == 'asset/Stats/three-player.png':
+            self.informationOfTank = pygame.transform.scale(self.informationOfTank, (600, 500))
+        else:
+            self.informationOfTank = pygame.transform.scale(self.informationOfTank, (750, 500))
+
+        self.show_info = False
+
         self.spawn_points = load_map(random_index)
         self.tanks=[]
         self.initialize_tanks()
@@ -102,17 +115,37 @@ class TankGame:
 
 
     def run(self, window):
+
+
+
         start_time=0
         start_time_gun=0
         self.window = window
+        start_time = pygame.time.get_ticks()
         while self.running:
+
+            elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # Đổi từ mili giây sang giây
+            minutes = elapsed_time // 60
+            seconds = elapsed_time % 60
+            time_text = f"Time: {minutes:02}:{seconds:02}"
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_TAB:
+                        self.show_info = True  # Hiển thị ảnh khi nhấn Tab
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_TAB:
+                        self.show_info = False  # Ẩn ảnh khi thả phím Tab
 
+
+
+            # window.fill((0, 0, 0))
             # # Vẽ bản đồ thay vì hình nền
+
             self.window.fill(Setting.YELLOW)  # Xóa màn hình với màu trắng
             draw_map(self.window, self.map_data, TILE_SIZE)
+
 
             for tank in self.tanks:
                 # Điều khiển xe tăng
@@ -262,8 +295,16 @@ class TankGame:
                 if explosion.image is None:
                     self.explosions_bull.remove(explosion)
 
+            font = pygame.font.Font(None, 36)  # Khởi tạo font chữ, kích thước 36
+            time_surface = font.render(time_text, True, (0, 0, 0))  # Vẽ thời gian với màu đen
+            time_rect = time_surface.get_rect(midbottom=(self.window.get_width() // 2, self.window.get_height() - 10))
+            self.window.blit(time_surface, time_rect)
 
+            if self.show_info:
+                image_rect = self.informationOfTank.get_rect(center=self.window.get_rect().center)
+                self.window.blit(self.informationOfTank, image_rect)
             pygame.display.flip()
+
 
         pygame.quit()
 

@@ -15,7 +15,7 @@ ORANGE=(255,165,0)
 with open('../Setting game/Saved.txt', 'r') as file:
     lines = file.readlines()
 WIDTH = 1024
-HEIGHT = 688
+HEIGHT = 730
 TITLE = "PROJECT GROUP 3 by Dat, Huy, Kien, Khoi, Lam"
 
 # loading bar
@@ -198,6 +198,10 @@ map_7 = 'asset/map/map7.png'
 map_8 = 'asset/map/map8.png'
 map_9 = 'asset/map/map9.png'
 map_10 = 'asset/map/map10.png'
+
+keyControl = 'asset/Stats/keycontrol.png'
+fire = 'asset/Stats/fire.png'
+informationOfTank = ''
 
 #---------------------------------------------------------- Amo Sound eff ---------------------------------------------------------------------
 backgroundMusic = 'asset/media/media.mp3'
