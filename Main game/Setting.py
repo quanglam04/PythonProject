@@ -11,8 +11,9 @@ BROWN = (120, 104, 82)
 BLUE = (0, 0, 255)
 ORANGE=(255,165,0)
 # game settings
+
 #---------------------------------------------- Read file -----------------------------------------------
-with open('../Setting game/Saved.txt', 'r') as file:
+with open('C:/Users/84334/Desktop/python/PythonProject/Setting game/Saved.txt', 'r') as file:
     lines = file.readlines()
 WIDTH = 1024
 HEIGHT = 688
@@ -132,9 +133,9 @@ bar_color = (255, 85, 85)  # Màu thanh loading đỏ
 text_color = (255, 255, 255)  # Màu chữ trắng
 #------------------------------------------ player settings -------------------------------------------------------------------------
 
-playerSpeed =0.79
-speedAdd = 1.5
-angle = 1
+playerSpeed =0.3
+speedAdd = 0.5
+angle = 0.2
 
 #------------------------------------------ vị trí ban đầu -----------------------------------------------------------------------
 x0 = 1
@@ -142,13 +143,13 @@ y0 = 1
 
 # ---------------------------------------------- image ------------------------------------------------------------------------------
 random_index = random.randint(1,3)
-wall = f'asset/map/dirt{random_index}.png'
+wall = f'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/dirt{random_index}.png'
 
 Blue_image="Blue Tank.png"
 Red_image="Red Tank.png"
 Green_image="Green Tank.png"
 Orange_image="Orange Tank.png"
-asset="asset/"
+asset="C:/Users/84334/Desktop/python/PythonProject/Main game/asset/"
 Laser_path="Laser/"
 Tank_power_bullet="Tank_power_bullet/"
 Machine_path="Machine Gun/"
@@ -169,55 +170,57 @@ TankBlue_laser="asset/Laser/"
 
 
 
-gun = 'asset/item/gun.png'
-hp = 'asset/item/hp.png'
-laser_gun = 'asset/item/laser_gun.png'
-speed = 'asset/item/speed.png'
-shield = 'asset/item/shield.png'
-laser_line = 'asset/item/Laser.png'
-machine_gun='asset/item/Machine Gun.png'
+gun = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/item/gun.png'
+hp = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/item/hp.png'
+laser_gun = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/item/laser_gun.png'
+speed = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/item/speed.png'
+shield = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/item/shield.png'
+laser_line = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/item/Laser.png'
+machine_gun='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/item/Machine Gun.png'
 
 
 
-background = 'asset/background.jpg'
-startBtn = 'asset/btn/start_btn_newVersion.png'
-exitBtn = 'asset/btn/save_btn_newVersion.png'
+background = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/background.jpg'
+startBtn = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/btn/start_btn_newVersion.png'
+exitBtn = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/btn/save_btn_newVersion.png'
 
-optionBtnOne = 'asset/btn/1_player_btn.png'
-optionBtnTwo = 'asset/btn/2_player_btn.png'
-optionBtnThree = 'asset/btn/3_player_btn.png'
-optionBtnFour = 'asset/btn/4_player_btn.png'
+optionBtnOne = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/btn/1_player_btn.png'
+optionBtnTwo = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/btn/2_player_btn.png'
+optionBtnThree = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/btn/3_player_btn.png'
+optionBtnFour = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/btn/4_player_btn.png'
 
-map_1 = 'asset/map/map1.png'
-map_2 = 'asset/map/map2.png'
-map_3 = 'asset/map/map3.png'
-map_4 = 'asset/map/map4.png'
-map_5 = 'asset/map/map5.png'
-map_6 = 'asset/map/map6.png'
-map_7 = 'asset/map/map7.png'
-map_8 = 'asset/map/map8.png'
-map_9 = 'asset/map/map9.png'
-map_10 = 'asset/map/map10.png'
+map_1 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map1.png'
+map_2 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map2.png'
+map_3 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map3.png'
+map_4 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map4.png'
+map_5 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map5.png'
+map_6 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map6.png'
+map_7 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map7.png'
+map_8 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map8.png'
+map_9 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map9.png'
+map_10 = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/map/map10.png'
+
 
 #---------------------------------------------------------- Amo Sound eff ---------------------------------------------------------------------
-backgroundMusic = 'asset/media/media.mp3'
-bulletMusic = 'asset/media/normal bullet.flac'
-laser_sound = 'asset/media/laser.wav'
-machine_sound='asset/media/rifle_fire_1.wav'
+backgroundMusic = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/media/media.mp3'
+bulletMusic = "C:/Users/84334/Desktop/python/PythonProject/Main game/asset/media/normal bullet.flac"
+laser_sound = 'C:/Users/84334/Desktop/python/PythonProject/Main game/asset/media/laser.wav'
+machine_sound='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/media/rifle_fire_1.wav'
+beam_sound='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/media/Death Ray.mp3'
 
 #---------------------------------------------Item Sound eff---------------------------------------------------------------------------------
-mg_item_se='asset/media/rifle_deploy_1.wav'
-la_item_se='asset/media/laser_on.wav'
+mg_item_se='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/media/rifle_deploy_1.wav'
+la_item_se='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/media/laser_on.wav'
 
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------
 
-shot_effect_sheet='asset/Sprite_sheet/explosion 2.png'
-explosion_eff_1_sheet='asset/Sprite_sheet/explosion 1.png'
-explosion_eff_4_sheet='asset/Sprite_sheet/explosion 4.png'
-explosion_eff_3_sheet='asset/Sprite_sheet/explosion 3.png'
-mini_gun_shot_eff_sheet='asset/Sprite_sheet/ImpactMetal8Generic.png'
+shot_effect_sheet='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/Sprite_sheet/explosion 2.png'
+explosion_eff_1_sheet='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/Sprite_sheet/explosion 1.png'
+explosion_eff_4_sheet='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/Sprite_sheet/explosion 4.png'
+explosion_eff_3_sheet='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/Sprite_sheet/explosion 3.png'
+mini_gun_shot_eff_sheet='C:/Users/84334/Desktop/python/PythonProject/Main game/asset/Sprite_sheet/ImpactMetal8Generic.png'
 
 
 

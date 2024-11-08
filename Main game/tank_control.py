@@ -4,20 +4,25 @@ from tank_logic import TankLogic
 import math
 from bullet import Bullet
 from bullet_Lazer import Laser
+from bullet_beam import Beam
+
 from Minibullet import Minigun
 import Static_object
 from explosion import Animation
 import Sound
 class TankControl:
-    def __init__(self, tank, window_width, window_height,bullets,lasers,control_setting):
+    def __init__(self, tank, window_width, window_height,bullets,lasers,beams,control_setting):
         self.tank = tank #chuyen tham so cua xe tang vao bao gom kich co vi tri goc quay
         self.window_width = window_width #tham so man hinh game
         self.window_height = window_height
         self.bullets=bullets
         self.lasers=lasers
+        self.beams = beams
+
         self.last_shoot=0
         self.control_setting=control_setting
     def handle_input(self,explosion_bull):#doc event hay doc input cua pygame
+        
         keys = pygame.key.get_pressed()
         if keys[self.control_setting['up']] :
             TankLogic.move_tank(self.tank, self.tank.tank_speed + float(self.tank.speed_add), self.window_width, self.window_height) #goi den ham di chuyen nha ae
@@ -27,6 +32,12 @@ class TankControl:
             TankLogic.rotate_tank(self.tank, -Setting.angle)
         if keys[self.control_setting['left']]:
             TankLogic.rotate_tank(self.tank, +Setting.angle)
+
+
+
+
+
+
         if keys[self.control_setting['shoot']]:
             current_time = pygame.time.get_ticks()
             if self.tank.gun_mode == 1:
@@ -78,3 +89,20 @@ class TankControl:
                     explosion_bull.append(animation)
                     Sound.machine_gun_sound.play()
                     self.tank.minigun_bull_count +=3
+
+            elif self.tank.gun_mode == 4:
+                if  (current_time-self.last_shoot) >1000:
+                    
+                    beam = Beam(self.tank,self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
+                                self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle)),
+                                self.tank.tank_angle)
+                    self.beams.append(beam)
+                    self.tank.gun_mode = 1
+                    image_path = Setting.asset + self.tank.tank_name
+                    self.tank.update_tank_image(image_path)
+                    Sound.beam_sound.play()
+                    self.last_shoot = current_time
+           
+       
+  
+                    

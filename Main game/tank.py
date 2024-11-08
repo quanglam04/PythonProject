@@ -23,7 +23,7 @@ class Tank :
         self.d_angle=0
         self.check = False
         self.control=None
-        self.gun_mode=1 #mac dinh la sung thuong 2 la laser 3 la machine gun
+        self.gun_mode = 4 #mac dinh la sung thuong 2 la laser 3 la machine gun 4 là đạn beam
         self.bullet_color=Setting.BLACK
         self.minigun_bull_count=0
 
@@ -52,7 +52,7 @@ class Tank :
         self.tank_image = pygame.transform.smoothscale(self.tank_image, (45, 30))
 
 def load_map(random_index):
-        with open(f'MAP/map{random_index}.txt', 'r') as f:
+        with open(f'C:/Users/84334/Desktop/python/PythonProject/Main game/MAP/map{random_index}.txt', 'r') as f:
             map_data=[list(line.strip()) for line in f]
         spawn_points=[]
         for i in range (len(map_data)):

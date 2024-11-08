@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import pygame
 class TankLogic:
     @staticmethod
     def move_tank(tank, speed, window_width, window_height):
@@ -74,6 +75,10 @@ class TankLogic:
                 return False
         else:
             return False
+    
+   
+
+
 
     @staticmethod
     def check_collision_with_tank(tank1,tank2):
@@ -185,22 +190,7 @@ class TankLogic:
         except np.linalg.LinAlgError:
             pass
 
-
-
-        # for tmp in res:
-        #     a=np.array([  [A,B] , [tmp[0],tmp[1]]  ])
-        #     b=np.array([-C,-tmp[2]])
-        #     try:
-        #         solution=np.linalg.solve(a,b)
-        #         x,y=solution
-        #         #print(x,y,laser.x,laser.y,laser.end_x,laser.end_y)
-        #         if  TankLogic.check_point_between(laser.x,laser.y,x,y,laser.end_x,laser.end_y):
-        #             print(A,B,C,tmp[0],tmp[1],tmp[2],"diem: " ,x,y,laser.x,laser.y,laser.end_x,laser.end_y )
-        #             print(res)
-        #             print(A, B, C)
-        #             return True
-        #     except np.linalg.LinAlgError:
-        #         pass
-
         return None,None
+    
 
+   

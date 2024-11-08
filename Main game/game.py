@@ -23,10 +23,12 @@ class TankGame:
         self.explosions_bull = []
         self.bullets = []
         self.lasers=[]
+        self.beams = []
         random_index = StartScreen.result['selected_map']
-        self.map_data = read_map(f'MAP/map{random_index}.txt')
-        self.map_optimize= load_wall_rect(f'MAP/Optimize_structure_in_map/map{random_index}optimize.txt')
+        self.map_data = read_map(f'C:/Users/84334/Desktop/python/PythonProject/Main game/MAP/map{random_index}.txt')
+        self.map_optimize= load_wall_rect(f'C:/Users/84334/Desktop/python/PythonProject/Main game/MAP/Optimize_structure_in_map/map{random_index}optimize.txt')
         self.collision_map=[]
+
 
         self.spawn_points = load_map(random_index)
         self.tanks=[]
@@ -96,7 +98,7 @@ class TankGame:
                 else:
                     pos = (0, 0)
                 tank = Tank(tank_path, pos,image_name,color)
-                tank.control = TankControl(tank, self.window_width, self.window_height, self.bullets,self.lasers ,control_setting)
+                tank.control = TankControl(tank, self.window_width, self.window_height, self.bullets,self.lasers,self.beams ,control_setting)
                 self.tanks.append(tank)
 
 
@@ -207,6 +209,10 @@ class TankGame:
                 draw_health_bar(tank,window)
 
 
+
+
+                    
+
             for bullet in self.bullets:
                 bullet.move(self.map_data,TILE_SIZE)
                 if bullet.is_expired_bullet():
@@ -224,8 +230,16 @@ class TankGame:
                         tank.health = tank.health- bullet.dame()
 
                         self.bullets.remove(bullet)
-
                         break
+
+
+            for beam in self.beams[:]:
+                if not beam.is_expired() :
+                    beam.draw(self.window)
+                else:
+                    self.beams.remove(beam)
+              
+
             for laser in self.lasers:
                 if laser.tank.tank_laser.active: #trong  vai ms thi cau lenh an nut shot co the da tao ra nhieu laser, ta chi lay duy nhat mot cai
                     laser.laser_move()
