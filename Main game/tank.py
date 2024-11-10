@@ -1,13 +1,14 @@
 import pygame
 import Setting
 import math
+from Static_object import normal_tanks
 class Tank :
-    def __init__(self, image_path,pos,image_name,color):
-        self.tank_image = pygame.image.load(image_path).convert_alpha() # load hinh anh cua xe tang
-        self.tank_image=pygame.transform.smoothscale(self.tank_image,(45,30))
+    def __init__(self,pos,i_d):
+        # self.tank_image = pygame.image.load(image_path).convert_alpha() # load hinh anh cua xe tang
+        # self.tank_image=pygame.transform.smoothscale(self.tank_image,(45,30))
+        self.tank_image=normal_tanks[i_d]
         self.tank_mask=pygame.mask.from_surface(self.tank_image)
-        self.tank_name=image_name
-        self.color=color
+        self.id=i_d
         #get_rect co 3 gia tri la x y va center tank_rect.x goi ra chieu ngan cua xe con .y chieu doc .center la vi tri trung tam
         self.tank_rect = self.tank_image.get_rect() # cho biet chieu ngang, rong cua xe tang va lay vi tri hien tai cua xe tang
         self.tank_width, self.tank_height = self.tank_rect.size # tank_rect.size cho biet kich co cua buc anh
@@ -26,6 +27,10 @@ class Tank :
         self.gun_mode=1 #mac dinh la sung thuong 2 la laser 3 la machine gun
         self.bullet_color=Setting.BLACK
         self.minigun_bull_count=0
+        self.shield_active=False
+        self.shield_health=4
+        self.last_time_shield_frames=0
+        self.shield=None
 
 
         self.laser_endpoints=[]
@@ -47,9 +52,9 @@ class Tank :
         self.tank_bounding_surface.blit(self.rotated_tank_image, rotated_rect.topleft)
         self.tank_mask = pygame.mask.from_surface(self.tank_bounding_surface)
 
-    def update_tank_image(self,image_path):
-        self.tank_image=  pygame.image.load(image_path).convert_alpha()
-        self.tank_image = pygame.transform.smoothscale(self.tank_image, (45, 30))
+    def update_tank_image(self,image):
+        self.tank_image=  image
+
 
 def load_map(random_index):
         with open(f'MAP/map{random_index}.txt', 'r') as f:

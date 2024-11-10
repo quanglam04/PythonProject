@@ -1,10 +1,10 @@
 import pygame
-
+from Setting import tanks_color as colors
 
 class Laser:        #Buoc 2: Đạn laser
     def __init__(self,tank, x, y, angle):
         self.tank=tank
-        self.color =tank.color   # Màu của tia laser
+        self.color =colors[tank.id]   # Màu của tia laser
         self.width = 5  # Độ dày của tia laser
         self.x = x
         self.y = y
