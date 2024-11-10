@@ -1,0 +1,24 @@
+(800x600) 4:3
+50.0
+50.0
+True
+w
+s
+d
+a
+q
+Up
+Down
+Right
+Left
+0
+y
+h
+j
+g
+f
+8
+2
+6
+4
+1
