@@ -118,12 +118,14 @@ class TankGame:
 
     def run(self, window):
 
-
-
-        start_time=0
+        font = pygame.font.Font(None, 36)
         start_time_gun=0
         self.window = window
         start_time = pygame.time.get_ticks()
+        info_tank_image = self.informationOfTank.get_rect(center=self.window.get_rect().center)
+        print("FUCK u")
+        time_surface = font.render("00 : 00", True, (0, 0, 0))
+        time_rect = time_surface.get_rect(midbottom=(self.window.get_width() // 2, self.window.get_height() - 10))
         while self.running:
 
             elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # Đổi từ mili giây sang giây
@@ -159,12 +161,12 @@ class TankGame:
                 item_have=TankLogic.check_collision_with_items(tank,item,self.item_name,self.map_data,TILE_SIZE)
                 if item_have == 3:
                     tank.speed_add += Setting.speedAdd
-                    start_time=pygame.time.get_ticks()
+                    start_time=elapsed_time
                 elif item_have ==1:
                     tank.health +=25
                 elif item_have == 0:
                     tank.dame_bonus =10
-                    start_time_gun=pygame.time.get_ticks()
+                    start_time_gun=elapsed_time
                     tank.bullet_color=Setting.tanks_color[tank.id]
                 elif item_have == 4:
                     tank.shield_active=True
@@ -185,10 +187,10 @@ class TankGame:
                     tank.update_tank_image(St.missile_tanks[tank.id])
                     missile_active_sound.play()
                 if tank.speed_add !=0 :
-                    if pygame.time.get_ticks()-start_time >=10000:
+                    if elapsed_time-start_time >=10:
                         tank.speed_add =0
                 if tank.dame_bonus :
-                    if pygame.time.get_ticks()-start_time_gun >=10000:
+                    if elapsed_time-start_time_gun >=10:
                         tank.dame_bonus=0
                         tank.update_tank_image(St.normal_tanks[tank.id])
                         tank.bullet_color=Setting.BLACK
@@ -334,14 +336,14 @@ class TankGame:
                 if explosion.image is None:
                     self.explosions_bull.remove(explosion)
 
-            font = pygame.font.Font(None, 36)  # Khởi tạo font chữ, kích thước 36
+             # Khởi tạo font chữ, kích thước 36
+
             time_surface = font.render(time_text, True, (0, 0, 0))  # Vẽ thời gian với màu đen
-            time_rect = time_surface.get_rect(midbottom=(self.window.get_width() // 2, self.window.get_height() - 10))
+            # time_rect = time_surface.get_rect(midbottom=(self.window.get_width() // 2, self.window.get_height() - 10))
             self.window.blit(time_surface, time_rect)
 
             if self.show_info:
-                image_rect = self.informationOfTank.get_rect(center=self.window.get_rect().center)
-                self.window.blit(self.informationOfTank, image_rect)
+                self.window.blit(self.informationOfTank, info_tank_image)
             pygame.display.flip()
 
 

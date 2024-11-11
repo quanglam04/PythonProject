@@ -5,7 +5,7 @@ import math
 from bullet import Bullet
 from bullet_Lazer import Laser
 from Minibullet import Minigun
-import Static_object
+from Static_object import normal_tanks,shot_frames,minigun_shot_frames
 from explosion import Animation
 import Sound
 from missile import Missile
@@ -41,7 +41,7 @@ class TankControl:
                     self.last_shoot=current_time
                     Sound.bullet_sound.play()
                     animation=Animation(self.tank.tank_rect.centerx + 55 * math.cos(math.radians(self.tank.tank_angle)),
-                         self.tank.tank_rect.centery - 55 * math.sin(math.radians(self.tank.tank_angle)),Static_object.shot_frames,self.tank.tank_angle,128,128,1000)
+                         self.tank.tank_rect.centery - 55 * math.sin(math.radians(self.tank.tank_angle)),shot_frames,self.tank.tank_angle,128,128,1000)
                     explosion_bull.append(animation)
             elif self.tank.gun_mode == 2:
                 laser=Laser(self.tank,self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
@@ -51,7 +51,7 @@ class TankControl:
                 self.tank.tank_laser.active =True #Khi bam shot tuc la tia laser da duoc active
                 self.tank.gun_mode =1 #lap tuc chuyen gun_mode ve mac dinh
                 #image_path = Setting.asset + Setting.tanks_img[self.tank.id]
-                self.tank.update_tank_image(Static_object.normal_tanks[self.tank.id])
+                self.tank.update_tank_image(normal_tanks[self.tank.id])
                 Sound.laser_sound.play()
                 self.last_shoot = current_time
 
@@ -76,7 +76,7 @@ class TankControl:
                     animation = Animation(
                         self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
                         self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
-                        Static_object.minigun_shot_frames, self.tank.tank_angle,64,64,156)
+                        minigun_shot_frames, self.tank.tank_angle,64,64,156)
                     explosion_bull.append(animation)
                     Sound.machine_gun_sound.play()
                     self.tank.minigun_bull_count +=3
@@ -88,6 +88,6 @@ class TankControl:
                 self.missiles.append(missile)
                 self.tank.gun_mode=1
                 #image_path = Setting.asset + Setting.tanks_img[self.tank.id]
-                self.tank.update_tank_image(Static_object.normal_tanks[self.tank.id])
+                self.tank.update_tank_image(normal_tanks[self.tank.id])
                 self.last_shoot=pygame.time.get_ticks()
                 Sound.missile_shot_sound.play()
