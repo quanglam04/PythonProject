@@ -1,6 +1,6 @@
 import pygame
 import Setting
-import Sound
+from Sound import ls_item_s,mg_item_s,missile_active_sound,tank_death_sound,missile_crash_tank_sound,normal_sound_crash
 import Static_object
 from tank import load_map
 from tank import Tank
@@ -10,7 +10,8 @@ import StartScreen
 from tank import draw_health_bar
 import Static_object as St
 from explosion import Explosion
-TILE_SIZE = 16
+from shield import Shield
+TILE_SIZE = Setting.tile_size
 item = []
 from Laser_Aiming_Line import LaserAiming
 class TankGame:
@@ -21,6 +22,7 @@ class TankGame:
         self.window = None
         self.running = True
         self.explosions_bull = []
+        self.missiles=[]
         self.bullets = []
         self.lasers=[]
         random_index = StartScreen.result['selected_map']
@@ -85,31 +87,31 @@ class TankGame:
         for i in range(StartScreen.result['numberOfPlayer']):
 
                 if i == 0:
-                    tank_path = Setting.TankBlue
-                    image_name = Setting.Blue_image
-                    color=Setting.BLUE
+                    # tank_path = Setting.TankBlue
+                    # image_name = Setting.Blue_image
+                    # color=Setting.BLUE
                     control_setting = control_settings_player_1
                 elif i == 1:
-                    tank_path = Setting.TankRed
-                    image_name=Setting.Red_image
-                    color=Setting.RED
+                    # tank_path = Setting.TankRed
+                    # image_name=Setting.Red_image
+                    # color=Setting.RED
                     control_setting = control_settings_player_2
                 elif i == 2:
-                    tank_path = Setting.TankOrange
-                    image_name=Setting.Orange_image
-                    color=Setting.ORANGE
+                    # tank_path = Setting.TankOrange
+                    # image_name=Setting.Orange_image
+                    # color=Setting.ORANGE
                     control_setting = control_settings_player_3
                 else:
-                    tank_path = Setting.TankGreen
-                    image_name=Setting.Green_image
-                    color=Setting.GREEN
+                    # tank_path = Setting.TankGreen
+                    # image_name=Setting.Green_image
+                    # color=Setting.GREEN
                     control_setting = control_settings_player_4
                 if i < len(self.spawn_points):
                     pos = self.spawn_points[i]
                 else:
                     pos = (0, 0)
-                tank = Tank(tank_path, pos,image_name,color)
-                tank.control = TankControl(tank, self.window_width, self.window_height, self.bullets,self.lasers ,control_setting)
+                tank = Tank(pos,i)
+                tank.control = TankControl(tank, self.window_width, self.window_height, self.bullets,self.lasers,self.missiles ,control_setting)
                 self.tanks.append(tank)
 
 
@@ -163,36 +165,36 @@ class TankGame:
                 elif item_have == 0:
                     tank.dame_bonus =10
                     start_time_gun=pygame.time.get_ticks()
-                    # image_path = Setting.asset +Setting.Tank_power_bullet+tank.tank_name
-                    # tank.update_tank_image(image_path)
-                    tank.bullet_color=tank.color
-
+                    tank.bullet_color=Setting.tanks_color[tank.id]
+                elif item_have == 4:
+                    tank.shield_active=True
+                    tank.shield_health=4
+                    tank.shield=Shield(tank)
                 elif item_have == 5:
                     tank.gun_mode = 2
-                    image_path= Setting.asset+Setting.Laser_path+tank.tank_name
-                    tank.update_tank_image(image_path)
-                    Sound.ls_item_s.play()
+                    tank.update_tank_image(St.laser_tanks[tank.id])
+                    ls_item_s.play()
 
                 elif item_have == 6:
                     tank.gun_mode= 3
                     tank.minigun_bull_count=0
-                    image_path =Setting.asset+Setting.Machine_path+tank.tank_name
-                    tank.update_tank_image(image_path)
-                    Sound.mg_item_s.play()
-
+                    tank.update_tank_image(St.machine_tanks[tank.id])
+                    mg_item_s.play()
+                elif item_have ==7:
+                    tank.gun_mode =4
+                    tank.update_tank_image(St.missile_tanks[tank.id])
+                    missile_active_sound.play()
                 if tank.speed_add !=0 :
                     if pygame.time.get_ticks()-start_time >=10000:
                         tank.speed_add =0
                 if tank.dame_bonus :
                     if pygame.time.get_ticks()-start_time_gun >=10000:
                         tank.dame_bonus=0
-                        image_path = Setting.asset+tank.tank_name
-                        tank.update_tank_image(image_path)
+                        tank.update_tank_image(St.normal_tanks[tank.id])
                         tank.bullet_color=Setting.BLACK
                 if tank.gun_mode ==3 and tank.minigun_bull_count ==18:
                     tank.gun_mode=1
-                    image_path=Setting.asset+tank.tank_name
-                    tank.update_tank_image(image_path)
+                    tank.update_tank_image(St.normal_tanks[tank.id])
 
                 if TankLogic.check_collision_with_wall(tank,self.map_mask):
                     tank.tank_x = tank.tank_x-tank.dx
@@ -227,7 +229,7 @@ class TankGame:
                     while tank.tank_laser.remaining_length >0:
                         tank.tank_laser.calculate_end_point(self.collision_map)
                         tank.laser_endpoints.append((tank.tank_laser.end_x,tank.tank_laser.end_y))
-                        tank.tank_laser.draw_2_line(self.window,tank.color)
+                        tank.tank_laser.draw_2_line(self.window,Setting.tanks_color[tank.id])
 
                         tank.tank_laser.x=tank.tank_laser.end_x
                         tank.tank_laser.y=tank.tank_laser.end_y
@@ -238,7 +240,9 @@ class TankGame:
                             tank.tank_laser.angle = 360 - tank.tank_laser.angle
                 self.window.blit(tank.rotated_tank_image,tank.new_rect)
                 draw_health_bar(tank,window)
-
+                if tank.shield_active:
+                    tank.shield.update_pos()
+                    tank.shield.draw(self.window)
 
             for bullet in self.bullets:
                 bullet.move(self.map_data,TILE_SIZE)
@@ -253,9 +257,13 @@ class TankGame:
                     if TankLogic.check_collision(tank,bullet):
                         explosion = Explosion(bullet.rect.centerx, bullet.rect.centery,Static_object.expl_1_frames,1000)
                         self.explosions_bull.append(explosion)
-
-                        tank.health = tank.health- bullet.dame()
-
+                        if tank.shield_active :
+                            tank.shield_health -=1
+                            if tank.shield_health ==0:
+                                tank.shield_active= False
+                        else:
+                            tank.health = tank.health- bullet.dame()-bullet.tank.dame_bonus
+                        normal_sound_crash.play()
                         self.bullets.remove(bullet)
 
                         break
@@ -274,19 +282,50 @@ class TankGame:
                                     laser.draw(self.window)
                                     self.lasers.remove(laser)
                                     laser.tank.tank_laser.active= False #khi co mot tia va cham roi thi cac tia o ngay sau se khong dc tinh nua
-                                    tank.health = tank.health- laser.dame -laser.tank.dame_bonus
+                                    if tank.shield_active:
+                                        tank.shield_health -= 1
+                                        if tank.shield_health == 0:
+                                            tank.shield_active = False
+                                    else:
+                                        tank.health = tank.health- laser.dame -laser.tank.dame_bonus
                                     explosion=Explosion(x,y,Static_object.expl_1_frames,1000)
 
                                     self.explosions_bull.append(explosion)
                                     break
                         laser.draw(self.window)
+            for missile in self.missiles:
+                if missile.missile_bug_handle(self.map_data):
+                    explosion=Explosion(missile.x,missile.y,St.expl_1_frames,1000)
+                    self.explosions_bull.append(explosion)
+                    self.missiles.remove(missile)
+                    continue
+                missile.check_collision_with_wall(self.map_data)
+                missile.update_tank_pos(self.tanks)
+                missile.missile_path(self.map_data)
+                missile.draw(self.window)
+                explosion=missile.create_smoke_fame()
+                if explosion is not None:
+                    self.explosions_bull.append(explosion)
+                for tank in self.tanks:
+                    if TankLogic.check_collision_with_missile(tank,missile):
+                        if tank.shield_active :
+                            tank.shield_health -=1
+                            if tank.shield_health ==0:
+                                tank.shield_active= False
+                        else:
+                            tank.health = tank.health- missile.dame-missile.tank.dame_bonus
+                        explosion=Explosion(missile.img_rect.centerx,missile.img_rect.centery,St.expl_1_frames,1000)
+                        self.explosions_bull.append(explosion)
+                        self.missiles.remove(missile)
+                        missile_crash_tank_sound.play()
+
 
             for tank in self.tanks:
                 if tank.health <= 0:
                     explosion=Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,Static_object.expl_4_frames,1000)
                     self.explosions_bull.append(explosion)
                     self.tanks.remove(tank)
-
+                    tank_death_sound.play()
             for explosion in self.explosions_bull[:]:
                 explosion.update()
 
@@ -362,6 +401,8 @@ def draw_map(window, map_data, tile_size):
                 window.blit(St.laser_line,(x*tile_size,y*tile_size))
             elif tile =='8':
                 window.blit(St.machine_gun,(x*tile_size,y*tile_size)) # day la check sung may ma
+            elif tile=='9':
+                window.blit(St.missile_item,(x*tile_size,y*tile_size))
 
 def create_map_mask(map_data, tile_size=16):
     map_width = 1024
@@ -380,16 +421,18 @@ def create_map_mask(map_data, tile_size=16):
     speedItem_mask= pygame.mask.from_surface(St.speedItem)
 
 
-    x3Item_mask = pygame.mask.from_surface(St.shield_item)
+    shield_item_mask = pygame.mask.from_surface(St.shield_item)
 
 
     laser_line_mask = pygame.mask.from_surface(St.laser_line)
 
     machine_gun_mask=pygame.mask.from_surface(St.machine_gun)
 
+    missile_item_mask=pygame.mask.from_surface(St.missile_item)
+
     map_surface = pygame.Surface((map_width, map_height),pygame.SRCALPHA)
     map_surface.fill((0, 0, 0,0))
-    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,x3Item_mask,laser_line_mask,machine_gun_mask]
+    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,shield_item_mask,laser_line_mask,machine_gun_mask,missile_item_mask]
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
             if tile == '1':  # Walls
@@ -408,6 +451,8 @@ def create_map_mask(map_data, tile_size=16):
                 item.append((5,x*tile_size,y*tile_size))
             elif tile =='8':
                 item.append((6,x*tile_size,y*tile_size))
+            elif tile == '9':
+                item.append((7,x*tile_size,y*tile_size))
     map_mask = pygame.mask.from_surface(map_surface)
     return map_mask, map_surface,item_name
 

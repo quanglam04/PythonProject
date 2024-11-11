@@ -203,4 +203,15 @@ class TankLogic:
         #         pass
 
         return None,None
+    @staticmethod
+    def check_collision_with_missile(tank,missile):
+        x,y=tank.tank_rect.center
+        w,h = tank.tank_width, tank.tank_height
+        a, b = missile.img_rect.centerx+15*math.cos(math.radians(missile.angle)), missile.img_rect.centery-15*math.sin(math.radians(missile.angle))
+        alpha = float(tank.tank_angle)
+        check_x, check_y = a - x, b - y
+        new_x = float(check_x * math.cos(math.radians(alpha)) - check_y * math.sin(math.radians(alpha)))
+        new_y = float(check_y * math.cos(math.radians(alpha)) + check_x * math.sin(math.radians(alpha)))
+        if max(-w / 2, new_x ) <= min(w / 2, new_x ) and max(-h / 2, new_y ) <= min(h / 2, new_y):
+            return True
 

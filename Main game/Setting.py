@@ -1,5 +1,5 @@
 import random
-title_size=16
+tile_size=16
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 DARKGREY = (40, 40, 40)
@@ -132,9 +132,9 @@ bar_color = (255, 85, 85)  # Màu thanh loading đỏ
 text_color = (255, 255, 255)  # Màu chữ trắng
 #------------------------------------------ player settings -------------------------------------------------------------------------
 
-playerSpeed =0.79
+playerSpeed =0.5
 speedAdd = 1.5
-angle = 1
+angle = 0.5
 
 #------------------------------------------ vị trí ban đầu -----------------------------------------------------------------------
 x0 = 1
@@ -148,6 +148,10 @@ Blue_image="Blue Tank.png"
 Red_image="Red Tank.png"
 Green_image="Green Tank.png"
 Orange_image="Orange Tank.png"
+
+tanks_img=[Blue_image,Red_image,Orange_image,Green_image]
+tanks_color=[BLUE,RED,ORANGE,GREEN]
+
 asset="asset/"
 Laser_path="Laser/"
 Tank_power_bullet="Tank_power_bullet/"
@@ -176,7 +180,7 @@ speed = 'asset/item/speed.png'
 shield = 'asset/item/shield.png'
 laser_line = 'asset/item/Laser.png'
 machine_gun='asset/item/Machine Gun.png'
-
+missile='asset/item/Missile.png'
 
 
 background = 'asset/background.jpg'
@@ -205,9 +209,13 @@ informationOfTank = ''
 
 #---------------------------------------------------------- Amo Sound eff ---------------------------------------------------------------------
 backgroundMusic = 'asset/media/media.mp3'
-bulletMusic = 'asset/media/normal bullet.flac'
+bulletMusic = 'asset/media/explosion_new.wav'
 laser_sound = 'asset/media/laser.wav'
 machine_sound='asset/media/rifle_fire_1.wav'
+missile_tracking_sound_path='asset/media/signal-receiving-fx_188bpm.wav'
+missile_shot_sound_path='asset/media/grenade_launcher_explode_2.wav'
+missile_active_sound_path= 'asset/media/missile_active.wav'
+death_tank_sound_path='asset/media/explode_2.wav'
 
 #---------------------------------------------Item Sound eff---------------------------------------------------------------------------------
 mg_item_se='asset/media/rifle_deploy_1.wav'
@@ -215,19 +223,25 @@ la_item_se='asset/media/laser_on.wav'
 
 
 
-#-------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------Sprite_sheet-----------------------------------------------------------------------------
 
 shot_effect_sheet='asset/Sprite_sheet/explosion 2.png'
 explosion_eff_1_sheet='asset/Sprite_sheet/explosion 1.png'
 explosion_eff_4_sheet='asset/Sprite_sheet/explosion 4.png'
 explosion_eff_3_sheet='asset/Sprite_sheet/explosion 3.png'
 mini_gun_shot_eff_sheet='asset/Sprite_sheet/ImpactMetal8Generic.png'
+shield_eff_path='asset/Sprite_sheet/Effect_shield.png'
 
 
+#---------------------------------Missile-------------------
+missile_image= 'asset/Missile/Missile Shot.png'
+missile_path='Missile/'
+smoke_path='asset/Smoke/'
+normal_smoke='Smoke.png'
 
-
-
-
+#--------- Sound crash-------------------------------------#
+missile_crash_sound_path='asset/media/grenade_launcher_explode_1.wav'
+normal_crash_sound_path='asset/media/normal bullet.flac'
 
 
 
