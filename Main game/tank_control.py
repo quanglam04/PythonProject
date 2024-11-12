@@ -9,6 +9,7 @@ from Static_object import normal_tanks,shot_frames,minigun_shot_frames
 from explosion import Animation
 import Sound
 from missile import Missile
+from shotgun_bull import ShotGun
 
 class TankControl:
     def __init__(self, tank, window_width, window_height,explosion_bull,bullets,lasers,missiles,control_setting):
@@ -98,4 +99,63 @@ class TankControl:
                 Sound.missile_shot_sound.play()
             elif self.tank.gun_mode == 5: #beam
                 self.tank.beam_active=True
+            elif self.tank.gun_mode ==6:
+                if (current_time - self.last_shoot) > 400:
+                    shotgun_1 = ShotGun(self.tank,
+                                         self.tank.tank_rect.centerx + 29 * math.cos(
+                                             math.radians(self.tank.tank_angle )),
+                                         self.tank.tank_rect.centery - 29 * math.sin(
+                                             math.radians(self.tank.tank_angle )),
+                                         self.tank.tank_angle+6)
+                    shotgun_2= ShotGun(self.tank,
+                                         self.tank.tank_rect.centerx + 29 * math.cos(
+                                             math.radians(self.tank.tank_angle )),
+                                         self.tank.tank_rect.centery - 29 * math.sin(
+                                             math.radians(self.tank.tank_angle )),
+                                         self.tank.tank_angle+4)
 
+
+                    shotgun_3 = ShotGun(self.tank,
+                                         self.tank.tank_rect.centerx + 29 * math.cos(
+                                             math.radians(self.tank.tank_angle)),
+                                         self.tank.tank_rect.centery - 29 * math.sin(
+                                             math.radians(self.tank.tank_angle)),
+                                         self.tank.tank_angle+2)
+                    shotgun_4= ShotGun(self.tank,
+                                         self.tank.tank_rect.centerx + 29 * math.cos(
+                                             math.radians(self.tank.tank_angle)),
+                                         self.tank.tank_rect.centery - 29 * math.sin(
+                                             math.radians(self.tank.tank_angle)),
+                                         self.tank.tank_angle-2)
+
+                    shotgun_5 = ShotGun(self.tank,
+                                         self.tank.tank_rect.centerx + 29 * math.cos(
+                                             math.radians(self.tank.tank_angle )),
+                                         self.tank.tank_rect.centery - 29 * math.sin(
+                                             math.radians(self.tank.tank_angle )),
+                                         self.tank.tank_angle-4)
+                    shotgun_6 = ShotGun(self.tank,
+                                         self.tank.tank_rect.centerx + 29 * math.cos(
+                                             math.radians(self.tank.tank_angle )),
+                                         self.tank.tank_rect.centery - 29 * math.sin(
+                                             math.radians(self.tank.tank_angle)),
+                                         self.tank.tank_angle-6)
+                    self.bullets.append(shotgun_1)
+                    self.bullets.append(shotgun_2)
+                    self.bullets.append(shotgun_3)
+                    self.bullets.append(shotgun_4)
+                    self.bullets.append(shotgun_5)
+                    self.bullets.append(shotgun_6)
+                    Sound.shotgun_shot.play()
+                    self.tank.shot_gun_bull_count +=6
+                    if self.tank.shot_gun_bull_count == 18:
+                        self.tank.gun_mode=1
+                        self.tank.update_tank_image(normal_tanks[self.tank.id])
+                    animation = Animation(
+                        self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
+                        self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
+                        minigun_shot_frames, self.tank.tank_angle, 64, 64, 156)
+                    self.explosion_bull.append(animation)
+                    self.last_shoot=current_time
+
+                    Sound.shotgun_pump.play()

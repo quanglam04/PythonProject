@@ -41,6 +41,8 @@ class Tank :
         self.speed_add=0
         self.dame_bonus=0
         self.laser_bull=None
+        self.shot_gun_bull_count=0
+
         self.rotated_tank_image=None
         self.bounding_size = max(self.tank_rect.width, self.tank_rect.height) * 2
         self.tank_bounding_surface = pygame.Surface((self.bounding_size, self.bounding_size), pygame.SRCALPHA)

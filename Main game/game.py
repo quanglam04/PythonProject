@@ -1,6 +1,6 @@
 import pygame
 import Setting
-from Sound import ls_item_s,mg_item_s,missile_active_sound,tank_death_sound,missile_crash_tank_sound,normal_sound_crash
+from Sound import ls_item_s,mg_item_s,missile_active_sound,tank_death_sound,missile_crash_tank_sound,normal_sound_crash,start_beam,mega_beam,shotgun_pump
 import Static_object
 from tank import load_map
 from tank import Tank
@@ -192,6 +192,10 @@ class TankGame:
                     tank.beam_mode=0
                     tank.beam_active=False
                     tank.update_tank_image(St.tanks_beam_0[tank.id])
+                elif item_have ==9:
+                    tank.gun_mode=6
+                    tank.shot_gun_bull_count=0
+                    shotgun_pump.play()
                 if tank.speed_add !=0 :
                     if elapsed_time-start_time >=10:
                         tank.speed_add =0
@@ -225,14 +229,15 @@ class TankGame:
                 tank.tank_rect.x = int(tank.tank_x)
                 tank.tank_rect.y = int(tank.tank_y)
                 if tank.beam_active:
-                    if pygame.time.get_ticks()-tank.last_beam_shoot >=1000:
+                    if pygame.time.get_ticks()-tank.last_beam_shoot >=500:
                         tank.beam_mode +=1
                         tank.last_beam_shoot = pygame.time.get_ticks()
                     if tank.beam_mode == 1:
                         tank.update_tank_image(St.tanks_beam_1[tank.id])
-
+                        start_beam.play()
                     elif tank.beam_mode == 2:
                         tank.update_tank_image(St.tanks_beam_2[tank.id])
+
 
                     elif tank.beam_mode ==3:
                         tank.update_tank_image(St.tanks_beam_3[tank.id])
@@ -242,6 +247,11 @@ class TankGame:
                                     tank.tank_rect.centery - 29 * math.sin(math.radians(tank.tank_angle)),
                                     )
                         self.beams.append(beam)
+
+
+                        start_beam.stop()
+                        mega_beam.play()
+
                         tank.beam_active=False
                         tank.beam_frozen=True
                         tank.gun_mode = 1
@@ -289,7 +299,7 @@ class TankGame:
                             if tank.shield_health ==0:
                                 tank.shield_active= False
                         else:
-                            tank.health = tank.health- bullet.dame()-bullet.tank.dame_bonus
+                            tank.health = tank.health- bullet.dame()
                         normal_sound_crash.play()
                         self.bullets.remove(bullet)
 

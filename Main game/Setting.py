@@ -221,13 +221,17 @@ laser_sound = 'asset/media/laser.wav'
 machine_sound='asset/media/rifle_fire_1.wav'
 missile_tracking_sound_path='asset/media/signal-receiving-fx_188bpm.wav'
 missile_shot_sound_path='asset/media/grenade_launcher_explode_2.wav'
-missile_active_sound_path= 'asset/media/missile_active.wav'
 death_tank_sound_path='asset/media/explode_2.wav'
+mege_beam_ray_sound_path='asset/media/025513269-mega-death-ray.wav'
+starting_beam_sound_path='asset/media/Death Ray.mp3'
+shotgun_shot_sound_path='asset/media/auto_shotgun_fire_1.wav'
+shotgun_pump_sound_path='asset/media/shotgun_pump_1.wav'
+
 
 #---------------------------------------------Item Sound eff---------------------------------------------------------------------------------
 mg_item_se='asset/media/rifle_deploy_1.wav'
 la_item_se='asset/media/laser_on.wav'
-
+missile_active_sound_path= 'asset/media/missile_active.wav'
 
 
 #--------------------------------------------------------Sprite_sheet-----------------------------------------------------------------------------
