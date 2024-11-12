@@ -49,12 +49,16 @@ class TankGame:
         self.spawn_points = load_map(random_index)
         self.tanks=[]
         self.initialize_tanks()
-
         self.map_mask,self.map_surface,self.item_name = create_map_mask(self.map_data,TILE_SIZE)
-
+        self.walls=[]
+        self.wall_pos=[]
         for rect in self.map_optimize:
             x,y,width,height=rect
             self.collision_map.append(pygame.Rect(x*TILE_SIZE,y*TILE_SIZE,width*TILE_SIZE,height*TILE_SIZE))
+            tmp=St.wall.copy()
+            tmp=pygame.transform.smoothscale(tmp,(width*TILE_SIZE,height*TILE_SIZE))
+            self.walls.append(tmp)
+            self.wall_pos.append((x*TILE_SIZE,y*TILE_SIZE))
     def initialize_tanks(self):
         control_settings_player_1 = {
             'up': Setting.up_player_1,
@@ -117,7 +121,10 @@ class TankGame:
                 tank.control = TankControl(tank, self.window_width, self.window_height,self.explosions_bull ,self.bullets,self.lasers,self.missiles ,control_setting)
                 self.tanks.append(tank)
 
-
+    def draw_map_2(self,window):
+        for i in range(len(self.walls)):
+            x,y=self.wall_pos[i]
+            window.blit(self.walls[i],(x,y))
 
     def run(self, window):
 
@@ -128,8 +135,14 @@ class TankGame:
         info_tank_image = self.informationOfTank.get_rect(center=self.window.get_rect().center)
         time_surface = font.render("00 : 00", True, (0, 0, 0))
         time_rect = time_surface.get_rect(midbottom=(self.window.get_width() // 2, self.window.get_height() - 10))
+        frame_count=0
+        last_time=0
         while self.running:
-
+            frame_count+=1
+            if pygame.time.get_ticks()-last_time >=1000:
+                print(frame_count)
+                frame_count=0
+                last_time=pygame.time.get_ticks()
             elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # Đổi từ mili giây sang giây
             minutes = elapsed_time // 60
             seconds = elapsed_time % 60
@@ -146,10 +159,11 @@ class TankGame:
 
 
 
-            # window.fill((0, 0, 0))
+
             # # Vẽ bản đồ thay vì hình nền
 
-            self.window.fill(Setting.YELLOW)  # Xóa màn hình với màu trắng
+            #self.window.fill(Setting.YELLOW)  # Xóa màn hình với màu trắng
+            self.draw_map_2(self.window)
             draw_map(self.window, self.map_data, TILE_SIZE)
 
 
@@ -469,6 +483,8 @@ def draw_map(window, map_data, tile_size):
             elif tile =='-':
                 window.blit(St.shotgun_item,(x*tile_size,y*tile_size))
 
+
+
 def create_map_mask(map_data, tile_size=16):
     map_width = 1024
     map_height = 688
@@ -526,6 +542,7 @@ def create_map_mask(map_data, tile_size=16):
                 item.append((8,x*tile_size,y*tile_size))
             elif tile == '-':
                 item.append((9,x*tile_size,y*tile_size))
+
     map_mask = pygame.mask.from_surface(map_surface)
     return map_mask, map_surface,item_name
 
