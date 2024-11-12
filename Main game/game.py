@@ -12,6 +12,8 @@ import Static_object as St
 from explosion import Explosion
 from shield import Shield
 TILE_SIZE = Setting.tile_size
+from bullet_beam import Beam
+import math
 item = []
 from Laser_Aiming_Line import LaserAiming
 class TankGame:
@@ -25,6 +27,7 @@ class TankGame:
         self.missiles=[]
         self.bullets = []
         self.lasers=[]
+        self.beams=[]
         random_index = StartScreen.result['selected_map']
         self.map_data = read_map(f'MAP/map{random_index}.txt')
         self.map_optimize= load_wall_rect(f'MAP/Optimize_structure_in_map/map{random_index}optimize.txt')
@@ -111,7 +114,7 @@ class TankGame:
                 else:
                     pos = (0, 0)
                 tank = Tank(pos,i)
-                tank.control = TankControl(tank, self.window_width, self.window_height, self.bullets,self.lasers,self.missiles ,control_setting)
+                tank.control = TankControl(tank, self.window_width, self.window_height,self.explosions_bull ,self.bullets,self.lasers,self.missiles ,control_setting)
                 self.tanks.append(tank)
 
 
@@ -123,7 +126,6 @@ class TankGame:
         self.window = window
         start_time = pygame.time.get_ticks()
         info_tank_image = self.informationOfTank.get_rect(center=self.window.get_rect().center)
-        print("FUCK u")
         time_surface = font.render("00 : 00", True, (0, 0, 0))
         time_rect = time_surface.get_rect(midbottom=(self.window.get_width() // 2, self.window.get_height() - 10))
         while self.running:
@@ -154,7 +156,7 @@ class TankGame:
             for tank in self.tanks:
                 # Điều khiển xe tăng
                 tank.check=False
-                tank.control.handle_input(self.explosions_bull)
+                tank.control.handle_input()
                 tank.update_tank_mask()
                 if not tank.check :
                     tank.dx,tank.dy=0,0
@@ -176,7 +178,6 @@ class TankGame:
                     tank.gun_mode = 2
                     tank.update_tank_image(St.laser_tanks[tank.id])
                     ls_item_s.play()
-
                 elif item_have == 6:
                     tank.gun_mode= 3
                     tank.minigun_bull_count=0
@@ -186,6 +187,11 @@ class TankGame:
                     tank.gun_mode =4
                     tank.update_tank_image(St.missile_tanks[tank.id])
                     missile_active_sound.play()
+                elif item_have ==8 :
+                    tank.gun_mode =5
+                    tank.beam_mode=0
+                    tank.beam_active=False
+                    tank.update_tank_image(St.tanks_beam_0[tank.id])
                 if tank.speed_add !=0 :
                     if elapsed_time-start_time >=10:
                         tank.speed_add =0
@@ -194,15 +200,13 @@ class TankGame:
                         tank.dame_bonus=0
                         tank.update_tank_image(St.normal_tanks[tank.id])
                         tank.bullet_color=Setting.BLACK
-                if tank.gun_mode ==3 and tank.minigun_bull_count ==18:
-                    tank.gun_mode=1
-                    tank.update_tank_image(St.normal_tanks[tank.id])
+
 
                 if TankLogic.check_collision_with_wall(tank,self.map_mask):
                     tank.tank_x = tank.tank_x-tank.dx
                     tank.tank_y = tank.tank_y-tank.dy
                     tank.tank_angle = (tank.tank_angle-tank.d_angle) % 360
-                    tank.update_tank_mask()
+                    #tank.update_tank_mask()
                     # print(tank.dx, tank.dy, tank.d_angle)
                 for tank2 in self.tanks:
                     if tank2 is not tank:
@@ -210,16 +214,37 @@ class TankGame:
                             tank.tank_x = tank.tank_x - tank.dx
                             tank.tank_y = tank.tank_y - tank.dy
                             tank.tank_angle = (tank.tank_angle - tank.d_angle) % 360
-                            tank.update_tank_mask()
+                            #tank.update_tank_mask()
                             tank2.tank_x = tank2.tank_x - tank2.dx
                             tank2.tank_y = tank2.tank_y - tank2.dy
                             tank2.tank_angle = (tank2.tank_angle - tank2.d_angle) % 360
-                            tank2.update_tank_mask()
+                            #tank2.update_tank_mask()
                             break
 
 
                 tank.tank_rect.x = int(tank.tank_x)
                 tank.tank_rect.y = int(tank.tank_y)
+                if tank.beam_active:
+                    if pygame.time.get_ticks()-tank.last_beam_shoot >=1000:
+                        tank.beam_mode +=1
+                        tank.last_beam_shoot = pygame.time.get_ticks()
+                    if tank.beam_mode == 1:
+                        tank.update_tank_image(St.tanks_beam_1[tank.id])
+
+                    elif tank.beam_mode == 2:
+                        tank.update_tank_image(St.tanks_beam_2[tank.id])
+
+                    elif tank.beam_mode ==3:
+                        tank.update_tank_image(St.tanks_beam_3[tank.id])
+
+                        beam = Beam(tank,
+                                    tank.tank_rect.centerx + 29 * math.cos(math.radians(tank.tank_angle)),
+                                    tank.tank_rect.centery - 29 * math.sin(math.radians(tank.tank_angle)),
+                                    )
+                        self.beams.append(beam)
+                        tank.beam_active=False
+                        tank.beam_frozen=True
+                        tank.gun_mode = 1
 
 
                 if tank.gun_mode==2:
@@ -322,6 +347,32 @@ class TankGame:
                         missile_crash_tank_sound.play()
 
 
+            for beam in self.beams:
+                if beam.is_expired():
+                    tank=beam.tank
+                    self.beams.remove(beam)
+                    tank.beam_frozen=False
+                    tank.update_tank_image(St.normal_tanks[tank.id])
+                else:
+                    beam.draw(self.window)
+                    beam.update_end_point()
+                    for tank in self.tanks:
+                        if tank.id!= beam.tank.id:
+                            x,y=TankLogic.check_collision_with_laser(tank,beam)
+                            if x is not None and y is not None:
+                                if elapsed_time -tank.last_time_take_dame_by_beam >=1:
+                                    if tank.shield_active:
+                                        tank.shield_health-=1
+                                        if tank.shield_health == 0:
+                                            tank.shield_active = False
+                                    else:
+                                        tank.health =tank.health - beam.dame - beam.tank.dame_bonus
+                                    tank.last_time_take_dame_by_beam=elapsed_time
+
+
+
+
+
             for tank in self.tanks:
                 if tank.health <= 0:
                     explosion=Explosion(tank.tank_rect.centerx, tank.tank_rect.centery,Static_object.expl_4_frames,1000)
@@ -339,9 +390,7 @@ class TankGame:
              # Khởi tạo font chữ, kích thước 36
 
             time_surface = font.render(time_text, True, (0, 0, 0))  # Vẽ thời gian với màu đen
-            # time_rect = time_surface.get_rect(midbottom=(self.window.get_width() // 2, self.window.get_height() - 10))
             self.window.blit(time_surface, time_rect)
-
             if self.show_info:
                 self.window.blit(self.informationOfTank, info_tank_image)
             pygame.display.flip()
@@ -405,6 +454,10 @@ def draw_map(window, map_data, tile_size):
                 window.blit(St.machine_gun,(x*tile_size,y*tile_size)) # day la check sung may ma
             elif tile=='9':
                 window.blit(St.missile_item,(x*tile_size,y*tile_size))
+            elif tile == '.':
+                window.blit(St.beam_item,(x*tile_size,y*tile_size))
+            elif tile =='-':
+                window.blit(St.shotgun_item,(x*tile_size,y*tile_size))
 
 def create_map_mask(map_data, tile_size=16):
     map_width = 1024
@@ -432,9 +485,13 @@ def create_map_mask(map_data, tile_size=16):
 
     missile_item_mask=pygame.mask.from_surface(St.missile_item)
 
+    beam_item_mask=pygame.mask.from_surface(St.beam_item)
+
+    shotgun_item_mask=pygame.mask.from_surface(St.shotgun_item)
+
     map_surface = pygame.Surface((map_width, map_height),pygame.SRCALPHA)
     map_surface.fill((0, 0, 0,0))
-    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,shield_item_mask,laser_line_mask,machine_gun_mask,missile_item_mask]
+    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,shield_item_mask,laser_line_mask,machine_gun_mask,missile_item_mask,beam_item_mask,shotgun_item_mask]
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
             if tile == '1':  # Walls
@@ -455,6 +512,10 @@ def create_map_mask(map_data, tile_size=16):
                 item.append((6,x*tile_size,y*tile_size))
             elif tile == '9':
                 item.append((7,x*tile_size,y*tile_size))
+            elif tile =='.':
+                item.append((8,x*tile_size,y*tile_size))
+            elif tile == '-':
+                item.append((9,x*tile_size,y*tile_size))
     map_mask = pygame.mask.from_surface(map_surface)
     return map_mask, map_surface,item_name
 

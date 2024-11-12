@@ -5,11 +5,15 @@ BLACK = (0, 0, 0)
 DARKGREY = (40, 40, 40)
 LIGHTGREY = (120, 120, 120)
 GREEN = (0, 255, 0)
+GREEN_BEAM=(92,239,92)
 RED = (255, 0, 0)
+RED_BEAM=(255,45,63)
 YELLOW = (255, 255, 0)
 BROWN = (120, 104, 82)
 BLUE = (0, 0, 255)
+BLUE_BEAM=(73,73,255)
 ORANGE=(255,165,0)
+ORANGE_BEAM=(255,191,96)
 # game settings
 #---------------------------------------------- Read file -----------------------------------------------
 with open('../Setting game/Saved.txt', 'r') as file:
@@ -181,6 +185,9 @@ shield = 'asset/item/shield.png'
 laser_line = 'asset/item/Laser.png'
 machine_gun='asset/item/Machine Gun.png'
 missile='asset/item/Missile.png'
+beam='asset/item/Beam.png'
+shotgun='asset/item/Shotgun.png'
+
 
 
 background = 'asset/background.jpg'
@@ -243,6 +250,32 @@ normal_smoke='Smoke.png'
 missile_crash_sound_path='asset/media/grenade_launcher_explode_1.wav'
 normal_crash_sound_path='asset/media/normal bullet.flac'
 
+#--------Beam------
+Blue_beam_image_path='asset/Beam/Blue Beam.png'
+Red_beam_image_path='asset/Beam/Red Beam.png'
+Orange_beam_image_path='asset/Beam/Orange Beam.png'
+Green_beam_image_path='asset/Beam/Green Beam.png'
+
+#--- Tank_beam------
+Blue_tank_beam_path_0 ='asset/Beam/Blue Tank.png'
+Red_tank_beam_path_0='asset/Beam/Red Tank.png'
+Orange_tank_beam_path_0='asset/Beam/Orange Tank.png'
+Green_tank_beam_path_0='asset/Beam/Green Tank.png'
+
+Blue_tank_beam_path_1 ='asset/Beam/Blue Tank (1).png'
+Red_tank_beam_path_1='asset/Beam/Red Tank (1).png'
+Orange_tank_beam_path_1='asset/Beam/Orange Tank (1).png'
+Green_tank_beam_path_1='asset/Beam/Green Tank (1).png'
+
+Blue_tank_beam_path_2 ='asset/Beam/Blue Tank (2).png'
+Red_tank_beam_path_2='asset/Beam/Red Tank (2).png'
+Orange_tank_beam_path_2='asset/Beam/Orange Tank (2).png'
+Green_tank_beam_path_2='asset/Beam/Green Tank (2).png'
+
+Blue_tank_beam_path_3 ='asset/Beam/Blue Tank (3).png'
+Red_tank_beam_path_3='asset/Beam/Red Tank (3).png'
+Orange_tank_beam_path_3='asset/Beam/Orange Tank (3).png'
+Green_tank_beam_path_3='asset/Beam/Green Tank (3).png'
 
 
 

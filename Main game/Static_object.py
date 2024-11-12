@@ -23,6 +23,22 @@ def faded_eff(image):
         faded_image.set_alpha(alpha)
         frames.append(faded_image)
     return frames
+def create_frame(image,frame,color):
+    merged_image = pygame.Surface((500, 19), pygame.SRCALPHA)
+    rect_surface=pygame.Surface((50,10))
+    rect_surface.fill(color)
+    if frame==1:
+        for i in range (0,10,2):
+            merged_image.blit(image,(i*50,0))
+        for i in range(1,10,2):
+            merged_image.blit(rect_surface,(i*50,4))
+    else:
+        for i in range(0,10,2):
+            merged_image.blit(rect_surface,(i*50,4))
+        for i in range (1,10,2):
+            merged_image.blit(image,(i*50,0))
+    return merged_image
+
 pygame.init()
 temporary_screen = pygame.display.set_mode((1,1))
 wall = img.load(Setting.wall).convert()
@@ -59,6 +75,16 @@ machine_gun=tf.scale(machine_gun,(25,25))
 missile_item=img.load(Setting.missile)
 missile_item.set_colorkey(Setting.WHITE)
 missile_item=tf.scale(missile_item,(25,25))
+
+beam_item=img.load(Setting.beam)
+beam_item.set_colorkey(Setting.WHITE)
+beam_item=tf.scale(beam_item,(25,25))
+
+shotgun_item=img.load(Setting.shotgun)
+shotgun_item.set_colorkey(Setting.WHITE)
+shotgun_item=tf.scale(shotgun_item,(25,25))
+
+
 
 missile_image=img.load(Setting.missile_image)
 missile_image=tf.scale(missile_image,(30,15))
@@ -161,6 +187,114 @@ Green_missile=img.load(Setting.asset+Setting.missile_path+Setting.Green_image)
 Green_missile=tf.smoothscale(Green_missile,(45,30))
 
 missile_tanks=[Blue_missile,Red_missile,Orange_missile,Green_missile]
+
+# ------ Beam_img --------------#
+Blue_beam=img.load(Setting.Blue_beam_image_path).convert_alpha()
+Blue_beam=tf.smoothscale(Blue_beam,(500,19))
+Blue_beam_resize=Blue_beam.copy()
+Blue_beam_resize=tf.smoothscale(Blue_beam_resize,(50,19))
+Blue_beam_frames=[Blue_beam]
+Blue_beam_frame_1=create_frame(Blue_beam_resize,1,Setting.BLUE_BEAM)
+Blue_beam_frame_2=create_frame(Blue_beam_resize,2,Setting.BLUE_BEAM)
+Blue_beam_frames.append(Blue_beam_frame_1)
+Blue_beam_frames.append(Blue_beam_frame_2)
+
+
+Red_beam=img.load(Setting.Red_beam_image_path).convert_alpha()
+Red_beam=tf.smoothscale(Red_beam,(500,19))
+Red_beam_resize=Red_beam.copy()
+Red_beam_resize=tf.smoothscale(Red_beam_resize,(50,19))
+Red_beam_frames=[Red_beam]
+Red_beam_frame_1=create_frame(Red_beam_resize,1,Setting.RED_BEAM)
+Red_beam_frame_2=create_frame(Red_beam_resize,2,Setting.RED_BEAM)
+Red_beam_frames.append(Red_beam_frame_1)
+Red_beam_frames.append(Red_beam_frame_2)
+
+
+
+Orange_beam=img.load(Setting.Orange_beam_image_path).convert_alpha()
+Orange_beam=tf.smoothscale(Orange_beam,(500,19))
+Orange_beam_resize=Orange_beam.copy()
+Orange_beam_resize=tf.smoothscale(Orange_beam_resize,(50,19))
+Orange_beam_frames=[Orange_beam]
+Orange_beam_frame_1=create_frame(Orange_beam_resize,1,Setting.ORANGE_BEAM)
+Orange_beam_frame_2=create_frame(Orange_beam_resize,2,Setting.ORANGE_BEAM)
+Orange_beam_frames.append(Orange_beam_frame_1)
+Orange_beam_frames.append(Orange_beam_frame_2)
+
+
+
+Green_beam=img.load(Setting.Green_beam_image_path).convert_alpha()
+Green_beam=tf.smoothscale(Green_beam,(500,19))
+Green_beam_resize=Green_beam.copy()
+Green_beam_resize=tf.smoothscale(Green_beam_resize,(50,19))
+Green_beam_frames=[Green_beam]
+Green_beam_frame_1=create_frame(Green_beam_resize,1,Setting.GREEN_BEAM)
+Green_beam_frame_2=create_frame(Green_beam_resize,2,Setting.GREEN_BEAM)
+Green_beam_frames.append(Green_beam_frame_1)
+Green_beam_frames.append(Green_beam_frame_2)
+
+
+
+beams=[Blue_beam_frames,Red_beam_frames,Orange_beam_frames,Green_beam_frames]
+
+#Beam tank
+Blue_tank_beam_0=img.load(Setting.Blue_tank_beam_path_0)
+Blue_tank_beam_0=tf.smoothscale(Blue_tank_beam_0,(45,30))
+
+Red_tank_beam_0=img.load(Setting.Red_tank_beam_path_0)
+Red_tank_beam_0=tf.smoothscale(Red_tank_beam_0,(45,30))
+
+Orange_tank_beam_0=img.load(Setting.Orange_tank_beam_path_0)
+Orange_tank_beam_0=tf.smoothscale(Orange_tank_beam_0,(45,30))
+
+Green_tank_beam_0=img.load(Setting.Green_tank_beam_path_0)
+Green_tank_beam_0=tf.smoothscale(Green_tank_beam_0,(45,30))
+
+tanks_beam_0=[Blue_tank_beam_0,Red_tank_beam_0,Orange_tank_beam_0,Green_tank_beam_0]
+
+Blue_tank_beam_1=img.load(Setting.Blue_tank_beam_path_1)
+Blue_tank_beam_1=tf.smoothscale(Blue_tank_beam_1,(45,30))
+
+Red_tank_beam_1=img.load(Setting.Red_tank_beam_path_1)
+Red_tank_beam_1=tf.smoothscale(Red_tank_beam_1,(45,30))
+
+Orange_tank_beam_1=img.load(Setting.Orange_tank_beam_path_1)
+Orange_tank_beam_1=tf.smoothscale(Orange_tank_beam_1,(45,30))
+
+Green_tank_beam_1=img.load(Setting.Green_tank_beam_path_1)
+Green_tank_beam_1=tf.smoothscale(Green_tank_beam_1,(45,30))
+
+tanks_beam_1=[Blue_tank_beam_1,Red_tank_beam_1,Orange_tank_beam_1,Green_tank_beam_1]
+
+Blue_tank_beam_2=img.load(Setting.Blue_tank_beam_path_2)
+Blue_tank_beam_2=tf.smoothscale(Blue_tank_beam_2,(45,30))
+
+Red_tank_beam_2=img.load(Setting.Red_tank_beam_path_2)
+Red_tank_beam_2=tf.smoothscale(Red_tank_beam_2,(45,30))
+
+Orange_tank_beam_2=img.load(Setting.Orange_tank_beam_path_2)
+Orange_tank_beam_2=tf.smoothscale(Orange_tank_beam_2,(45,30))
+
+Green_tank_beam_2=img.load(Setting.Green_tank_beam_path_2)
+Green_tank_beam_2=tf.smoothscale(Green_tank_beam_2,(45,30))
+
+tanks_beam_2=[Blue_tank_beam_2,Red_tank_beam_2,Orange_tank_beam_2,Green_tank_beam_2]
+
+Blue_tank_beam_3=img.load(Setting.Blue_tank_beam_path_3)
+Blue_tank_beam_3=tf.smoothscale(Blue_tank_beam_3,(45,30))
+
+Red_tank_beam_3=img.load(Setting.Red_tank_beam_path_3)
+Red_tank_beam_3=tf.smoothscale(Red_tank_beam_3,(45,30))
+
+Orange_tank_beam_3=img.load(Setting.Orange_tank_beam_path_3)
+Orange_tank_beam_3=tf.smoothscale(Orange_tank_beam_3,(45,30))
+
+Green_tank_beam_3=img.load(Setting.Green_tank_beam_path_3)
+Green_tank_beam_3=tf.smoothscale(Green_tank_beam_3,(45,30))
+
+tanks_beam_3=[Blue_tank_beam_3,Red_tank_beam_3,Orange_tank_beam_3,Green_tank_beam_3]
+
 
 pygame.display.quit()
 pygame.quit()

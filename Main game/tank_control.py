@@ -9,29 +9,31 @@ from Static_object import normal_tanks,shot_frames,minigun_shot_frames
 from explosion import Animation
 import Sound
 from missile import Missile
+
 class TankControl:
-    def __init__(self, tank, window_width, window_height,bullets,lasers,missiles,control_setting):
+    def __init__(self, tank, window_width, window_height,explosion_bull,bullets,lasers,missiles,control_setting):
         self.tank = tank #chuyen tham so cua xe tang vao bao gom kich co vi tri goc quay
         self.window_width = window_width #tham so man hinh game
         self.window_height = window_height
+        self.explosion_bull=explosion_bull
         self.bullets=bullets
         self.lasers=lasers
         self.missiles=missiles
         self.last_shoot=0
         self.control_setting=control_setting
-    def handle_input(self,explosion_bull):#doc event hay doc input cua pygame
+    def handle_input(self):#doc event hay doc input cua pygame
         keys = pygame.key.get_pressed()
-        if keys[self.control_setting['up']] :
+        if keys[self.control_setting['up']] and self.tank.beam_frozen == False  :
             TankLogic.move_tank(self.tank, self.tank.tank_speed + float(self.tank.speed_add), self.window_width, self.window_height) #goi den ham di chuyen nha ae
-        if keys[self.control_setting['down']]:
+        if keys[self.control_setting['down']] and self.tank.beam_frozen == False :
             TankLogic.move_tank(self.tank, -self.tank.tank_speed - float(self.tank.speed_add), self.window_width, self.window_height)
         if keys[self.control_setting['right']]:
             TankLogic.rotate_tank(self.tank, -Setting.angle)
         if keys[self.control_setting['left']]:
             TankLogic.rotate_tank(self.tank, +Setting.angle)
-        if keys[self.control_setting['shoot']]:
+        if keys[self.control_setting['shoot']] and self.tank.beam_frozen == False :
             current_time = pygame.time.get_ticks()
-            if self.tank.gun_mode == 1:
+            if self.tank.gun_mode == 1: #normal
                 if   (current_time-self.last_shoot) >1000  and len(self.bullets) <100  :
                     bullet = Bullet(self.tank,
                         self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
@@ -42,7 +44,7 @@ class TankControl:
                     Sound.bullet_sound.play()
                     animation=Animation(self.tank.tank_rect.centerx + 55 * math.cos(math.radians(self.tank.tank_angle)),
                          self.tank.tank_rect.centery - 55 * math.sin(math.radians(self.tank.tank_angle)),shot_frames,self.tank.tank_angle,128,128,1000)
-                    explosion_bull.append(animation)
+                    self.explosion_bull.append(animation)
             elif self.tank.gun_mode == 2:
                 laser=Laser(self.tank,self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle)),
                             self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle)),
@@ -55,7 +57,7 @@ class TankControl:
                 Sound.laser_sound.play()
                 self.last_shoot = current_time
 
-            elif self.tank.gun_mode == 3:
+            elif self.tank.gun_mode == 3: #minigun
                 if (current_time - self.last_shoot) > 200:
                     minibull_1=Minigun(self.tank,
                         self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle+15)),
@@ -69,7 +71,6 @@ class TankControl:
                         self.tank.tank_rect.centerx + 29 * math.cos(math.radians(self.tank.tank_angle-15)),
                         self.tank.tank_rect.centery - 29 * math.sin(math.radians(self.tank.tank_angle-15)),
                         self.tank.tank_angle)
-                    self.last_shoot=current_time
                     self.bullets.append(minibull_1)
                     self.bullets.append(minibull_2)
                     self.bullets.append(minibull_3)
@@ -77,10 +78,14 @@ class TankControl:
                         self.tank.tank_rect.centerx + 35 * math.cos(math.radians(self.tank.tank_angle)),
                         self.tank.tank_rect.centery - 35 * math.sin(math.radians(self.tank.tank_angle)),
                         minigun_shot_frames, self.tank.tank_angle,64,64,156)
-                    explosion_bull.append(animation)
+                    self.explosion_bull.append(animation)
                     Sound.machine_gun_sound.play()
                     self.tank.minigun_bull_count +=3
-            elif self.tank.gun_mode == 4:
+                    if self.tank.minigun_bull_count == 18:
+                        self.tank.gun_mode=1
+                        self.tank.update_tank_image(normal_tanks[self.tank.id])
+                    self.last_shoot = current_time
+            elif self.tank.gun_mode == 4: #missile
                 missile=Missile(self.tank,
                         self.tank.tank_rect.centerx + 24 * math.cos(math.radians(self.tank.tank_angle+16)),
                         self.tank.tank_rect.centery - 24 * math.sin(math.radians(self.tank.tank_angle+16)),
@@ -91,3 +96,6 @@ class TankControl:
                 self.tank.update_tank_image(normal_tanks[self.tank.id])
                 self.last_shoot=pygame.time.get_ticks()
                 Sound.missile_shot_sound.play()
+            elif self.tank.gun_mode == 5: #beam
+                self.tank.beam_active=True
+

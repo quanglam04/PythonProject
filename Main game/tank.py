@@ -31,8 +31,11 @@ class Tank :
         self.shield_health=4
         self.last_time_shield_frames=0
         self.shield=None
-
-
+        self.last_time_take_dame_by_beam=0
+        self.beam_active=False
+        self.beam_mode=0
+        self.last_beam_shoot=0
+        self.beam_frozen=False
         self.laser_endpoints=[]
 
         self.speed_add=0
