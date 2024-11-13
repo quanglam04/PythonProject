@@ -544,11 +544,10 @@ def load_wall_rect(filename):
 def random_item(map_data,tile_size):
     x=random.randint(0,63)
     y=random.randint(0,42)
-    while map_data[int(y/16)][int(x/16)] == '1':
+    while map_data[int(y)][int(x)] == '1':
         x = random.randint(0, 62)
         y = random.randint(0, 41)
     item_num=random.randint(0,9)
-    print(x*16,y*16)
     items.append((item_num,x*tile_size,y*tile_size))
 
 def draw_item(window):
