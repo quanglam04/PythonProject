@@ -1,4 +1,5 @@
 .idea/
-PROJECT PYTHON/.idea
-PROJECT PYTHON/__pycache__
-
+.gitignore
+.ignore/
+/test/
+/Main game/AI test.py
