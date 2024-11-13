@@ -88,7 +88,7 @@ class TankLogic:
         check = map_mask.overlap(tank.tank_mask,(offset_x,offset_y))
         return check is not None
     @staticmethod
-    def check_collision_with_items(tank, item,item_name,map_data,title_size):
+    def check_collision_with_items(tank, item,item_name,title_size):
         res=None
         for tmp in item:
             offset_x= int(tank.tank_x-tmp[1]-title_size)
@@ -96,7 +96,6 @@ class TankLogic:
             check=item_name[tmp[0]].overlap(tank.tank_mask,(offset_x,offset_y))
             if check is not None:
                 # print(item_name[tmp[0]])
-                map_data[tmp[2]//title_size][tmp[1]//title_size]= '0'
                 res=tmp[0]
                 item.remove(tmp)
                 break

@@ -1,3 +1,5 @@
+import random
+
 import pygame
 import Setting
 from Sound import ls_item_s,mg_item_s,missile_active_sound,tank_death_sound,missile_crash_tank_sound,normal_sound_crash,start_beam,mega_beam,shotgun_pump
@@ -14,7 +16,7 @@ from shield import Shield
 TILE_SIZE = Setting.tile_size
 from bullet_beam import Beam
 import math
-item = []
+items = []
 from Laser_Aiming_Line import LaserAiming
 class TankGame:
 
@@ -126,6 +128,7 @@ class TankGame:
             x,y=self.wall_pos[i]
             window.blit(self.walls[i],(x,y))
 
+
     def run(self, window):
 
         font = pygame.font.Font(None, 36)
@@ -137,6 +140,7 @@ class TankGame:
         time_rect = time_surface.get_rect(midbottom=(self.window.get_width() // 2, self.window.get_height() - 10))
         frame_count=0
         last_time=0
+        last_random_time=0
         while self.running:
             frame_count+=1
             if pygame.time.get_ticks()-last_time >=1000:
@@ -157,15 +161,17 @@ class TankGame:
                     if event.key == pygame.K_TAB:
                         self.show_info = False  # Ẩn ảnh khi thả phím Tab
 
-
+            if elapsed_time - last_random_time >=5 and len(items) <=8 :
+                random_item(self.map_data,TILE_SIZE)
+                last_random_time = elapsed_time
 
 
             # # Vẽ bản đồ thay vì hình nền
 
-            #self.window.fill(Setting.YELLOW)  # Xóa màn hình với màu trắng
+            self.window.fill(Setting.YELLOW)  # Xóa màn hình với màu trắng
             self.draw_map_2(self.window)
-            draw_map(self.window, self.map_data, TILE_SIZE)
-
+            #draw_map(self.window, self.map_data, TILE_SIZE)
+            draw_item(self.window)
 
             for tank in self.tanks:
                 # Điều khiển xe tăng
@@ -174,7 +180,7 @@ class TankGame:
                 tank.update_tank_mask()
                 if not tank.check :
                     tank.dx,tank.dy=0,0
-                item_have=TankLogic.check_collision_with_items(tank,item,self.item_name,self.map_data,TILE_SIZE)
+                item_have=TankLogic.check_collision_with_items(tank,items,self.item_name,TILE_SIZE)
                 if item_have == 3:
                     tank.speed_add += Setting.speedAdd
                     start_time=elapsed_time
@@ -422,34 +428,6 @@ class TankGame:
 
         pygame.quit()
 
-# def show_game_over_screen(window, window_width, window_height):
-#     setVolumn(0)
-#     # Hiển thị màn hình Game Over
-#     font = pygame.font.Font(None, 150)
-#     text = font.render("Game Over", True, (255, 0, 0))  # Chữ màu đỏ
-#     window.fill((0, 0, 0))  # Làm màn hình đen
-#     window.blit(text, (window_width // 2 - text.get_width() // 2, window_height // 2 - text.get_height() // 2))
-#
-#     # Hiển thị thông báo "Press Q to exit"
-#     small_font = pygame.font.Font(None, 50)
-#     sub_text = small_font.render("Press Q to exit", True, (255, 255, 255))  # Chữ màu trắng
-#     window.blit(sub_text, (window_width // 2 - sub_text.get_width() // 2, window_height // 2 + text.get_height() // 2 + 20-10))
-#
-#
-#     pygame.display.flip()  # Cập nhật màn hình
-#
-#     waiting_for_exit = True
-#     while waiting_for_exit:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 waiting_for_exit = False  # Cho phép thoát bằng cách nhấn nút đóng cửa sổ
-#             elif event.type == pygame.KEYDOWN:
-#                 if event.key == pygame.K_q:  # Nếu người chơi bấm phím Q
-#                     waiting_for_exit = False
-#
-#
-#     pygame.quit()  # Thoát pygame
-
 
 def read_map(file_path):
     with open(file_path, 'r') as file:
@@ -522,26 +500,26 @@ def create_map_mask(map_data, tile_size=16):
         for x, tile in enumerate(row):
             if tile == '1':  # Walls
                 map_surface.blit(St.wall, (x * tile_size, y * tile_size))
-            elif tile == '2':  # Item tăng sức mạnh (vũ khí)
-                item.append((0,x*tile_size,y*tile_size))
-            elif tile == '3':  # Item tăng máu (HP)
-                item.append((1,x*tile_size,y*tile_size))
-            elif tile == '4':  # Item tăng máu (HP)
-                item.append((2,x*tile_size,y*tile_size))
-            elif tile == '5':  # Item tăng máu (HP)
-                item.append((3,x*tile_size,y*tile_size))
-            elif tile == '6':  # Item tăng máu (HP)
-                item.append((4,x*tile_size,y*tile_size))
-            elif tile== '7':
-                item.append((5,x*tile_size,y*tile_size))
-            elif tile =='8':
-                item.append((6,x*tile_size,y*tile_size))
-            elif tile == '9':
-                item.append((7,x*tile_size,y*tile_size))
-            elif tile =='.':
-                item.append((8,x*tile_size,y*tile_size))
-            elif tile == '-':
-                item.append((9,x*tile_size,y*tile_size))
+            # elif tile == '2':  # Item tăng sức mạnh (vũ khí)
+            #     item.append((0,x*tile_size,y*tile_size))
+            # elif tile == '3':  # Item tăng máu (HP)
+            #     item.append((1,x*tile_size,y*tile_size))
+            # elif tile == '4':  # Item tăng máu (HP)
+            #     item.append((2,x*tile_size,y*tile_size))
+            # elif tile == '5':  # Item tăng máu (HP)
+            #     item.append((3,x*tile_size,y*tile_size))
+            # elif tile == '6':  # Item tăng máu (HP)
+            #     item.append((4,x*tile_size,y*tile_size))
+            # elif tile== '7':
+            #     item.append((5,x*tile_size,y*tile_size))
+            # elif tile =='8':
+            #     item.append((6,x*tile_size,y*tile_size))
+            # elif tile == '9':
+            #     item.append((7,x*tile_size,y*tile_size))
+            # elif tile =='.':
+            #     item.append((8,x*tile_size,y*tile_size))
+            # elif tile == '-':
+            #     item.append((9,x*tile_size,y*tile_size))
 
     map_mask = pygame.mask.from_surface(map_surface)
     return map_mask, map_surface,item_name
@@ -562,3 +540,17 @@ def load_wall_rect(filename):
                 except ValueError as e:
                     print(f"Error parsing line '{line}': {e}")
     return rect_walls
+
+def random_item(map_data,tile_size):
+    x=random.randint(0,63)
+    y=random.randint(0,42)
+    while map_data[int(y/16)][int(x/16)] == '1':
+        x = random.randint(0, 62)
+        y = random.randint(0, 41)
+    item_num=random.randint(0,9)
+    print(x*16,y*16)
+    items.append((item_num,x*tile_size,y*tile_size))
+
+def draw_item(window):
+    for item in items:
+        window.blit(St.item_list[item[0]],(item[1],item[2]))

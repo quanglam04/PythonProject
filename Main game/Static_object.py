@@ -84,7 +84,7 @@ shotgun_item=img.load(Setting.shotgun)
 shotgun_item.set_colorkey(Setting.WHITE)
 shotgun_item=tf.scale(shotgun_item,(25,25))
 
-
+item_list=[gunItem,hpImage,laser_gunItem,speedItem,shield_item,laser_line,machine_gun,missile_item,beam_item,shotgun_item]
 
 missile_image=img.load(Setting.missile_image)
 missile_image=tf.scale(missile_image,(30,15))
