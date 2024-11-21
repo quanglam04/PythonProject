@@ -136,7 +136,7 @@ bar_color = (255, 85, 85)  # Màu thanh loading đỏ
 text_color = (255, 255, 255)  # Màu chữ trắng
 #------------------------------------------ player settings -------------------------------------------------------------------------
 
-playerSpeed =0.5
+playerSpeed =0.3
 speedAdd = 1.5
 angle = 0.5
 

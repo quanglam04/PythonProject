@@ -1,4 +1,6 @@
 import pygame
+from pygame.examples.go_over_there import running
+
 import Setting
 from Sound import ls_item_s,mg_item_s,missile_active_sound,tank_death_sound,missile_crash_tank_sound,normal_sound_crash,start_beam,mega_beam,shotgun_pump
 import Static_object
@@ -7,6 +9,7 @@ from tank import Tank
 from tank_control import TankControl
 from tank_logic import TankLogic
 import StartScreen
+from EndingScreen import EndingScreen
 from tank import draw_health_bar
 import Static_object as St
 from explosion import Explosion
@@ -407,6 +410,16 @@ class TankGame:
                     self.explosions_bull.append(explosion)
                     self.tanks.remove(tank)
                     tank_death_sound.play()
+
+                    #Tao ending event
+                    if len(self.tanks) == 1:
+                        winner_id = self.tanks[0].id
+                        print(winner_id)
+                        self.running = False
+                        return winner_id
+
+
+
             for explosion in self.explosions_bull[:]:
                 explosion.update()
 
@@ -427,7 +440,7 @@ class TankGame:
         pygame.quit()
 
 # def show_game_over_screen(window, window_width, window_height):
-#     setVolumn(0)
+#     #setVolumn(0)
 #     # Hiển thị màn hình Game Over
 #     font = pygame.font.Font(None, 150)
 #     text = font.render("Game Over", True, (255, 0, 0))  # Chữ màu đỏ
@@ -451,6 +464,7 @@ class TankGame:
 #                 if event.key == pygame.K_q:  # Nếu người chơi bấm phím Q
 #                     waiting_for_exit = False
 #
+#     #running = False
 #
 #     pygame.quit()  # Thoát pygame
 
