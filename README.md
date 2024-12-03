@@ -1,5 +1,3 @@
-Here’s the translation of your instructions into English:
-
 How to run this program:
 
 Method 1: Run using the executable file:
