@@ -1,7 +1,7 @@
 import pygame
 import math
 from Static_object import beams
-
+from Setting import beam_time
 class Beam:
     def __init__(self, tank, x, y):
         self.tank = tank
@@ -37,7 +37,7 @@ class Beam:
 
     def is_expired(self):
         # Kiểm tra xem hình chữ nhật đã tồn tại đủ 3.5 giây hay chưa
-        return pygame.time.get_ticks() - self.start_time > 3000
+        return pygame.time.get_ticks() - self.start_time > beam_time
     def update_end_point(self):
         self.x=self.tank.tank_rect.centerx
         self.y=self.tank.tank_rect.centery

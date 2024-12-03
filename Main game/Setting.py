@@ -1,4 +1,5 @@
 import random
+import configparser
 tile_size=16
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -135,10 +136,14 @@ border_color = (255, 85, 85)  # Màu viền đỏ
 bar_color = (255, 85, 85)  # Màu thanh loading đỏ
 text_color = (255, 255, 255)  # Màu chữ trắng
 #------------------------------------------ player settings -------------------------------------------------------------------------
-
-playerSpeed =0.5
-speedAdd = 1.5
-angle = 0.5
+config = configparser.ConfigParser()
+config.read('setting.ini')
+playerSpeed =float(config['GameSettings']['player_speed'])
+speedAdd = float(config['GameSettings']['speed_add'])
+angle = float(config['GameSettings']['angle'])
+missile_speed=float(config['GameSettings']['missile_speed'])
+beam_time=float(config['GameSettings']['beam_time'])
+bullet_speed=float(config['GameSettings']['bullet_speed'])
 
 #------------------------------------------ vị trí ban đầu -----------------------------------------------------------------------
 x0 = 1
@@ -179,6 +184,7 @@ TankBlue_laser="asset/Laser/"
 
 gun = 'asset/item/gun.png'
 hp = 'asset/item/hp.png'
+lucky_item_path='asset/item/lucky_item.png'
 laser_gun = 'asset/item/laser_gun.png'
 speed = 'asset/item/speed.png'
 shield = 'asset/item/shield.png'
@@ -281,5 +287,9 @@ Red_tank_beam_path_3='asset/Beam/Red Tank (3).png'
 Orange_tank_beam_path_3='asset/Beam/Orange Tank (3).png'
 Green_tank_beam_path_3='asset/Beam/Green Tank (3).png'
 
-
+#----------------------shotgun_-----------------------
+Blue_tank_shotgun_path='asset/Shotgun/Blue Tank.png'
+Red_tank_shotgun_path='asset/Shotgun/Red Tank.png'
+Orange_tank_shotgun_path='asset/Shotgun/Orange Tank.png'
+Green_tank_shotgun_path='asset/Shotgun/Green Tank.png'
 

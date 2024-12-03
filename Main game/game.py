@@ -2,7 +2,7 @@ import random
 
 import pygame
 import Setting
-from Sound import ls_item_s,mg_item_s,missile_active_sound,tank_death_sound,missile_crash_tank_sound,normal_sound_crash,start_beam,mega_beam,shotgun_pump
+from Sound import ls_item_s,mg_item_s,missile_active_sound,tank_death_sound,missile_crash_tank_sound,normal_sound_crash,start_beam,mega_beam,shotgun_pump,music_bg_victory
 import Static_object
 from tank import load_map
 from tank import Tank
@@ -16,7 +16,8 @@ from shield import Shield
 TILE_SIZE = Setting.tile_size
 from bullet_beam import Beam
 import math
-items = []
+from EndingScreen import EndingScreen
+#items = []
 from Laser_Aiming_Line import LaserAiming
 class TankGame:
 
@@ -34,7 +35,7 @@ class TankGame:
         self.map_data = read_map(f'MAP/map{random_index}.txt')
         self.map_optimize= load_wall_rect(f'MAP/Optimize_structure_in_map/map{random_index}optimize.txt')
         self.collision_map=[]
-
+        self.items=[]
         self.informationOfTank = pygame.image.load(Setting.informationOfTank)
 
         if Setting.informationOfTank == 'asset/Stats/one-player.png':
@@ -128,11 +129,18 @@ class TankGame:
             x,y=self.wall_pos[i]
             window.blit(self.walls[i],(x,y))
 
+    def random_item(self,map_data, tile_size):
+        x = random.randint(1, 63)
+        y = random.randint(1, 42)
+        while map_data[y][x] == '1' or map_data[y-1][x]=='1' or map_data[y][x-1] == '1' or map_data[y-1][x-1] == '1' or map_data[y+1][x] == '1' or map_data[y][x+1] == '1' or map_data[y+1][x+1] == '1' :
+            x = random.randint(1, 62)
+            y = random.randint(1, 41)
+        item_num = random.randint(0, 9)
+        self.items.append((item_num, x * tile_size, y * tile_size))
 
     def run(self, window):
 
         font = pygame.font.Font(None, 36)
-        start_time_gun=0
         self.window = window
         start_time = pygame.time.get_ticks()
         info_tank_image = self.informationOfTank.get_rect(center=self.window.get_rect().center)
@@ -141,6 +149,7 @@ class TankGame:
         frame_count=0
         last_time=0
         last_random_time=0
+        music_bg_victory.play(-1)
         while self.running:
             frame_count+=1
             if pygame.time.get_ticks()-last_time >=1000:
@@ -161,8 +170,8 @@ class TankGame:
                     if event.key == pygame.K_TAB:
                         self.show_info = False  # Ẩn ảnh khi thả phím Tab
 
-            if elapsed_time - last_random_time >=5 and len(items) <=8 :
-                random_item(self.map_data,TILE_SIZE)
+            if elapsed_time - last_random_time >=5 and len(self.items) <=8 :
+                self.random_item(self.map_data,TILE_SIZE)
                 last_random_time = elapsed_time
 
 
@@ -171,7 +180,7 @@ class TankGame:
             self.window.fill(Setting.YELLOW)  # Xóa màn hình với màu trắng
             self.draw_map_2(self.window)
             #draw_map(self.window, self.map_data, TILE_SIZE)
-            draw_item(self.window)
+            draw_item(self.window,self.items)
 
             for tank in self.tanks:
                 # Điều khiển xe tăng
@@ -180,15 +189,15 @@ class TankGame:
                 tank.update_tank_mask()
                 if not tank.check :
                     tank.dx,tank.dy=0,0
-                item_have=TankLogic.check_collision_with_items(tank,items,self.item_name,TILE_SIZE)
+                item_have=TankLogic.check_collision_with_items(tank,self.items,self.item_name,TILE_SIZE)
                 if item_have == 3:
                     tank.speed_add += Setting.speedAdd
-                    start_time=elapsed_time
+                    tank.last_speed_add=elapsed_time
                 elif item_have ==1:
                     tank.health +=25
                 elif item_have == 0:
                     tank.dame_bonus =10
-                    start_time_gun=elapsed_time
+                    tank.last_dame_bonus=elapsed_time
                     tank.bullet_color=Setting.tanks_color[tank.id]
                 elif item_have == 4:
                     tank.shield_active=True
@@ -216,13 +225,13 @@ class TankGame:
                     tank.gun_mode=6
                     tank.shot_gun_bull_count=0
                     shotgun_pump.play()
+                    tank.update_tank_image(St.tanks_shotgun[tank.id])
                 if tank.speed_add !=0 :
-                    if elapsed_time-start_time >=10:
+                    if elapsed_time-tank.last_speed_add >=10:
                         tank.speed_add =0
                 if tank.dame_bonus :
-                    if elapsed_time-start_time_gun >=10:
+                    if elapsed_time-tank.last_dame_bonus >=10:
                         tank.dame_bonus=0
-                        tank.update_tank_image(St.normal_tanks[tank.id])
                         tank.bullet_color=Setting.BLACK
 
 
@@ -409,6 +418,7 @@ class TankGame:
                     self.explosions_bull.append(explosion)
                     self.tanks.remove(tank)
                     tank_death_sound.play()
+
             for explosion in self.explosions_bull[:]:
                 explosion.update()
 
@@ -416,6 +426,11 @@ class TankGame:
 
                 if explosion.image is None:
                     self.explosions_bull.remove(explosion)
+            if len(self.tanks) == 1:
+                winner_id = self.tanks[0].id
+                print(winner_id)
+                self.running = False
+                return winner_id
 
              # Khởi tạo font chữ, kích thước 36
 
@@ -473,8 +488,9 @@ def create_map_mask(map_data, tile_size=16):
 
     hpImage_mask=pygame.mask.from_surface(St.hpImage)
 
+    lucky_item_mask=pygame.mask.from_surface(St.lucky_item)
 
-    laser_gunItem_mask=pygame.mask.from_surface(St.laser_gunItem)
+    #laser_gunItem_mask=pygame.mask.from_surface(St.laser_gunItem)
 
 
     speedItem_mask= pygame.mask.from_surface(St.speedItem)
@@ -495,7 +511,7 @@ def create_map_mask(map_data, tile_size=16):
 
     map_surface = pygame.Surface((map_width, map_height),pygame.SRCALPHA)
     map_surface.fill((0, 0, 0,0))
-    item_name=[gunItem_mask,hpImage_mask,laser_gunItem_mask,speedItem_mask,shield_item_mask,laser_line_mask,machine_gun_mask,missile_item_mask,beam_item_mask,shotgun_item_mask]
+    item_name=[gunItem_mask,hpImage_mask,lucky_item_mask,speedItem_mask,shield_item_mask,laser_line_mask,machine_gun_mask,missile_item_mask,beam_item_mask,shotgun_item_mask]
     for y, row in enumerate(map_data):
         for x, tile in enumerate(row):
             if tile == '1':  # Walls
@@ -541,15 +557,15 @@ def load_wall_rect(filename):
                     print(f"Error parsing line '{line}': {e}")
     return rect_walls
 
-def random_item(map_data,tile_size):
-    x=random.randint(0,63)
-    y=random.randint(0,42)
-    while map_data[int(y)][int(x)] == '1':
-        x = random.randint(0, 62)
-        y = random.randint(0, 41)
-    item_num=random.randint(0,9)
-    items.append((item_num,x*tile_size,y*tile_size))
+# def random_item(map_data,tile_size):
+#     x=random.randint(0,63)
+#     y=random.randint(0,42)
+#     while map_data[int(y)][int(x)] == '1':
+#         x = random.randint(0, 62)
+#         y = random.randint(0, 41)
+#     item_num=random.randint(0,9)
+#     self.items.append((item_num,x*tile_size,y*tile_size))
 
-def draw_item(window):
+def draw_item(window,items):
     for item in items:
         window.blit(St.item_list[item[0]],(item[1],item[2]))

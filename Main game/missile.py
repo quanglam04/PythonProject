@@ -17,7 +17,7 @@ class Missile:
         self.img_rect.x,self.img_rect.y=int(self.x),int(self.y)
         self.start_point=pathfinder.Node(int (self.y/Setting.tile_size),int (self.x/Setting.tile_size))
         self.end_point=pathfinder.Node(1,1)
-        self.speed=0.4
+        self.speed=Setting.missile_speed
         self.path=None
         self.change=False
         self.last_end=pathfinder.Node(1,1)

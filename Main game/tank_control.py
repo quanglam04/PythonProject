@@ -99,7 +99,7 @@ class TankControl:
                 Sound.missile_shot_sound.play()
             elif self.tank.gun_mode == 5: #beam
                 self.tank.beam_active=True
-            elif self.tank.gun_mode ==6:
+            elif self.tank.gun_mode ==6:  #shotgun
                 if (current_time - self.last_shoot) > 400:
                     shotgun_1 = ShotGun(self.tank,
                                          self.tank.tank_rect.centerx + 29 * math.cos(

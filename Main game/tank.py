@@ -37,6 +37,8 @@ class Tank :
         self.last_beam_shoot=0
         self.beam_frozen=False
         self.laser_endpoints=[]
+        self.last_speed_add=0
+        self.last_dame_bonus=0
 
         self.speed_add=0
         self.dame_bonus=0

@@ -2,6 +2,7 @@ from pygame import image as img
 from pygame import transform as tf
 import Setting
 import pygame
+
 def calculate_frame(sheet_path,frame_width,frame_height):
     image= pygame.image.load(sheet_path).convert_alpha()
     frames=[]
@@ -56,6 +57,10 @@ laser_gunItem = img.load(Setting.laser_gun).convert()
 laser_gunItem.set_colorkey(Setting.WHITE)
 laser_gunItem = tf.scale(laser_gunItem, (25,25))
 
+lucky_item=img.load(Setting.lucky_item_path)
+lucky_item.set_colorkey(Setting.WHITE)
+lucky_item=tf.scale(lucky_item,(25,25))
+
 speedItem = img.load(Setting.speed).convert()
 speedItem.set_colorkey(Setting.WHITE)
 speedItem = tf.scale(speedItem, (25,25))
@@ -84,7 +89,7 @@ shotgun_item=img.load(Setting.shotgun)
 shotgun_item.set_colorkey(Setting.WHITE)
 shotgun_item=tf.scale(shotgun_item,(25,25))
 
-item_list=[gunItem,hpImage,laser_gunItem,speedItem,shield_item,laser_line,machine_gun,missile_item,beam_item,shotgun_item]
+item_list=[gunItem,hpImage,lucky_item,speedItem,shield_item,laser_line,machine_gun,missile_item,beam_item,shotgun_item]
 
 missile_image=img.load(Setting.missile_image)
 missile_image=tf.scale(missile_image,(30,15))
@@ -294,6 +299,21 @@ Green_tank_beam_3=img.load(Setting.Green_tank_beam_path_3)
 Green_tank_beam_3=tf.smoothscale(Green_tank_beam_3,(45,30))
 
 tanks_beam_3=[Blue_tank_beam_3,Red_tank_beam_3,Orange_tank_beam_3,Green_tank_beam_3]
+
+#shotgun_tank
+Blue_tank_shotgun=img.load(Setting.Blue_tank_shotgun_path)
+Blue_tank_shotgun=tf.smoothscale(Blue_tank_shotgun,(45,30))
+
+Red_tank_shotgun=img.load(Setting.Red_tank_shotgun_path)
+Red_tank_shotgun=tf.smoothscale(Red_tank_shotgun,(45,30))
+
+Orange_tank_shotgun=img.load(Setting.Orange_tank_shotgun_path)
+Orange_tank_shotgun=tf.smoothscale(Orange_tank_shotgun,(45,30))
+
+Green_tank_shotgun=img.load(Setting.Green_tank_shotgun_path)
+Green_tank_shotgun=tf.smoothscale(Green_tank_shotgun,(45,30))
+
+tanks_shotgun=[Blue_tank_shotgun,Red_tank_shotgun,Orange_tank_shotgun,Green_tank_shotgun]
 
 
 pygame.display.quit()
