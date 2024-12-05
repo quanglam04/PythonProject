@@ -15,6 +15,7 @@
             <li><strong>Đạn Lazer Beam:</strong> Bắn tia laser mạnh mẽ gây sát thương lớn.</li>
         </ul>
         <p>Game được phát triển bằng Python với các thư viện <strong>pygame</strong>, <strong>tkinter</strong>, và tích hợp thêm C++ với thư viện <strong>GLFW</strong>.</p>
+        <img src="https://github.com/quanglam04/python-project/blob/master/Demo.png" alt="Ảnh Demo Game" style="max-width:100%; height:auto; border:1px solid #ddd; border-radius:5px; padding:5px;">
     </div>
     <div class="section">
         <h2>Cách chạy chương trình</h2>
