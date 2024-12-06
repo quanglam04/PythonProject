@@ -19,6 +19,9 @@
     </div>
     <div class="section">
         <h2>Cách chạy chương trình</h2>
+        <h2>Bước 1: Clone dự án từ Github:</h2>
+        <pre><code> git clone https://github.com/quanglam04/python-project.git</code></pre>
+        <h2>Bước 2: Chạy ứng dụng </h2>
         <h3>Phương pháp 1: Chạy bằng file thực thi</h3>
         <p>Thực hiện các bước sau:</p>
         <ul>
